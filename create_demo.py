@@ -81,7 +81,7 @@ if demo == "Résultats par matière":
         new_dic["score"] = score
         new_collection.append(new_dic)
     st.write("Source: compétences des code ROME fournis - score de pertinence minimum 7/10")
-    st.write(f"{len(new_collection)} compétences ROME liés")
+    st.write(f"{len(new_collection)} compétences liés")
     st.write(new_collection)
 
     if selected_reference in mapping_mat_ref_large:
@@ -93,8 +93,8 @@ if demo == "Résultats par matière":
             new_dic["code ROME"] = competence["code_rome"]
             new_dic["score"] = score
             new_collection.append(new_dic)
-        st.write("Source: 900 compétences de domaine 'Communication, Création, Innovation, Nouvelles technologies' - score de pertinence minimum 7/10")
-        st.write(f"{len(new_collection)} compétences ROME liés")
+        st.write("Source: 900 compétences ROME de domaine 'Communication, Création, Innovation, Nouvelles technologies' - score de pertinence minimum 7/10")
+        st.write(f"{len(new_collection)} compétences liés")
         st.write(new_collection)
 
     st.header("Capsule de connaissance générée")
