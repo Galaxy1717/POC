@@ -1,0 +1,178 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 800px;
+                 background-color: #222222;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+             #config {
+                 float: left;
+                 width: 400px;
+                 height: 600px;
+             }
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+            <div id="config"></div>
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"font": {"color": "white"}, "group": 1, "id": "9b33923b-cc6a-400b-aaab-4294aa02137a", "label": "Esth\u00e9tique", "shape": "dot", "size": 5, "title": "L\u0027esth\u00e9tique en design d\u00e9signe la qualit\u00e9 visuelle d\u0027un produit ou d\u0027une interface, influen\u00e7ant l\u0027apparence qui attire l\u0027utilisateur et am\u00e9liore son engagement. Elle joue un r\u00f4le crucial dans la perception et les \u00e9motions suscit\u00e9es chez le spectateur, tout en devant \u00eatre \u00e9quilibr\u00e9e avec la fonctionnalit\u00e9 pour garantir une exp\u00e9rience utilisateur optimale."}, {"font": {"color": "white"}, "group": 1, "id": "824ed510-a8b6-49e8-b6a1-03338f5078d0", "label": "Simplicit\u00e9", "shape": "dot", "size": 5, "title": "Simplicit\u00e9 d\u00e9signe une approche de design qui privil\u00e9gie la r\u00e9duction des \u00e9l\u00e9ments superflus pour cr\u00e9er des interfaces claires, intuitives et esth\u00e9tiquement plaisantes. Ce principe vise \u00e0 rendre les interfaces faciles \u00e0 comprendre et \u00e0 utiliser, favorisant ainsi une exp\u00e9rience utilisateur optimale en mettant l\u0027accent sur le minimalisme, la fonctionnalit\u00e9 et la r\u00e9duction de la courbe d\u0027apprentissage."}, {"font": {"color": "white"}, "group": 1, "id": "b73644a0-a450-4aa4-9e3b-96cc1c0da4c7", "label": "Image", "shape": "dot", "size": 5, "title": "Repr\u00e9sentations visuelles d\u0027un sujet, essentielles pour la communication et l\u0027interpr\u00e9tation dans le design graphique et le contenu num\u00e9rique, influen\u00e7ant la perception et l\u0027\u00e9motion du spectateur tout en n\u00e9cessitant des alternatives textuelles pour l\u0027accessibilit\u00e9."}, {"font": {"color": "white"}, "group": 2, "id": 13708, "label": "Accessibilit\u00e9 Num\u00e9rique : R\u00e9f\u00e9rentiel G\u00e9n\u00e9ral d\u0027Am\u00e9lioration", "shape": "dot", "size": 8, "title": "RGAA - Re\u0301fe\u0301rentiel v4.1"}, {"font": {"color": "white"}, "group": 1, "id": "916d45fb-8de8-4d6d-b59f-490f45450c93", "label": "Balise \u003ccanvas\u003e", "shape": "dot", "size": 5, "title": "La balise \u003ccanvas\u003e est un \u00e9l\u00e9ment HTML5 qui permet de dessiner des graphiques dynamiques via JavaScript sur une page web. Elle est souvent utilis\u00e9e pour cr\u00e9er des images bitmap, des animations, des jeux et des applications visuelles interactives. Il est essentiel de fournir une description textuelle du contenu de la balise \u003ccanvas\u003e pour les utilisateurs ayant des d\u00e9ficiences visuelles, car cela am\u00e9liore l\u0027accessibilit\u00e9 du contenu graphique."}, {"font": {"color": "white"}, "group": 1, "id": "8fc6d3ef-ef25-4986-9a69-a6b2300569d6", "label": "Balise \u003csvg\u003e", "shape": "dot", "size": 5, "title": "La balise \u003csvg\u003e (Scalable Vector Graphics) est un \u00e9l\u00e9ment HTML et un format graphique vectoriel bas\u00e9 sur XML utilis\u00e9 pour int\u00e9grer des graphiques vectoriels scalables dans le d\u00e9veloppement web. Elle permet de cr\u00e9er des images en deux dimensions \u00e0 l\u0027aide de balises XML, offrant une mise \u00e0 l\u0027\u00e9chelle sans perte de qualit\u00e9. En plus de sa capacit\u00e9 graphique, la balise \u003csvg\u003e prend en charge des consid\u00e9rations d\u0027accessibilit\u00e9, n\u00e9cessitant souvent une description textuelle pour garantir que les contenus graphiques soient accessibles \u00e0 tous les utilisateurs. La balise peut \u00e9galement contenir du texte alternatif via une balise \u003ctext\u003e, inclure des \u00e9l\u00e9ments d\u0027interactivit\u00e9, et supporter des liens via la balise \u003ca\u003e, enrichissant ainsi l\u0027exp\u00e9rience utilisateur."}, {"font": {"color": "white"}, "group": 1, "id": "9afb0643-e273-456d-8fd2-4ab13b0d8236", "label": "Contraste visuel", "shape": "dot", "size": 5, "title": "Le contraste visuel, ou ratio de contraste, d\u00e9signe la mesure de l\u0027opposition entre la luminosit\u00e9 ou la couleur d\u0027un \u00e9l\u00e9ment de premier plan et celle d\u0027un arri\u00e8re-plan. Ce contraste est essentiel pour garantir la lisibilit\u00e9 et l\u0027accessibilit\u00e9 des contenus num\u00e9riques sur les pages web et les interfaces visuelles, en particulier pour les utilisateurs ayant des d\u00e9ficiences visuelles. Il joue un r\u00f4le crucial dans l\u0027exp\u00e9rience utilisateur en assurant que le contenu soit facilement discernable par tous."}, {"font": {"color": "white"}, "group": 1, "id": "7fcc9498-9b97-4289-a01d-189889aa59c3", "label": "Couleur comme information", "shape": "dot", "size": 5, "title": "Principe selon lequel l\u0027information ne doit pas \u00eatre transmise uniquement par la couleur ou l\u0027utilisation de couleurs, afin d\u0027assurer l\u0027accessibilit\u00e9 pour tous les utilisateurs et \u00e9viter toute confusion pour ceux qui peuvent avoir des difficult\u00e9s \u00e0 percevoir les couleurs."}, {"font": {"color": "white"}, "group": 1, "id": "c0917cf4-4aad-4df0-9239-32d7525e0a0a", "label": "Format vectoriel", "shape": "dot", "size": 5, "title": "Type d\u0027image num\u00e9rique cr\u00e9\u00e9e \u00e0 partir de formules math\u00e9matiques, permettant un redimensionnement et une mise \u00e0 l\u0027\u00e9chelle sans perte de qualit\u00e9. Les images vectorielles sont souvent utilis\u00e9es dans le graphisme et la conception pour leur flexibilit\u00e9, leur pr\u00e9cision et leur capacit\u00e9 \u00e0 conserver des d\u00e9tails nets \u00e0 diff\u00e9rentes tailles."}, {"font": {"color": "white"}, "group": 1, "id": "a2024caf-bad3-4b20-a384-8d3cea0b2ff7", "label": "Dribbble", "shape": "dot", "size": 5, "title": "Plateforme en ligne pour designers permettant de partager des travaux cr\u00e9atifs et de s\u0027inspirer des tendances actuelles."}, {"font": {"color": "white"}, "group": 1, "id": "64c3e433-c882-4e59-b5c8-457895680f56", "label": "Behance", "shape": "dot", "size": 5, "title": "R\u00e9seau social pour les professionnels cr\u00e9atifs o\u00f9 ils peuvent pr\u00e9senter leurs projets et d\u00e9couvrir des \u0153uvres innovantes."}, {"font": {"color": "white"}, "group": 1, "id": "3763ff44-edb7-487e-8bb8-3a9241bb67ff", "label": "Couleur d\u0027arri\u00e8re-plan contigu\u00eb", "shape": "dot", "size": 5, "title": "Couleur directement adjacente au bord ext\u00e9rieur d\u0027un \u00e9l\u00e9ment graphique, influen\u00e7ant la perception visuelle et l\u0027esth\u00e9tique."}, {"font": {"color": "white"}, "group": 1, "id": "74af9aa5-bfae-4e80-80d1-95a93d803eca", "label": "M\u00e9dia non temporel", "shape": "dot", "size": 5, "title": "Un m\u00e9dia non temporel est un type de contenu statique qui ne d\u00e9pend pas du temps pour sa consultation, permettant une interaction \u00e0 travers divers dispositifs. Cela inclut des \u00e9l\u00e9ments tels que des images, des tableaux, des cartes interactives et des diaporamas, qui peuvent \u00eatre consult\u00e9s sans d\u00e9roulement temporel."}]);
+                  edges = new vis.DataSet([{"from": "9b33923b-cc6a-400b-aaab-4294aa02137a", "to": "824ed510-a8b6-49e8-b6a1-03338f5078d0", "width": 1}, {"from": "b73644a0-a450-4aa4-9e3b-96cc1c0da4c7", "to": 13708, "width": 1}, {"from": "b73644a0-a450-4aa4-9e3b-96cc1c0da4c7", "to": "916d45fb-8de8-4d6d-b59f-490f45450c93", "width": 1}, {"from": "b73644a0-a450-4aa4-9e3b-96cc1c0da4c7", "to": "8fc6d3ef-ef25-4986-9a69-a6b2300569d6", "width": 1}, {"from": "9afb0643-e273-456d-8fd2-4ab13b0d8236", "to": 13708, "width": 1}, {"from": "9afb0643-e273-456d-8fd2-4ab13b0d8236", "to": "7fcc9498-9b97-4289-a01d-189889aa59c3", "width": 1}, {"from": "c0917cf4-4aad-4df0-9239-32d7525e0a0a", "to": 13708, "width": 1}, {"from": "a2024caf-bad3-4b20-a384-8d3cea0b2ff7", "to": "64c3e433-c882-4e59-b5c8-457895680f56", "width": 1}, {"from": "3763ff44-edb7-487e-8bb8-3a9241bb67ff", "to": 13708, "width": 1}, {"from": "74af9aa5-bfae-4e80-80d1-95a93d803eca", "to": 13708, "width": 1}, {"from": "8fc6d3ef-ef25-4986-9a69-a6b2300569d6", "to": 13708, "width": 1}, {"from": "8fc6d3ef-ef25-4986-9a69-a6b2300569d6", "to": "916d45fb-8de8-4d6d-b59f-490f45450c93", "width": 1}, {"from": "916d45fb-8de8-4d6d-b59f-490f45450c93", "to": 13708, "width": 1}, {"from": "7fcc9498-9b97-4289-a01d-189889aa59c3", "to": 13708, "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": true,
+        "filter": [
+            "physics"
+        ]
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "repulsion": {
+            "centralGravity": 0.33,
+            "damping": 0.95,
+            "nodeDistance": 420,
+            "springConstant": 0.1,
+            "springLength": 110
+        },
+        "solver": "repulsion",
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+                  // if this network requires displaying the configure window,
+                  // put it in its div
+                  options.configure["container"] = document.getElementById("config");
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>

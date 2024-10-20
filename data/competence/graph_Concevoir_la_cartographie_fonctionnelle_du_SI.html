@@ -1,0 +1,178 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 800px;
+                 background-color: #222222;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+             #config {
+                 float: left;
+                 width: 400px;
+                 height: 600px;
+             }
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+            <div id="config"></div>
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"font": {"color": "white"}, "group": 1, "id": "9c7cbcbd-6820-4fcd-bd00-88a36b11fe80", "label": "Analyse des Besoins du Client", "shape": "dot", "size": 5, "title": "Processus d\u0027\u00e9valuation des exigences explicites et implicites d\u0027un client afin de fournir des solutions adapt\u00e9es \u00e0 ses attentes."}, {"font": {"color": "white"}, "group": 1, "id": "008d5789-6187-488a-86aa-9faf7453aed1", "label": "Questions Essentielles", "shape": "dot", "size": 5, "title": "Interrogations cl\u00e9s pos\u00e9es au client pour clarifier ses besoins et attentes avant le d\u00e9but d\u0027un projet cr\u00e9atif."}, {"font": {"color": "white"}, "group": 1, "id": "784d7e55-3719-435a-86eb-e3028d2e8919", "label": "Wireframing", "shape": "dot", "size": 5, "title": "Le wireframing est une technique de conception pr\u00e9liminaire qui consiste \u00e0 cr\u00e9er des maquettes sch\u00e9matiques d\u00e9taill\u00e9es, appel\u00e9es wireframes, pour visualiser et clarifier la structure d\u0027une interface utilisateur. Ces repr\u00e9sentations simplifi\u00e9es illustrent l\u0027organisation des \u00e9l\u00e9ments fonctionnels sans se concentrer sur le design graphique final, mettant en \u00e9vidence les composants visuels et fonctionnels essentiels. Le wireframing facilite ainsi la communication entre les acteurs d\u0027un projet et sert de base pour le d\u00e9veloppement ult\u00e9rieur de l\u0027interface."}, {"font": {"color": "white"}, "group": 1, "id": "296f12ab-03eb-495e-a89c-a642b60fb59f", "label": "Stylescape", "shape": "dot", "size": 5, "title": "Un stylescape est un outil de conception visuelle \u00e9labor\u00e9 qui repr\u00e9sente l\u0027identit\u00e9 d\u0027une marque en regroupant typographie, couleurs, images et \u00e9l\u00e9ments graphiques. Il d\u00e9finit une direction esth\u00e9tique et communique l\u0027essence d\u0027un projet ou d\u0027une marque en illustrant une vision cr\u00e9ative. Enrichissant la pr\u00e9sentation des propositions, il transmet \u00e9galement l\u0027identit\u00e9 ainsi que l\u0027exp\u00e9rience globale souhait\u00e9es."}, {"font": {"color": "white"}, "group": 1, "id": "ae467590-b74a-463a-8b8f-0d480a17c50a", "label": "Gestion de projet", "shape": "dot", "size": 5, "title": "La gestion de projet est une discipline qui consiste \u00e0 appliquer des connaissances, comp\u00e9tences et techniques pour planifier, ex\u00e9cuter et superviser des projets afin d\u0027atteindre des objectifs sp\u00e9cifiques dans un cadre temporel d\u00e9fini. Elle implique l\u0027organisation et la planification des ressources tout en respectant les contraintes budg\u00e9taires, et elle est particuli\u00e8rement cruciale dans divers domaines, y compris le domaine cr\u00e9atif."}, {"font": {"color": "white"}, "group": 1, "id": "dadb4cae-ecdd-4562-ad1c-c4f863b80368", "label": "Design digital", "shape": "dot", "size": 5, "title": "Discipline qui englobe la cr\u00e9ation d\u0027\u00e9l\u00e9ments visuels et de contenus num\u00e9riques, incluant l\u0027interface utilisateur (UI) et l\u0027exp\u00e9rience utilisateur (UX), int\u00e9grant esth\u00e9tique et fonctionnalit\u00e9 tout en influen\u00e7ant l\u0027exp\u00e9rience utilisateur et le marketing moderne."}, {"font": {"color": "white"}, "group": 3, "id": "93e7ef85a293427fa476fcf9bd39ab01", "label": "mcq", "shape": "dot", "size": 5, "title": "Quelle \u00e9tape pr\u00e9c\u00e8de g\u00e9n\u00e9ralement la r\u00e9alisation du zoning lors d\u2019un projet web ?"}, {"font": {"color": "white"}, "group": 3, "id": "cf5d22df526b473d886b2f9185bbbade", "label": "mcq", "shape": "dot", "size": 5, "title": "Quel est l\u0027objectif principal du wireframe par rapport aux \u00e9l\u00e9ments pr\u00e9sents ?"}, {"font": {"color": "white"}, "group": 3, "id": "fcf86d429da24f679769741afa7e8165", "label": "mcq", "shape": "dot", "size": 5, "title": "\u00c0 quoi sert principalement le zoning dans le processus de cr\u00e9ation d\u0027une page web ?"}, {"font": {"color": "white"}, "group": 3, "id": "cfb5a24978ac4fb2bf3fa2db59ed0ebe", "label": "mcq", "shape": "dot", "size": 5, "title": "Quelle est l\u0027utilit\u00e9 des wireframes dans le processus de cr\u00e9ation web?"}, {"font": {"color": "white"}, "group": 4, "id": "d98bc70a159f4f99ada0181438d991b5", "label": "fill_in", "shape": "dot", "size": 5, "title": "Le wireframe se concentre principalement sur \u003cblank\u003e, sans s\u0027occuper de l\u0027aspect visuel ou du graphisme."}, {"font": {"color": "white"}, "group": 4, "id": "9ffa467f37084a368ad722d16d9aebc8", "label": "fill_in", "shape": "dot", "size": 5, "title": "Le zoning permet de d\u00e9finir l\u0027organisation g\u00e9n\u00e9rale des pages apr\u00e8s la cr\u00e9ation de \u003cblank\u003e."}, {"font": {"color": "white"}, "group": 4, "id": "da35feb49e864dec9be4a552fb20bd03", "label": "fill_in", "shape": "dot", "size": 5, "title": "Les wireframes servent de base aux web designers pour \u003cblank\u003e, tout en respectant les souhaits et contraintes valid\u00e9s par le client."}, {"font": {"color": "white"}, "group": 5, "id": "a9e39306cb3b4f74b096fd9dd4b2697a", "label": "true_false", "shape": "dot", "size": 5, "title": "Le wireframe consiste \u00e0 d\u00e9finir l\u0027organisation des \u00e9l\u00e9ments et des formes tout en travaillant l\u0027aspect visuel."}, {"font": {"color": "white"}, "group": 5, "id": "df6d8e1ef0c24891972ea92c71fd1f92", "label": "true_false", "shape": "dot", "size": 5, "title": "Le contenu utilis\u00e9 dans le wireframe peut \u00eatre fictif si les informations finales ne sont pas encore disponibles."}, {"font": {"color": "white"}, "group": 5, "id": "a286d7d9d1844bed865e42b39a918f65", "label": "true_false", "shape": "dot", "size": 5, "title": "Les wireframes valides sont immuables et ne peuvent en aucun cas \u00eatre modifi\u00e9s par les cr\u00e9atifs."}, {"font": {"color": "white"}, "group": 1, "id": "9d810e58-40a4-40c3-9db4-16ad82dcf8b6", "label": "Business Technology", "shape": "dot", "size": 5, "title": "Technologies utilis\u00e9es pour am\u00e9liorer les op\u00e9rations commerciales, incluant l\u0027automatisation, l\u0027analyse de donn\u00e9es et la gestion des ressources."}, {"font": {"color": "white"}, "group": 2, "id": 13691, "label": "Stylescape et Moodboard : Outils de Design Visuel", "shape": "dot", "size": 8, "title": "Sequence 4_choix entre stylescape ou moodboard"}, {"font": {"color": "white"}, "group": 1, "id": "16384365-b375-49f3-af7d-26f647af9d38", "label": "Real Time Clarity", "shape": "dot", "size": 5, "title": "Capacit\u00e9 \u00e0 obtenir une compr\u00e9hension imm\u00e9diate et pr\u00e9cise des donn\u00e9es ou situations actuelles pour une prise de d\u00e9cision rapide."}, {"font": {"color": "white"}, "group": 1, "id": "ad750065-352f-471a-b1fc-a896a99991b2", "label": "Actionable Insights", "shape": "dot", "size": 5, "title": "Informations d\u00e9riv\u00e9es de donn\u00e9es qui peuvent \u00eatre directement appliqu\u00e9es pour prendre des d\u00e9cisions strat\u00e9giques dans une entreprise."}, {"font": {"color": "white"}, "group": 5, "id": "dc3a6dfc15ca475496a486da3bde2aa8", "label": "true_false", "shape": "dot", "size": 5, "title": "Les outils mentionn\u00e9s servent uniquement \u00e0 cr\u00e9er des documents internes pour l\u0027\u00e9quipe de projet."}, {"font": {"color": "white"}, "group": 1, "id": "1ef72a7e-5e74-4275-8671-d3b08e7e6482", "label": "Design System", "shape": "dot", "size": 5, "title": "Un design system est une biblioth\u00e8que standardis\u00e9e d\u0027\u00e9l\u00e9ments graphiques, de composants r\u00e9utilisables et de r\u00e8gles de branding unifi\u00e9es, qui assurent la coh\u00e9rence visuelle et fonctionnelle dans le d\u00e9veloppement de produits, sites ou applications. Il vise \u00e0 standardiser le d\u00e9veloppement et \u00e0 garantir une exp\u00e9rience utilisateur homog\u00e8ne \u00e0 travers plusieurs produits."}, {"font": {"color": "white"}, "group": 3, "id": "7a9bfae2718c4ec894908d42d69a0337", "label": "mcq", "shape": "dot", "size": 5, "title": "Quel est l\u0027objectif principal d\u0027un design system ?"}, {"font": {"color": "white"}, "group": 3, "id": "4c03f6a0173c41d68cc1d8eb88688d21", "label": "mcq", "shape": "dot", "size": 5, "title": "Qu\u0027englobe g\u00e9n\u00e9ralement un design system dans le processus de cr\u00e9ation d\u0027un produit ?"}, {"font": {"color": "white"}, "group": 3, "id": "74d6ad304c8c4756803e679f5c81c5ba", "label": "mcq", "shape": "dot", "size": 5, "title": "\u00c0 quoi sert principalement un design system dans une organisation ?"}, {"font": {"color": "white"}, "group": 3, "id": "f3dc4db503a64d7696628bc1bc7eeb26", "label": "mcq", "shape": "dot", "size": 5, "title": "Quels \u00e9l\u00e9ments sont inclus dans un design system ?"}, {"font": {"color": "white"}, "group": 5, "id": "e11c2ad84ac74e07a8f72c3b516e8280", "label": "true_false", "shape": "dot", "size": 5, "title": "Un design system ne concerne que les \u00e9l\u00e9ments graphiques d\u0027un produit."}, {"font": {"color": "white"}, "group": 5, "id": "8f28a9f88d34427b97ac8306108b18b3", "label": "true_false", "shape": "dot", "size": 5, "title": "Le but principal d\u0027un design system est de standardiser les \u00e9l\u00e9ments li\u00e9s au d\u00e9veloppement d\u0027un produit pour garantir la coh\u00e9rence."}, {"font": {"color": "white"}, "group": 5, "id": "388525c44d4749319aec5fc378adefa3", "label": "true_false", "shape": "dot", "size": 5, "title": "Un design system se limite uniquement aux \u00e9l\u00e9ments graphiques et visuels d\u0027un produit."}, {"font": {"color": "white"}, "group": 1, "id": "b73d77d1-523f-4328-a45c-d7b91e2a52ff", "label": "M\u00e9thode de l\u0027entonnoir", "shape": "dot", "size": 5, "title": "Technique de collecte d\u0027informations pour clarifier un projet, facilitant la compr\u00e9hension et la communication des id\u00e9es cr\u00e9atives."}, {"font": {"color": "white"}, "group": 1, "id": "a8a00071-1e94-47d4-ae1f-c4d1d56d0f25", "label": "Suivi de projet", "shape": "dot", "size": 5, "title": "Processus de gestion permettant de surveiller l\u0027avancement des t\u00e2ches et d\u0027ajuster les d\u00e9lais en fonction des besoins."}, {"font": {"color": "white"}, "group": 1, "id": "c046e017-bd93-494e-935f-03880b12ef92", "label": "Sp\u00e9cifications du produit", "shape": "dot", "size": 5, "title": "D\u00e9tails techniques et exigences pr\u00e9cises concernant un produit ou service demand\u00e9 par le client."}, {"font": {"color": "white"}, "group": 1, "id": "4c7bd337-41a5-4fa5-be76-8ba4d625aba3", "label": "D\u00e9pendances", "shape": "dot", "size": 5, "title": "Les d\u00e9pendances d\u00e9signent les relations entre diff\u00e9rentes t\u00e2ches dans un projet, o\u00f9 certaines doivent \u00eatre compl\u00e9t\u00e9es avant que d\u0027autres puissent commencer. Elles incluent \u00e9galement les biblioth\u00e8ques, modules ou packages externes n\u00e9cessaires au bon fonctionnement d\u0027un logiciel, g\u00e9r\u00e9es par des outils comme Composer ou d\u0027autres gestionnaires de paquets pour \u00e9viter les conflits et assurer une int\u00e9gration harmonieuse. La gestion des d\u00e9pendances est cruciale lors de la construction d\u0027images Docker, garantissant que toutes les ressources n\u00e9cessaires sont disponibles et correctement configur\u00e9es."}, {"font": {"color": "white"}, "group": 1, "id": "0edf2749-c81c-43eb-9df3-80cccb6cce55", "label": "Organiser", "shape": "dot", "size": 5, "title": "Disposer des \u00e9l\u00e9ments de mani\u00e8re structur\u00e9e pour am\u00e9liorer la clart\u00e9 et la lisibilit\u00e9 des informations pr\u00e9sent\u00e9es."}, {"font": {"color": "white"}, "group": 1, "id": "137a1b7b-5295-4717-a31c-50ad7854381b", "label": "Lien visuel", "shape": "dot", "size": 5, "title": "Relation entre diff\u00e9rents \u00e9l\u00e9ments graphiques qui aide \u00e0 \u00e9tablir des connexions logiques ou th\u00e9matiques dans une pr\u00e9sentation."}, {"font": {"color": "white"}, "group": 1, "id": "99c4272d-b04d-46f9-8678-16107829dbb3", "label": "Arborescence", "shape": "dot", "size": 5, "title": "Structure hi\u00e9rarchique permettant d\u0027organiser des fichiers ou informations, facilitant la navigation et l\u0027acc\u00e8s aux donn\u00e9es dans un projet."}, {"font": {"color": "white"}, "group": 1, "id": "3898834d-4869-40af-9c13-784f85193239", "label": "Diagnostic", "shape": "dot", "size": 5, "title": "Un diagnostic dans le contexte commercial fait r\u00e9f\u00e9rence \u00e0 l\u0027analyse approfondie des besoins d\u0027un client, permettant de formuler des recommandations adapt\u00e9es pour atteindre ses objectifs."}, {"font": {"color": "white"}, "group": 1, "id": "649b9e0a-1d5a-4e90-adf3-d037c915dfd0", "label": "Organisation hi\u00e9rarchique", "shape": "dot", "size": 5, "title": "M\u00e9thode de structuration des id\u00e9es par niveaux d\u0027importance, permettant une meilleure clart\u00e9 et compr\u00e9hension des relations entre les concepts."}, {"font": {"color": "white"}, "group": 1, "id": "6b7099eb-a61e-4517-9ce3-81e0edfcee4e", "label": "R\u00e8gles d\u0027insertion", "shape": "dot", "size": 5, "title": "Directives pr\u00e9cises sur la mani\u00e8re dont les \u00e9l\u00e9ments graphiques doivent \u00eatre dispos\u00e9s sur divers supports pour maintenir l\u0027harmonie visuelle."}, {"font": {"color": "white"}, "group": 1, "id": "53e06a2d-caf6-4629-a658-09ac86bdbd5a", "label": "Lisibilit\u00e9", "shape": "dot", "size": 5, "title": "La lisibilit\u00e9, ou lisibilit\u00e9 du contenu, est la facilit\u00e9 avec laquelle un texte peut \u00eatre lu et compris. Elle est essentielle pour une communication efficace sur diff\u00e9rents dispositifs, notamment en design graphique. La lisibilit\u00e9 est influenc\u00e9e par divers facteurs tels que la taille de la police, le contraste des couleurs, l\u0027espacement entre les \u00e9l\u00e9ments graphiques, l\u0027alignement et l\u0027utilisation d\u0027espaces blancs. Elle joue un r\u00f4le cl\u00e9 dans la cr\u00e9ation de documents clairs et attrayants, facilitant ainsi l\u0027engagement du lecteur."}, {"font": {"color": "white"}, "group": 1, "id": "3f184a33-971f-4946-a8d3-ed21a6289e37", "label": "\u00c9l\u00e9ments de pr\u00e9sentation", "shape": "dot", "size": 5, "title": "Composants vari\u00e9s (logos, maquettes) inclus dans le dossier final pour illustrer le processus cr\u00e9atif et les r\u00e9sultats obtenus."}, {"font": {"color": "white"}, "group": 1, "id": "46f98aa1-718b-4130-a429-5e0c698e2f72", "label": "Design Thinking", "shape": "dot", "size": 5, "title": "M\u00e9thodologie centr\u00e9e sur l\u0027utilisateur visant \u00e0 r\u00e9soudre des probl\u00e8mes complexes par l\u0027empathie, la d\u00e9finition, l\u0027id\u00e9ation, le prototypage et le test."}, {"font": {"color": "white"}, "group": 1, "id": "60a2b77b-d4ec-4234-811d-9ae2c333e8a5", "label": "Branches principales", "shape": "dot", "size": 5, "title": "Cat\u00e9gories majeures d\u00e9riv\u00e9es du sujet central dans un mind map, repr\u00e9sentant les th\u00e8mes principaux \u00e0 explorer."}, {"font": {"color": "white"}, "group": 1, "id": "bf9dcd29-03f3-4cd8-a076-8331895e019d", "label": "KPI (Indicateurs Cl\u00e9s de Performance)", "shape": "dot", "size": 5, "title": "Les KPI, ou Indicateurs Cl\u00e9s de Performance, sont des mesures quantifiables utilis\u00e9es pour \u00e9valuer le succ\u00e8s et l\u0027efficacit\u00e9 d\u0027un produit, service ou strat\u00e9gie marketing. Ils jouent un r\u00f4le essentiel dans le suivi des performances des \u00e9quipes, notamment dans les objectifs DevOps, en facilitant la prise de d\u00e9cisions \u00e9clair\u00e9es et en permettant d\u0027ajuster les actions si n\u00e9cessaire."}, {"font": {"color": "white"}, "group": 1, "id": "c3fa5716-aedd-4faf-a2f9-b805c8102d83", "label": "Lexique client", "shape": "dot", "size": 5, "title": "Ensemble de termes sp\u00e9cifiques utilis\u00e9s par le client, r\u00e9v\u00e9lant ses priorit\u00e9s et nuances essentielles pour comprendre son brief."}]);
+                  edges = new vis.DataSet([{"from": "9c7cbcbd-6820-4fcd-bd00-88a36b11fe80", "to": "008d5789-6187-488a-86aa-9faf7453aed1", "width": 1}, {"from": "784d7e55-3719-435a-86eb-e3028d2e8919", "to": "296f12ab-03eb-495e-a89c-a642b60fb59f", "width": 1}, {"from": "784d7e55-3719-435a-86eb-e3028d2e8919", "to": "ae467590-b74a-463a-8b8f-0d480a17c50a", "width": 1}, {"from": "784d7e55-3719-435a-86eb-e3028d2e8919", "to": "dadb4cae-ecdd-4562-ad1c-c4f863b80368", "width": 1}, {"from": "784d7e55-3719-435a-86eb-e3028d2e8919", "to": "93e7ef85a293427fa476fcf9bd39ab01", "width": 1}, {"from": "784d7e55-3719-435a-86eb-e3028d2e8919", "to": "cf5d22df526b473d886b2f9185bbbade", "width": 1}, {"from": "784d7e55-3719-435a-86eb-e3028d2e8919", "to": "fcf86d429da24f679769741afa7e8165", "width": 1}, {"from": "784d7e55-3719-435a-86eb-e3028d2e8919", "to": "cfb5a24978ac4fb2bf3fa2db59ed0ebe", "width": 1}, {"from": "784d7e55-3719-435a-86eb-e3028d2e8919", "to": "d98bc70a159f4f99ada0181438d991b5", "width": 1}, {"from": "784d7e55-3719-435a-86eb-e3028d2e8919", "to": "9ffa467f37084a368ad722d16d9aebc8", "width": 1}, {"from": "784d7e55-3719-435a-86eb-e3028d2e8919", "to": "da35feb49e864dec9be4a552fb20bd03", "width": 1}, {"from": "784d7e55-3719-435a-86eb-e3028d2e8919", "to": "a9e39306cb3b4f74b096fd9dd4b2697a", "width": 1}, {"from": "784d7e55-3719-435a-86eb-e3028d2e8919", "to": "df6d8e1ef0c24891972ea92c71fd1f92", "width": 1}, {"from": "784d7e55-3719-435a-86eb-e3028d2e8919", "to": "a286d7d9d1844bed865e42b39a918f65", "width": 1}, {"from": "9d810e58-40a4-40c3-9db4-16ad82dcf8b6", "to": 13691, "width": 1}, {"from": "9d810e58-40a4-40c3-9db4-16ad82dcf8b6", "to": "16384365-b375-49f3-af7d-26f647af9d38", "width": 1}, {"from": "9d810e58-40a4-40c3-9db4-16ad82dcf8b6", "to": "296f12ab-03eb-495e-a89c-a642b60fb59f", "width": 1}, {"from": "9d810e58-40a4-40c3-9db4-16ad82dcf8b6", "to": "ad750065-352f-471a-b1fc-a896a99991b2", "width": 1}, {"from": "9d810e58-40a4-40c3-9db4-16ad82dcf8b6", "to": "dc3a6dfc15ca475496a486da3bde2aa8", "width": 1}, {"from": "ad750065-352f-471a-b1fc-a896a99991b2", "to": 13691, "width": 1}, {"from": "ad750065-352f-471a-b1fc-a896a99991b2", "to": "16384365-b375-49f3-af7d-26f647af9d38", "width": 1}, {"from": "ad750065-352f-471a-b1fc-a896a99991b2", "to": "296f12ab-03eb-495e-a89c-a642b60fb59f", "width": 1}, {"from": "ad750065-352f-471a-b1fc-a896a99991b2", "to": "dc3a6dfc15ca475496a486da3bde2aa8", "width": 1}, {"from": "1ef72a7e-5e74-4275-8671-d3b08e7e6482", "to": "7a9bfae2718c4ec894908d42d69a0337", "width": 1}, {"from": "1ef72a7e-5e74-4275-8671-d3b08e7e6482", "to": "4c03f6a0173c41d68cc1d8eb88688d21", "width": 1}, {"from": "1ef72a7e-5e74-4275-8671-d3b08e7e6482", "to": "74d6ad304c8c4756803e679f5c81c5ba", "width": 1}, {"from": "1ef72a7e-5e74-4275-8671-d3b08e7e6482", "to": "f3dc4db503a64d7696628bc1bc7eeb26", "width": 1}, {"from": "1ef72a7e-5e74-4275-8671-d3b08e7e6482", "to": "e11c2ad84ac74e07a8f72c3b516e8280", "width": 1}, {"from": "1ef72a7e-5e74-4275-8671-d3b08e7e6482", "to": "8f28a9f88d34427b97ac8306108b18b3", "width": 1}, {"from": "1ef72a7e-5e74-4275-8671-d3b08e7e6482", "to": "388525c44d4749319aec5fc378adefa3", "width": 1}, {"from": "296f12ab-03eb-495e-a89c-a642b60fb59f", "to": 13691, "width": 1}, {"from": "296f12ab-03eb-495e-a89c-a642b60fb59f", "to": "b73d77d1-523f-4328-a45c-d7b91e2a52ff", "width": 1}, {"from": "296f12ab-03eb-495e-a89c-a642b60fb59f", "to": "ae467590-b74a-463a-8b8f-0d480a17c50a", "width": 1}, {"from": "296f12ab-03eb-495e-a89c-a642b60fb59f", "to": "dadb4cae-ecdd-4562-ad1c-c4f863b80368", "width": 1}, {"from": "296f12ab-03eb-495e-a89c-a642b60fb59f", "to": "16384365-b375-49f3-af7d-26f647af9d38", "width": 1}, {"from": "a8a00071-1e94-47d4-ae1f-c4d1d56d0f25", "to": "c046e017-bd93-494e-935f-03880b12ef92", "width": 1}, {"from": "ae467590-b74a-463a-8b8f-0d480a17c50a", "to": "4c7bd337-41a5-4fa5-be76-8ba4d625aba3", "width": 1}, {"from": "ae467590-b74a-463a-8b8f-0d480a17c50a", "to": "dadb4cae-ecdd-4562-ad1c-c4f863b80368", "width": 1}, {"from": "16384365-b375-49f3-af7d-26f647af9d38", "to": 13691, "width": 1}, {"from": "16384365-b375-49f3-af7d-26f647af9d38", "to": "dc3a6dfc15ca475496a486da3bde2aa8", "width": 1}, {"from": "0edf2749-c81c-43eb-9df3-80cccb6cce55", "to": 13691, "width": 1}, {"from": "0edf2749-c81c-43eb-9df3-80cccb6cce55", "to": "137a1b7b-5295-4717-a31c-50ad7854381b", "width": 1}, {"from": "137a1b7b-5295-4717-a31c-50ad7854381b", "to": 13691, "width": 1}, {"from": "dc3a6dfc15ca475496a486da3bde2aa8", "to": 13691, "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": true,
+        "filter": [
+            "physics"
+        ]
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "repulsion": {
+            "centralGravity": 0.33,
+            "damping": 0.95,
+            "nodeDistance": 420,
+            "springConstant": 0.1,
+            "springLength": 110
+        },
+        "solver": "repulsion",
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+                  // if this network requires displaying the configure window,
+                  // put it in its div
+                  options.configure["container"] = document.getElementById("config");
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>

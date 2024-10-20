@@ -1,0 +1,178 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 800px;
+                 background-color: #222222;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+             #config {
+                 float: left;
+                 width: 400px;
+                 height: 600px;
+             }
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+            <div id="config"></div>
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"font": {"color": "white"}, "group": 1, "id": "290a7561-1e35-48ee-af31-7c444586dc44", "label": "ROI positif", "shape": "dot", "size": 5, "title": "Un retour sur investissement (ROI) positif indique que les b\u00e9n\u00e9fices d\u0027un projet surpassent ses co\u00fbts, justifiant ainsi l\u0027investissement initial."}, {"font": {"color": "white"}, "group": 1, "id": "c83cccdb-1327-40ed-9d33-daad4b57aaf0", "label": "Confiance dans le produit", "shape": "dot", "size": 5, "title": "La confiance dans un produit se r\u00e9f\u00e8re \u00e0 la certitude qu\u0027ont les utilisateurs quant \u00e0 sa fiabilit\u00e9 et sa performance, souvent renforc\u00e9e par des tests rigoureux."}, {"font": {"color": "white"}, "group": 1, "id": "e208c124-c2d4-43aa-b374-5e9653b2aad4", "label": "Taux de conversion", "shape": "dot", "size": 5, "title": "Le taux de conversion est le pourcentage d\u0027utilisateurs qui r\u00e9alisent une action souhait\u00e9e, comme un achat ou une inscription, apr\u00e8s avoir \u00e9t\u00e9 expos\u00e9s \u00e0 une campagne marketing sur un site web ou via des canaux mobiles. Cet indicateur cl\u00e9 de performance commerciale mesure l\u0027efficacit\u00e9 d\u0027une interface et peut \u00eatre influenc\u00e9 par divers facteurs, tels que l\u0027utilisation strat\u00e9gique des couleurs et d\u0027autres \u00e9l\u00e9ments de design UX. Il repr\u00e9sente donc la proportion de prospects qui deviennent clients suite \u00e0 leur interaction avec une offre."}, {"font": {"color": "white"}, "group": 2, "id": 13609, "label": "Mathilde Vigneron : Designer Produit et Sp\u00e9cialiste en Marketing Mobile", "shape": "dot", "size": 8, "title": "_YNOV CONNECT_Mobil Marketing, user acquisition \u0026 mode\u0300les e\u0301conomique_B3 \u2013Commun Marcom"}, {"font": {"color": "white"}, "group": 1, "id": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "label": "Exp\u00e9rience Utilisateur et Client", "shape": "dot", "size": 21, "title": "L\u0027exp\u00e9rience utilisateur (UX) et l\u0027exp\u00e9rience client englobent toutes les \u00e9motions, attitudes et r\u00e9actions d\u0027un utilisateur lors de son interaction avec un produit ou service. L\u0027UX vise \u00e0 optimiser la satisfaction en am\u00e9liorant la perception globale influenc\u00e9e par le design, les fonctionnalit\u00e9s, l\u0027interface, l\u0027utilisabilit\u00e9 et le plaisir d\u0027utilisation. L\u0027interface utilisateur (UI), qui constitue le point de contact visuel et interactif entre l\u0027utilisateur et le syst\u00e8me, joue un r\u00f4le crucial dans la convivialit\u00e9 et l\u0027esth\u00e9tique du produit num\u00e9rique. De plus, l\u0027UX mobile se concentre sur la cr\u00e9ation d\u0027interfaces conviviales pour maximiser l\u0027engagement des utilisateurs sur appareils mobiles. Ensemble, ces concepts visent \u00e0 r\u00e9duire les frictions durant le processus d\u0027achat et \u00e0 influencer la fid\u00e9lit\u00e9 des utilisateurs dans un environnement num\u00e9rique."}, {"font": {"color": "white"}, "group": 1, "id": "d7224c6f-a919-460d-af12-6dfbeacde495", "label": "Visibilit\u00e9 en ligne", "shape": "dot", "size": 5, "title": "La visibilit\u00e9 en ligne d\u00e9signe la capacit\u00e9 d\u0027une entreprise ou d\u0027une marque \u00e0 \u00eatre facilement per\u00e7ue et trouv\u00e9e sur Internet, ce qui est essentiel pour attirer de nouveaux clients et prospects. Cela inclut le degr\u00e9 de reconnaissance par le public ainsi que l\u0027efficacit\u00e9 des strat\u00e9gies mises en place pour se d\u00e9marquer dans un environnement concurrentiel, notamment \u00e0 travers les moteurs de recherche et d\u0027autres moyens de navigation, contribuant ainsi \u00e0 l\u0027augmentation des ventes."}, {"font": {"color": "white"}, "group": 1, "id": "bf9dcd29-03f3-4cd8-a076-8331895e019d", "label": "KPI (Indicateurs Cl\u00e9s de Performance)", "shape": "dot", "size": 5, "title": "Les KPI, ou Indicateurs Cl\u00e9s de Performance, sont des mesures quantifiables utilis\u00e9es pour \u00e9valuer le succ\u00e8s et l\u0027efficacit\u00e9 d\u0027un produit, service ou strat\u00e9gie marketing. Ils jouent un r\u00f4le essentiel dans le suivi des performances des \u00e9quipes, notamment dans les objectifs DevOps, en facilitant la prise de d\u00e9cisions \u00e9clair\u00e9es et en permettant d\u0027ajuster les actions si n\u00e9cessaire."}, {"font": {"color": "white"}, "group": 1, "id": "ef6bfe65-7e12-4b65-9a46-982ac13d333b", "label": "Taux de rebond", "shape": "dot", "size": 5, "title": "Pourcentage d\u0027utilisateurs quittant un site apr\u00e8s avoir consult\u00e9 une seule page, indicatif de l\u0027engagement, de la pertinence du contenu et d\u0027un manque potentiel de satisfaction. Ce taux peut \u00e9galement \u00eatre influenc\u00e9 par des facteurs tels que la rapidit\u00e9 de chargement du site."}, {"font": {"color": "white"}, "group": 3, "id": "8217ad5333024525bdfdd890cf843cfb", "label": "mcq", "shape": "dot", "size": 5, "title": "Quel est un risque de ne pas adapter une campagne marketing aux mobiles ?"}, {"font": {"color": "white"}, "group": 3, "id": "9e3ba89c63394a6c8c392b12fed19cec", "label": "mcq", "shape": "dot", "size": 5, "title": "Quel est le retour sur investissement estim\u00e9 pour chaque dollar investi dans l\u0027UX ?"}, {"font": {"color": "white"}, "group": 3, "id": "dade9be9dad946cdbaa35072f5a2179c", "label": "mcq", "shape": "dot", "size": 5, "title": "Quel est l\u0027objectif principal des tests A/B mobile ?"}, {"font": {"color": "white"}, "group": 4, "id": "e90463e2623e45b7aa7f996dfc2579bc", "label": "fill_in", "shape": "dot", "size": 5, "title": "Les campagnes peuvent \u00eatre optimis\u00e9es en surveillant les performances via des outils \u003cblank\u003e qui analysent la navigation des utilisateurs mobiles et les taux de conversion."}, {"font": {"color": "white"}, "group": 5, "id": "486167e179c1429eacc12bb2005ff2e4", "label": "true_false", "shape": "dot", "size": 5, "title": "Les tests A/B permettent de tester diff\u00e9rentes approches marketing dans le but de comprendre ce qui fonctionne le mieux aupr\u00e8s des utilisateurs mobiles."}, {"font": {"color": "white"}, "group": 5, "id": "20f0c140b108422da73a48463484a150", "label": "true_false", "shape": "dot", "size": 5, "title": "Chaque dollar investi dans l\u0027exp\u00e9rience utilisateur (UX) peut rapporter entre 2 et 100 dollars."}, {"font": {"color": "white"}, "group": 2, "id": 13710, "label": "Qualit\u00e9 Web : Enjeux et Bonnes Pratiques", "shape": "dot", "size": 8, "title": "QUALITE-WEB-_C1"}, {"font": {"color": "white"}, "group": 1, "id": "6d35ed94-c063-4944-b49e-ccf41ccc7ff8", "label": "SEO (Search Engine Optimization)", "shape": "dot", "size": 9, "title": "Le SEO (Search Engine Optimization ou Optimisation pour les moteurs de recherche) et le r\u00e9f\u00e9rencement d\u00e9signent la m\u00eame pratique, qui consiste en un ensemble de techniques et de strat\u00e9gies visant \u00e0 optimiser le contenu, la structure et l\u0027accessibilit\u00e9 des sites web afin d\u0027am\u00e9liorer leur classement et leur visibilit\u00e9 organique dans les r\u00e9sultats naturels des moteurs de recherche. Cela inclut des pratiques telles que l\u0027optimisation pour les appareils mobiles, l\u0027utilisation de mots-cl\u00e9s pertinents, l\u0027am\u00e9lioration de l\u0027exp\u00e9rience utilisateur, la cr\u00e9ation de liens entrants, ainsi que d\u0027autres m\u00e9thodes permettant d\u0027attirer un trafic organique accru sans recourir \u00e0 des paiements directs. Le r\u00e9f\u00e9rencement naturel est essentiel pour rendre un site plus pertinent tant pour les utilisateurs que pour les moteurs de recherche, et il joue un r\u00f4le crucial dans la strat\u00e9gie marketing num\u00e9rique globale."}, {"font": {"color": "white"}, "group": 1, "id": "2a8f9382-3100-45d2-a220-a41f6cbc8ac4", "label": "Perception", "shape": "dot", "size": 5, "title": "La perception est la mani\u00e8re dont les utilisateurs interpr\u00e8tent et \u00e9valuent leur exp\u00e9rience avec un produit ou service, incluant la facilit\u00e9 d\u0027interaction et de navigation sur un site web. Elle refl\u00e8te l\u0027ensemble des impressions et jugements que les utilisateurs forment en fonction de leur interaction avec l\u0027interface, influen\u00e7ant ainsi leur satisfaction globale."}, {"font": {"color": "white"}, "group": 1, "id": "9639a3d5-c874-4c14-9acd-54637974eae7", "label": "Contenus", "shape": "dot", "size": 5, "title": "Les contenus d\u00e9signent la qualit\u00e9 et la pertinence des informations et m\u00e9dias pr\u00e9sent\u00e9s sur un site web, qui sont essentiels pour r\u00e9pondre aux besoins des utilisateurs, attirer et retenir leur attention."}, {"font": {"color": "white"}, "group": 1, "id": "656422e2-416e-4c93-b9be-40b3b147a2d9", "label": "Services", "shape": "dot", "size": 5, "title": "Qualit\u00e9 des interactions post-visite sur le site, influen\u00e7ant la satisfaction globale de l\u0027utilisateur."}, {"font": {"color": "white"}, "group": 1, "id": "287ef751-850a-45f8-8aea-12aa5b7582a2", "label": "Webmarketing", "shape": "dot", "size": 5, "title": "Le webmarketing d\u00e9signe l\u0027ensemble des techniques marketing appliqu\u00e9es sur Internet, incluant le mobile marketing, pour promouvoir efficacement des produits ou services et atteindre les utilisateurs mobiles."}, {"font": {"color": "white"}, "group": 5, "id": "6b8e1b603d2c4fa99ca7110cd586606d", "label": "true_false", "shape": "dot", "size": 5, "title": "Certains contenus de content marketing peuvent avoir une longue dur\u00e9e de vie et continuer \u00e0 g\u00e9n\u00e9rer du trafic vers le site web de l\u0027entreprise."}, {"font": {"color": "white"}, "group": 1, "id": "c39fe47c-99bf-4319-981d-05167bec6fe9", "label": "Performance", "shape": "dot", "size": 5, "title": "La performance d\u0027un site web, ou performance de site, d\u00e9signe la capacit\u00e9 d\u0027un site \u00e0 fonctionner efficacement sous diverses conditions. Cela inclut des aspects tels que la vitesse de chargement, l\u0027exp\u00e9rience utilisateur, le taux de conversion, le trafic, le SEO et l\u0027engagement utilisateur. Ces \u00e9l\u00e9ments sont essentiels pour optimiser la visibilit\u00e9 en ligne et influencer directement la satisfaction des utilisateurs dans un contexte num\u00e9rique."}, {"font": {"color": "white"}, "group": 1, "id": "97773262-3ef9-493f-8aea-44b4ef91a06d", "label": "Marketing", "shape": "dot", "size": 5, "title": "Discipline visant \u00e0 promouvoir et vendre des produits ou services, incluant des strat\u00e9gies comme le mass mailing, le suivi de campagnes sponsoris\u00e9es, ainsi que des techniques pour attirer et fid\u00e9liser les clients dans un environnement concurrentiel."}, {"font": {"color": "white"}, "group": 3, "id": "47e18ea434d1468fbf90431150106f5a", "label": "mcq", "shape": "dot", "size": 5, "title": "Quel est l\u0027objectif principal du r\u00e9f\u00e9rencement naturel (SEO) pour une entreprise ?"}, {"font": {"color": "white"}, "group": 3, "id": "5c606750887c4757b7d7e67a0202c610", "label": "mcq", "shape": "dot", "size": 5, "title": "Que doit faire une entreprise pour am\u00e9liorer son r\u00e9f\u00e9rencement SEO ?"}, {"font": {"color": "white"}, "group": 3, "id": "0c79cb0dbec84141bd9db5cb2edd85ee", "label": "mcq", "shape": "dot", "size": 5, "title": "Quel facteur, en plus de la s\u00e9mantique, am\u00e9liore naturellement la visibilit\u00e9 d\u0027un site web ?"}, {"font": {"color": "white"}, "group": 4, "id": "ef66e7f5ac7d4e3d9969152d5f9ab6ca", "label": "fill_in", "shape": "dot", "size": 5, "title": "Pour qu\u0027un site soit mieux positionn\u00e9 en fonction des recherches des utilisateurs, il est crucial de travailler sur \u003cblank\u003e pour utiliser les mots-cl\u00e9s ad\u00e9quats."}, {"font": {"color": "white"}, "group": 4, "id": "0593de3540794afa98abc64dd8df016a", "label": "fill_in", "shape": "dot", "size": 5, "title": "Le SEO permet d\u0027augmenter le trafic \u003cblank\u003e d\u0027un site web en optimisant sa visibilit\u00e9 dans les r\u00e9sultats de recherche non sponsoris\u00e9s."}, {"font": {"color": "white"}, "group": 5, "id": "cf17a86823ff45ca9015c1bd481c5c52", "label": "true_false", "shape": "dot", "size": 5, "title": "Le SEO est un processus rapide qui permet d\u0027obtenir des r\u00e9sultats imm\u00e9diats."}, {"font": {"color": "white"}, "group": 5, "id": "1ede30a3a3304374b0a8050a6236b341", "label": "true_false", "shape": "dot", "size": 5, "title": "Le nom de marque aide \u00e0 am\u00e9liorer le r\u00e9f\u00e9rencement naturel sur les moteurs de recherche."}, {"font": {"color": "white"}, "group": 5, "id": "3f048550008d42839cb0450f76db11d5", "label": "true_false", "shape": "dot", "size": 5, "title": "La production de contenu digital r\u00e9gulier est importante pour am\u00e9liorer le r\u00e9f\u00e9rencement et attirer de nouveaux clients."}, {"font": {"color": "white"}, "group": 1, "id": "64100396-f632-44ca-a036-4c0ae2f1cad6", "label": "E-qualit\u00e9", "shape": "dot", "size": 5, "title": "Capacit\u00e9 d\u0027un service en ligne \u00e0 r\u00e9pondre aux attentes et exigences des utilisateurs, essentielle pour la satisfaction client."}, {"font": {"color": "white"}, "group": 1, "id": "2a63a687-7848-4167-9417-76df9f1a5632", "label": "Principe de Pareto", "shape": "dot", "size": 5, "title": "\u00c9tabli par Vilfredo Pareto, le Principe de Pareto, \u00e9galement connu sous le nom de R\u00e8gle de Pareto (80/20), stipule que 80 % des effets proviennent de 20 % des causes. Ce concept statistique est largement appliqu\u00e9 dans divers domaines, y compris la priorisation des fonctionnalit\u00e9s et l\u0027optimisation du contenu web, pour identifier et se concentrer sur les \u00e9l\u00e9ments essentiels qui g\u00e9n\u00e8rent le plus d\u0027impact."}, {"font": {"color": "white"}, "group": 1, "id": "7c15d1a8-6a39-4bb9-b353-1112c86b8900", "label": "Communication digitale", "shape": "dot", "size": 5, "title": "\u00c9change d\u0027informations via des plateformes num\u00e9riques, n\u00e9cessitant une ergonomie adapt\u00e9e pour optimiser l\u0027interaction."}, {"font": {"color": "white"}, "group": 3, "id": "91612666f9a54904a19eb3493dc3499b", "label": "mcq", "shape": "dot", "size": 5, "title": "Quel pourcentage d\u0027utilisateurs est moins susceptible de retourner sur un site apr\u00e8s une mauvaise exp\u00e9rience ?"}, {"font": {"color": "white"}, "group": 3, "id": "a4bf5ac2a00a43fead862ca4ecbd2405", "label": "mcq", "shape": "dot", "size": 5, "title": "Que doit prendre en compte le design pour \u00eatre efficace dans ce contexte ?"}, {"font": {"color": "white"}, "group": 4, "id": "15aaf95744024038ac5c23a58c47e7ff", "label": "fill_in", "shape": "dot", "size": 5, "title": "Ne pas adapter correctement le contenu aux appareils mobiles peut entra\u00eener \u003cblank\u003e pour les utilisateurs."}, {"font": {"color": "white"}, "group": 4, "id": "a7ed5fd278444bf88b94b4a8dc1d34f9", "label": "fill_in", "shape": "dot", "size": 5, "title": "88% des utilisateurs sont moins susceptibles de retourner sur un site apr\u00e8s \u003cblank\u003e."}, {"font": {"color": "white"}, "group": 4, "id": "797d0dc52584422a9f1c6db583fb7134", "label": "fill_in", "shape": "dot", "size": 5, "title": "Le taux de rebond augmente de 32% lorsque le temps de chargement passe de \u003cblank\u003e secondes."}, {"font": {"color": "white"}, "group": 5, "id": "66ce7b152de44607970d26f764001f4b", "label": "true_false", "shape": "dot", "size": 5, "title": "Am\u00e9liorer l\u0027accessibilit\u00e9 d\u0027un site web permet d\u0027augmenter son trafic et ses conversions."}, {"font": {"color": "white"}, "group": 5, "id": "8575c3f03e7d4498b1eba5d752c95f42", "label": "true_false", "shape": "dot", "size": 5, "title": "Les \u00e9l\u00e9ments ergonomiques doivent \u00eatre s\u00e9lectionn\u00e9s en fonction de l\u0027\u00e9tude des usagers."}, {"font": {"color": "white"}, "group": 5, "id": "aad4c1e48aa8491aa7583ee04f54f1c1", "label": "true_false", "shape": "dot", "size": 5, "title": "Le client cherche uniquement une exp\u00e9rience d\u0027achat rapide et s\u00e9curis\u00e9e lorsqu\u0027il ach\u00e8te un produit en ligne."}, {"font": {"color": "white"}, "group": 5, "id": "e776ea599b374df29f25e4fa4a835445", "label": "true_false", "shape": "dot", "size": 5, "title": "88% des utilisateurs recommandent un site apr\u00e8s une mauvaise exp\u00e9rience."}, {"font": {"color": "white"}, "group": 5, "id": "6f88f17803bd475f9ae4ac2cdda992ab", "label": "true_false", "shape": "dot", "size": 5, "title": "Le taux de rebond augmente de 32% lorsque le temps de chargement passe de 1 \u00e0 2 secondes."}, {"font": {"color": "white"}, "group": 5, "id": "315cfc8b0c0a4c239408287509fd82a3", "label": "true_false", "shape": "dot", "size": 5, "title": "L\u0027ajout d\u0027animations est utilis\u00e9 uniquement pour rendre un site plus esth\u00e9tique, sans impact sur l\u0027exp\u00e9rience utilisateur."}, {"font": {"color": "white"}, "group": 5, "id": "5af9805f30b344e6988f400813071094", "label": "true_false", "shape": "dot", "size": 5, "title": "Pour \u00e9viter de perdre l\u0027utilisateur, il est essentiel de suivre des normes de clart\u00e9 et de coh\u00e9rence dans l\u0027interface."}, {"font": {"color": "white"}, "group": 5, "id": "c76032a02e6a4f45976fee77342cf113", "label": "true_false", "shape": "dot", "size": 5, "title": "Le design doit inclure l\u0027exp\u00e9rience utilisateur pour \u00eatre efficace."}, {"font": {"color": "white"}, "group": 5, "id": "237d060ac8a04e529f583f5e1347fc67", "label": "true_false", "shape": "dot", "size": 5, "title": "Le terme \u0027design\u0027 dans ce contexte signifie principalement \u0027cr\u00e9ation visuelle\u0027."}, {"font": {"color": "white"}, "group": 5, "id": "d76809cc290945e78447dc42776005c7", "label": "true_false", "shape": "dot", "size": 5, "title": "Les animations pr\u00e9sentes sur le site de Studio Brot jouent un r\u00f4le important dans l\u0027exp\u00e9rience utilisateur en maintenant son attention."}, {"font": {"color": "white"}, "group": 1, "id": "6023dfd6-ea81-45fa-aefa-6d1c4958f59a", "label": "Confiance du consommateur", "shape": "dot", "size": 5, "title": "Niveau de s\u00e9curit\u00e9 et de certitude ressenti par un consommateur envers une marque, un produit ou un service, influenc\u00e9 par la clart\u00e9 des informations et la simplicit\u00e9 des choix offerts, crucial pour encourager l\u0027achat et fid\u00e9liser."}, {"font": {"color": "white"}, "group": 1, "id": "ec55ef1f-c143-437e-bfde-cd949f81d42b", "label": "Conversion d\u0027action", "shape": "dot", "size": 5, "title": "Mesure du succ\u00e8s d\u0027une interaction sur un site web, souvent augment\u00e9e par le respect des principes ergonomiques."}, {"font": {"color": "white"}, "group": 1, "id": "a6b2b424-96d2-44e9-a1be-41569d34d757", "label": "M\u00e9triques", "shape": "dot", "size": 5, "title": "Les m\u00e9triques sont des mesures quantitatives des performances d\u0027un syst\u00e8me, essentielles pour l\u0027analyse et l\u0027optimisation."}, {"font": {"color": "white"}, "group": 1, "id": "25d8b085-b1a7-41fe-a903-4ee8101bb8c2", "label": "projets critiques", "shape": "dot", "size": 5, "title": "Initiatives essentielles au succ\u00e8s op\u00e9rationnel d\u0027une entreprise, n\u00e9cessitant une attention particuli\u00e8re en raison de leur impact potentiel sur les r\u00e9sultats financiers."}, {"font": {"color": "white"}, "group": 1, "id": "fb401322-f14a-43b2-84dd-a1a613750ca3", "label": "Logistique", "shape": "dot", "size": 5, "title": "Gestion des flux de biens, services et informations entre le point d\u0027origine et le point de consommation."}]);
+                  edges = new vis.DataSet([{"from": "290a7561-1e35-48ee-af31-7c444586dc44", "to": "c83cccdb-1327-40ed-9d33-daad4b57aaf0", "width": 1}, {"from": "e208c124-c2d4-43aa-b374-5e9653b2aad4", "to": 13609, "width": 1}, {"from": "e208c124-c2d4-43aa-b374-5e9653b2aad4", "to": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "width": 1}, {"from": "e208c124-c2d4-43aa-b374-5e9653b2aad4", "to": "d7224c6f-a919-460d-af12-6dfbeacde495", "width": 1}, {"from": "e208c124-c2d4-43aa-b374-5e9653b2aad4", "to": "bf9dcd29-03f3-4cd8-a076-8331895e019d", "width": 1}, {"from": "e208c124-c2d4-43aa-b374-5e9653b2aad4", "to": "ef6bfe65-7e12-4b65-9a46-982ac13d333b", "width": 1}, {"from": "e208c124-c2d4-43aa-b374-5e9653b2aad4", "to": "8217ad5333024525bdfdd890cf843cfb", "width": 1}, {"from": "e208c124-c2d4-43aa-b374-5e9653b2aad4", "to": "9e3ba89c63394a6c8c392b12fed19cec", "width": 1}, {"from": "e208c124-c2d4-43aa-b374-5e9653b2aad4", "to": "dade9be9dad946cdbaa35072f5a2179c", "width": 1}, {"from": "e208c124-c2d4-43aa-b374-5e9653b2aad4", "to": "e90463e2623e45b7aa7f996dfc2579bc", "width": 1}, {"from": "e208c124-c2d4-43aa-b374-5e9653b2aad4", "to": "486167e179c1429eacc12bb2005ff2e4", "width": 1}, {"from": "e208c124-c2d4-43aa-b374-5e9653b2aad4", "to": "20f0c140b108422da73a48463484a150", "width": 1}, {"from": "d7224c6f-a919-460d-af12-6dfbeacde495", "to": 13710, "width": 1}, {"from": "d7224c6f-a919-460d-af12-6dfbeacde495", "to": 13609, "width": 1}, {"from": "d7224c6f-a919-460d-af12-6dfbeacde495", "to": "6d35ed94-c063-4944-b49e-ccf41ccc7ff8", "width": 1}, {"from": "d7224c6f-a919-460d-af12-6dfbeacde495", "to": "2a8f9382-3100-45d2-a220-a41f6cbc8ac4", "width": 1}, {"from": "d7224c6f-a919-460d-af12-6dfbeacde495", "to": "9639a3d5-c874-4c14-9acd-54637974eae7", "width": 1}, {"from": "d7224c6f-a919-460d-af12-6dfbeacde495", "to": "656422e2-416e-4c93-b9be-40b3b147a2d9", "width": 1}, {"from": "d7224c6f-a919-460d-af12-6dfbeacde495", "to": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "width": 1}, {"from": "d7224c6f-a919-460d-af12-6dfbeacde495", "to": "287ef751-850a-45f8-8aea-12aa5b7582a2", "width": 1}, {"from": "d7224c6f-a919-460d-af12-6dfbeacde495", "to": "6b8e1b603d2c4fa99ca7110cd586606d", "width": 1}, {"from": "bf9dcd29-03f3-4cd8-a076-8331895e019d", "to": 13609, "width": 1}, {"from": "bf9dcd29-03f3-4cd8-a076-8331895e019d", "to": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "width": 1}, {"from": "bf9dcd29-03f3-4cd8-a076-8331895e019d", "to": "ef6bfe65-7e12-4b65-9a46-982ac13d333b", "width": 1}, {"from": "287ef751-850a-45f8-8aea-12aa5b7582a2", "to": 13710, "width": 1}, {"from": "287ef751-850a-45f8-8aea-12aa5b7582a2", "to": 13609, "width": 1}, {"from": "287ef751-850a-45f8-8aea-12aa5b7582a2", "to": "2a8f9382-3100-45d2-a220-a41f6cbc8ac4", "width": 1}, {"from": "287ef751-850a-45f8-8aea-12aa5b7582a2", "to": "6d35ed94-c063-4944-b49e-ccf41ccc7ff8", "width": 1}, {"from": "287ef751-850a-45f8-8aea-12aa5b7582a2", "to": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "width": 1}, {"from": "287ef751-850a-45f8-8aea-12aa5b7582a2", "to": "9639a3d5-c874-4c14-9acd-54637974eae7", "width": 1}, {"from": "6d35ed94-c063-4944-b49e-ccf41ccc7ff8", "to": 13710, "width": 1}, {"from": "6d35ed94-c063-4944-b49e-ccf41ccc7ff8", "to": 13609, "width": 1}, {"from": "6d35ed94-c063-4944-b49e-ccf41ccc7ff8", "to": "2a8f9382-3100-45d2-a220-a41f6cbc8ac4", "width": 1}, {"from": "6d35ed94-c063-4944-b49e-ccf41ccc7ff8", "to": "9639a3d5-c874-4c14-9acd-54637974eae7", "width": 1}, {"from": "6d35ed94-c063-4944-b49e-ccf41ccc7ff8", "to": "c39fe47c-99bf-4319-981d-05167bec6fe9", "width": 1}, {"from": "6d35ed94-c063-4944-b49e-ccf41ccc7ff8", "to": "97773262-3ef9-493f-8aea-44b4ef91a06d", "width": 1}, {"from": "6d35ed94-c063-4944-b49e-ccf41ccc7ff8", "to": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "width": 1}, {"from": "6d35ed94-c063-4944-b49e-ccf41ccc7ff8", "to": "47e18ea434d1468fbf90431150106f5a", "width": 1}, {"from": "6d35ed94-c063-4944-b49e-ccf41ccc7ff8", "to": "5c606750887c4757b7d7e67a0202c610", "width": 1}, {"from": "6d35ed94-c063-4944-b49e-ccf41ccc7ff8", "to": "0c79cb0dbec84141bd9db5cb2edd85ee", "width": 1}, {"from": "6d35ed94-c063-4944-b49e-ccf41ccc7ff8", "to": "ef66e7f5ac7d4e3d9969152d5f9ab6ca", "width": 1}, {"from": "6d35ed94-c063-4944-b49e-ccf41ccc7ff8", "to": "0593de3540794afa98abc64dd8df016a", "width": 1}, {"from": "6d35ed94-c063-4944-b49e-ccf41ccc7ff8", "to": "cf17a86823ff45ca9015c1bd481c5c52", "width": 1}, {"from": "6d35ed94-c063-4944-b49e-ccf41ccc7ff8", "to": "1ede30a3a3304374b0a8050a6236b341", "width": 1}, {"from": "6d35ed94-c063-4944-b49e-ccf41ccc7ff8", "to": "3f048550008d42839cb0450f76db11d5", "width": 1}, {"from": "64100396-f632-44ca-a036-4c0ae2f1cad6", "to": 13710, "width": 1}, {"from": "97773262-3ef9-493f-8aea-44b4ef91a06d", "to": 13710, "width": 1}, {"from": "97773262-3ef9-493f-8aea-44b4ef91a06d", "to": "c39fe47c-99bf-4319-981d-05167bec6fe9", "width": 1}, {"from": "97773262-3ef9-493f-8aea-44b4ef91a06d", "to": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "width": 1}, {"from": "2a8f9382-3100-45d2-a220-a41f6cbc8ac4", "to": 13710, "width": 1}, {"from": "2a8f9382-3100-45d2-a220-a41f6cbc8ac4", "to": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "width": 1}, {"from": "2a8f9382-3100-45d2-a220-a41f6cbc8ac4", "to": "656422e2-416e-4c93-b9be-40b3b147a2d9", "width": 1}, {"from": "2a8f9382-3100-45d2-a220-a41f6cbc8ac4", "to": "9639a3d5-c874-4c14-9acd-54637974eae7", "width": 1}, {"from": "2a63a687-7848-4167-9417-76df9f1a5632", "to": 13609, "width": 1}, {"from": "2a63a687-7848-4167-9417-76df9f1a5632", "to": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "width": 1}, {"from": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "to": 13710, "width": 1}, {"from": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "to": 13609, "width": 1}, {"from": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "to": "9639a3d5-c874-4c14-9acd-54637974eae7", "width": 1}, {"from": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "to": "c39fe47c-99bf-4319-981d-05167bec6fe9", "width": 1}, {"from": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "to": "7c15d1a8-6a39-4bb9-b353-1112c86b8900", "width": 1}, {"from": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "to": "ef6bfe65-7e12-4b65-9a46-982ac13d333b", "width": 1}, {"from": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "to": "8217ad5333024525bdfdd890cf843cfb", "width": 1}, {"from": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "to": "91612666f9a54904a19eb3493dc3499b", "width": 1}, {"from": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "to": "9e3ba89c63394a6c8c392b12fed19cec", "width": 1}, {"from": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "to": "a4bf5ac2a00a43fead862ca4ecbd2405", "width": 1}, {"from": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "to": "15aaf95744024038ac5c23a58c47e7ff", "width": 1}, {"from": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "to": "a7ed5fd278444bf88b94b4a8dc1d34f9", "width": 1}, {"from": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "to": "797d0dc52584422a9f1c6db583fb7134", "width": 1}, {"from": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "to": "66ce7b152de44607970d26f764001f4b", "width": 1}, {"from": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "to": "8575c3f03e7d4498b1eba5d752c95f42", "width": 1}, {"from": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "to": "aad4c1e48aa8491aa7583ee04f54f1c1", "width": 1}, {"from": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "to": "e776ea599b374df29f25e4fa4a835445", "width": 1}, {"from": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "to": "20f0c140b108422da73a48463484a150", "width": 1}, {"from": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "to": "6f88f17803bd475f9ae4ac2cdda992ab", "width": 1}, {"from": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "to": "315cfc8b0c0a4c239408287509fd82a3", "width": 1}, {"from": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "to": "5af9805f30b344e6988f400813071094", "width": 1}, {"from": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "to": "c76032a02e6a4f45976fee77342cf113", "width": 1}, {"from": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "to": "237d060ac8a04e529f583f5e1347fc67", "width": 1}, {"from": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "to": "d76809cc290945e78447dc42776005c7", "width": 1}, {"from": "6023dfd6-ea81-45fa-aefa-6d1c4958f59a", "to": 13609, "width": 1}, {"from": "ef6bfe65-7e12-4b65-9a46-982ac13d333b", "to": 13609, "width": 1}, {"from": "ef6bfe65-7e12-4b65-9a46-982ac13d333b", "to": "91612666f9a54904a19eb3493dc3499b", "width": 1}, {"from": "ef6bfe65-7e12-4b65-9a46-982ac13d333b", "to": "a7ed5fd278444bf88b94b4a8dc1d34f9", "width": 1}, {"from": "ef6bfe65-7e12-4b65-9a46-982ac13d333b", "to": "797d0dc52584422a9f1c6db583fb7134", "width": 1}, {"from": "ef6bfe65-7e12-4b65-9a46-982ac13d333b", "to": "e776ea599b374df29f25e4fa4a835445", "width": 1}, {"from": "ef6bfe65-7e12-4b65-9a46-982ac13d333b", "to": "6f88f17803bd475f9ae4ac2cdda992ab", "width": 1}, {"from": "c39fe47c-99bf-4319-981d-05167bec6fe9", "to": 13710, "width": 1}, {"from": "c39fe47c-99bf-4319-981d-05167bec6fe9", "to": "66ce7b152de44607970d26f764001f4b", "width": 1}, {"from": "656422e2-416e-4c93-b9be-40b3b147a2d9", "to": 13710, "width": 1}, {"from": "656422e2-416e-4c93-b9be-40b3b147a2d9", "to": "9639a3d5-c874-4c14-9acd-54637974eae7", "width": 1}, {"from": "9639a3d5-c874-4c14-9acd-54637974eae7", "to": 13710, "width": 1}, {"from": "47e18ea434d1468fbf90431150106f5a", "to": 13609, "width": 1}, {"from": "a4bf5ac2a00a43fead862ca4ecbd2405", "to": 13609, "width": 1}, {"from": "66ce7b152de44607970d26f764001f4b", "to": 13710, "width": 1}, {"from": "aad4c1e48aa8491aa7583ee04f54f1c1", "to": 13609, "width": 1}, {"from": "237d060ac8a04e529f583f5e1347fc67", "to": 13609, "width": 1}, {"from": "0593de3540794afa98abc64dd8df016a", "to": 13609, "width": 1}, {"from": "3f048550008d42839cb0450f76db11d5", "to": 13609, "width": 1}, {"from": "5af9805f30b344e6988f400813071094", "to": 13609, "width": 1}, {"from": "c76032a02e6a4f45976fee77342cf113", "to": 13609, "width": 1}, {"from": "6b8e1b603d2c4fa99ca7110cd586606d", "to": 13609, "width": 1}, {"from": "5c606750887c4757b7d7e67a0202c610", "to": 13609, "width": 1}, {"from": "0c79cb0dbec84141bd9db5cb2edd85ee", "to": 13609, "width": 1}, {"from": "ef66e7f5ac7d4e3d9969152d5f9ab6ca", "to": 13609, "width": 1}, {"from": "cf17a86823ff45ca9015c1bd481c5c52", "to": 13609, "width": 1}, {"from": "315cfc8b0c0a4c239408287509fd82a3", "to": 13609, "width": 1}, {"from": "d76809cc290945e78447dc42776005c7", "to": 13609, "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": true,
+        "filter": [
+            "physics"
+        ]
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "repulsion": {
+            "centralGravity": 0.33,
+            "damping": 0.95,
+            "nodeDistance": 420,
+            "springConstant": 0.1,
+            "springLength": 110
+        },
+        "solver": "repulsion",
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+                  // if this network requires displaying the configure window,
+                  // put it in its div
+                  options.configure["container"] = document.getElementById("config");
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>

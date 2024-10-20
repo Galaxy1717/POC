@@ -1,0 +1,178 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 800px;
+                 background-color: #222222;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+             #config {
+                 float: left;
+                 width: 400px;
+                 height: 600px;
+             }
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+            <div id="config"></div>
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"font": {"color": "white"}, "group": 1, "id": "6120606d-278e-4565-98b8-539617ffb076", "label": "M\u00e9dia temporel", "shape": "dot", "size": 5, "title": "Le m\u00e9dia temporel est un contenu multim\u00e9dia, tel que l\u0027audio ou la vid\u00e9o, qui se d\u00e9roule dans le temps et pr\u00e9sente des informations de mani\u00e8re chronologique. Ce type de m\u00e9dia inclut des \u00e9l\u00e9ments pr\u00e9-enregistr\u00e9s n\u00e9cessitant des adaptations pour garantir leur accessibilit\u00e9 \u00e0 tous les utilisateurs. Il peut \u00e9galement comprendre des vid\u00e9os et des animations qui exigent un contr\u00f4le utilisateur pour une consultation efficace, tout en pouvant \u00eatre synchronis\u00e9 avec d\u0027autres formats pour enrichir l\u0027information pr\u00e9sent\u00e9e. Utilis\u00e9 dans divers contextes, le m\u00e9dia temporel doit respecter des crit\u00e8res d\u0027accessibilit\u00e9 sp\u00e9cifiques afin de faciliter la communication d\u0027informations."}, {"font": {"color": "white"}, "group": 2, "id": 13708, "label": "Accessibilit\u00e9 Num\u00e9rique : R\u00e9f\u00e9rentiel G\u00e9n\u00e9ral d\u0027Am\u00e9lioration", "shape": "dot", "size": 8, "title": "RGAA - Re\u0301fe\u0301rentiel v4.1"}, {"font": {"color": "white"}, "group": 1, "id": "dd7f034e-b27f-4cf1-9fd4-44d97a868f5d", "label": "Transcription Textuelle Accessible", "shape": "dot", "size": 5, "title": "La transcription textuelle accessible est une repr\u00e9sentation \u00e9crite du contenu audio ou vid\u00e9o, permettant une compr\u00e9hension \u00e9quivalente de l\u0027information exprim\u00e9e oralement. Elle est essentielle pour garantir un acc\u00e8s universel aux informations, notamment pour les utilisateurs sourds ou malentendants, en leur permettant de comprendre le m\u00e9dia sans son. Cette forme de transcription joue un r\u00f4le crucial dans l\u0027accessibilit\u00e9 et la compr\u00e9hension des m\u00e9dias temporels."}, {"font": {"color": "white"}, "group": 1, "id": "086f5abc-b2a8-4ca0-b00a-caa301ddb7f0", "label": "Audiodescription synchronis\u00e9e", "shape": "dot", "size": 5, "title": "L\u0027audiodescription est une narration audio int\u00e9gr\u00e9e dans un contenu vid\u00e9o ou m\u00e9dia temporel qui d\u00e9crit les \u00e9l\u00e9ments visuels importants en temps r\u00e9el, facilitant l\u0027acc\u00e8s aux utilisateurs malvoyants en fournissant des informations contextuelles et descriptives synchronis\u00e9es avec le contenu visuel et audio pour am\u00e9liorer l\u0027accessibilit\u00e9. L\u0027audiodescription synchronis\u00e9e est une forme sp\u00e9cifique d\u0027audiodescription o\u00f9 la narration est parfaitement align\u00e9e avec les \u00e9v\u00e9nements visuels du m\u00e9dia."}, {"font": {"color": "white"}, "group": 1, "id": "f32d10f7-7645-4d69-92a6-747fd8ccbfca", "label": "Sous-titres synchronis\u00e9s", "shape": "dot", "size": 5, "title": "Texte affich\u00e9 \u00e0 l\u0027\u00e9cran qui correspond au dialogue audio d\u0027un m\u00e9dia, affich\u00e9 en temps r\u00e9el pour fournir des informations audio essentielles, crucial pour les utilisateurs sourds ou malentendants et pour la compr\u00e9hension g\u00e9n\u00e9rale du contenu."}, {"font": {"color": "white"}, "group": 1, "id": "9afb0643-e273-456d-8fd2-4ab13b0d8236", "label": "Contraste visuel", "shape": "dot", "size": 5, "title": "Le contraste visuel, ou ratio de contraste, d\u00e9signe la mesure de l\u0027opposition entre la luminosit\u00e9 ou la couleur d\u0027un \u00e9l\u00e9ment de premier plan et celle d\u0027un arri\u00e8re-plan. Ce contraste est essentiel pour garantir la lisibilit\u00e9 et l\u0027accessibilit\u00e9 des contenus num\u00e9riques sur les pages web et les interfaces visuelles, en particulier pour les utilisateurs ayant des d\u00e9ficiences visuelles. Il joue un r\u00f4le crucial dans l\u0027exp\u00e9rience utilisateur en assurant que le contenu soit facilement discernable par tous."}, {"font": {"color": "white"}, "group": 5, "id": "44b926d2b3d3403bbde2d6bf4f227f36", "label": "true_false", "shape": "dot", "size": 5, "title": "Toute fonctionnalit\u00e9 d\u0027un m\u00e9dia temporel doit toujours inclure une option d\u0027activation ou de d\u00e9sactivation du son."}, {"font": {"color": "white"}, "group": 5, "id": "1ba4425f80644e4d849adddc32277d74", "label": "true_false", "shape": "dot", "size": 5, "title": "Le m\u00e9dia temporel doit imp\u00e9rativement \u00eatre accompagn\u00e9 de sous-titres synchronis\u00e9s pour qu\u0027un contenu soit accessible."}, {"font": {"color": "white"}, "group": 1, "id": "a298f2fb-381c-404f-91a5-0c40e082808b", "label": "\u00c9l\u00e9ments graphiques", "shape": "dot", "size": 5, "title": "Les \u00e9l\u00e9ments graphiques, ou \u00e9l\u00e9ment graphique au singulier, sont des composants visuels utilis\u00e9s dans le design num\u00e9rique, comprenant des images, boutons, ic\u00f4nes, illustrations, motifs et typographie. Ils sont essentiels pour la communication visuelle et aident \u00e0 la compr\u00e9hension d\u0027informations complexes tout en influen\u00e7ant l\u0027interaction utilisateur au sein d\u0027une interface."}, {"font": {"color": "white"}, "group": 1, "id": "ba87e2a2-9229-4178-afc7-ff2a563c167f", "label": "Contr\u00f4le du son", "shape": "dot", "size": 5, "title": "M\u00e9canisme permettant \u00e0 l\u0027utilisateur d\u0027arr\u00eater ou de relancer un son, essentiel pour l\u0027accessibilit\u00e9 et le confort d\u0027utilisation des m\u00e9dias."}, {"font": {"color": "white"}, "group": 1, "id": "b83ad9fb-e58f-4695-866e-0f5df6193a1d", "label": "Consultation de m\u00e9dia temporel", "shape": "dot", "size": 5, "title": "Interaction avec des contenus multim\u00e9dias o\u00f9 l\u0027utilisateur peut contr\u00f4ler la lecture, pause, et activation du son, garantissant une exp\u00e9rience utilisateur optimale."}, {"font": {"color": "white"}, "group": 1, "id": "3f7470d7-442d-4922-9f23-70be2de8c8c8", "label": "Accessibilit\u00e9 des contenus visuels", "shape": "dot", "size": 5, "title": "L\u0027accessibilit\u00e9 des contenus visuels se r\u00e9f\u00e8re \u00e0 la fourniture de descriptions textuelles pour les images et \u00e9l\u00e9ments graphiques, permettant aux utilisateurs de technologies d\u0027assistance, comme les lecteurs d\u0027\u00e9cran, de comprendre le contenu visuel lorsque celui-ci ne peut pas \u00eatre affich\u00e9. Cela inclut l\u0027utilisation d\u0027attributs alternatifs en HTML qui d\u00e9crivent ces images, ainsi que la mise \u00e0 disposition de contenu ou fonctionnalit\u00e9s \u00e9quivalentes lorsque certaines conditions ne sont pas remplies, garantissant ainsi une accessibilit\u00e9 optimale."}, {"font": {"color": "white"}, "group": 1, "id": "8fc6d3ef-ef25-4986-9a69-a6b2300569d6", "label": "Balise \u003csvg\u003e", "shape": "dot", "size": 5, "title": "La balise \u003csvg\u003e (Scalable Vector Graphics) est un \u00e9l\u00e9ment HTML et un format graphique vectoriel bas\u00e9 sur XML utilis\u00e9 pour int\u00e9grer des graphiques vectoriels scalables dans le d\u00e9veloppement web. Elle permet de cr\u00e9er des images en deux dimensions \u00e0 l\u0027aide de balises XML, offrant une mise \u00e0 l\u0027\u00e9chelle sans perte de qualit\u00e9. En plus de sa capacit\u00e9 graphique, la balise \u003csvg\u003e prend en charge des consid\u00e9rations d\u0027accessibilit\u00e9, n\u00e9cessitant souvent une description textuelle pour garantir que les contenus graphiques soient accessibles \u00e0 tous les utilisateurs. La balise peut \u00e9galement contenir du texte alternatif via une balise \u003ctext\u003e, inclure des \u00e9l\u00e9ments d\u0027interactivit\u00e9, et supporter des liens via la balise \u003ca\u003e, enrichissant ainsi l\u0027exp\u00e9rience utilisateur."}, {"font": {"color": "white"}, "group": 1, "id": "35731d03-1f0f-45f7-9e26-a44b29a90f40", "label": "L\u00e9gende d\u0027image", "shape": "dot", "size": 5, "title": "Texte associ\u00e9 \u00e0 une image, fournissant des informations compl\u00e9mentaires ou contextuelles, essentiel pour l\u0027accessibilit\u00e9 et la compr\u00e9hension visuelle."}, {"font": {"color": "white"}, "group": 3, "id": "64bae4eda007470b8df20d2926b9e0b2", "label": "mcq", "shape": "dot", "size": 5, "title": "Dans quel cas une audiodescription suppl\u00e9mentaire n\u0027est-elle pas n\u00e9cessaire ?"}, {"font": {"color": "white"}, "group": 3, "id": "b5c56082236647349af33c8067ca8b38", "label": "mcq", "shape": "dot", "size": 5, "title": "Quel est le r\u00f4le principal de l\u0027audiodescription ajout\u00e9e \u00e0 un fichier sonore ?"}, {"font": {"color": "white"}, "group": 4, "id": "1e7fd3d84ca74fdda60070dd322e053c", "label": "fill_in", "shape": "dot", "size": 5, "title": "L\u0027audiodescription doit \u00eatre synchronis\u00e9e avec le m\u00e9dia temporel par un dispositif applicatif li\u00e9 au lecteur lui-m\u00eame ou fourni par le d\u00e9veloppement, par exemple \u00e0 l\u0027aide \u003cblank\u003e."}, {"font": {"color": "white"}, "group": 5, "id": "b3e57401533842d0be619dce4af41dfc", "label": "true_false", "shape": "dot", "size": 5, "title": "La condition de test doit garantir que la restitution est pertinente pour l\u0027accessibilit\u00e9."}, {"font": {"color": "white"}, "group": 5, "id": "08cf7912bdb5460d9f03b6081745246f", "label": "true_false", "shape": "dot", "size": 5, "title": "L\u0027audiodescription est toujours obligatoire, m\u00eame si toutes les informations de la vid\u00e9o sont d\u00e9j\u00e0 pr\u00e9sentes dans la piste audio."}, {"font": {"color": "white"}, "group": 5, "id": "3b3af59a3fa9427a8a632fc7dcb9958b", "label": "true_false", "shape": "dot", "size": 5, "title": "L\u0027audiodescription doit d\u00e9crire uniquement les d\u00e9tails visuels importants qui ne peuvent pas \u00eatre compris \u00e0 partir de la piste sonore principale."}, {"font": {"color": "white"}, "group": 4, "id": "7a9a0d8eaaca4a9eacdbd3f5cf15cd73", "label": "fill_in", "shape": "dot", "size": 5, "title": "Lorsqu\u0027une image est l\u00e9gend\u00e9e, il est important d\u0027associer la l\u00e9gende de l\u0027image \u00e0 l\u0027image par une relation de \u003cblank\u003e afin que les technologies d\u0027assistance puissent interpr\u00e9ter correctement cet ensemble."}, {"font": {"color": "white"}, "group": 1, "id": "00fa6735-f36a-4e35-b320-7cfbb0cfad71", "label": "Version audio seulement", "shape": "dot", "size": 5, "title": "Format audio d\u0027une vid\u00e9o qui transmet les informations visuelles essentielles, facilitant l\u0027acc\u00e8s \u00e0 l\u0027information pour les utilisateurs ne pouvant pas visualiser la vid\u00e9o."}, {"font": {"color": "white"}, "group": 3, "id": "3506bc0fa73340f583a57133ef4e98ff", "label": "mcq", "shape": "dot", "size": 5, "title": "Quelle solution WCAG juge acceptable pour faciliter l\u0027acc\u00e8s des vid\u00e9os aux personnes aveugles ?"}, {"font": {"color": "white"}, "group": 4, "id": "bd33333d206847669c1b3ea4a0d415ad", "label": "fill_in", "shape": "dot", "size": 5, "title": "Selon les recommandations pour l\u0027accessibilit\u00e9, une version \u003cblank\u003e est jug\u00e9e acceptable comme alternative \u00e0 une vid\u00e9o sans information sonore."}, {"font": {"color": "white"}, "group": 1, "id": "20b4ac97-a77b-42ff-9009-d5e918831173", "label": "image objet", "shape": "dot", "size": 5, "title": "Image int\u00e9gr\u00e9e via la balise \u003cobject\u003e, permettant d\u0027incorporer divers types de m\u00e9dias dans une page web."}, {"font": {"color": "white"}, "group": 1, "id": "4aa57e28-c865-4165-bb14-de12ca7b802e", "label": "Feedback utilisateur", "shape": "dot", "size": 5, "title": "R\u00e9ponse ou r\u00e9action fournie \u00e0 l\u0027utilisateur apr\u00e8s une action, essentielle pour am\u00e9liorer l\u0027interaction sur le site."}, {"font": {"color": "white"}, "group": 3, "id": "2f426f30fa264f6f94c2b738c0c0a2e0", "label": "mcq", "shape": "dot", "size": 5, "title": "Quels textes sont concern\u00e9s par la mesure de contraste selon les directives\u202f?"}, {"font": {"color": "white"}, "group": 1, "id": "16094e09-b367-4d50-b2f5-72c866d3c871", "label": "Clignotement", "shape": "dot", "size": 5, "title": "Le clignotement est un effet visuel o\u00f9 un \u00e9l\u00e9ment de contenu s\u0027allume et s\u0027\u00e9teint rapidement, servant \u00e0 alerter les utilisateurs, notamment ceux qui sont sourds, en signalant des notifications comme de nouveaux e-mails. Cependant, cette m\u00e9thode peut poser des probl\u00e8mes d\u0027accessibilit\u00e9 pour certains utilisateurs, car le clignotement rapide peut \u00eatre d\u00e9rangeant ou difficile \u00e0 percevoir."}, {"font": {"color": "white"}, "group": 5, "id": "7af5237a7a3843488b590b37b4f9161f", "label": "true_false", "shape": "dot", "size": 5, "title": "Une personne malentendante doit recevoir des informations uniquement visuelles pour \u00eatre avertie de l\u0027arriv\u00e9e d\u0027un nouvel email sur Mac OS X."}, {"font": {"color": "white"}, "group": 1, "id": "48bba813-b8f3-4880-8c8d-2fe08e1a5604", "label": "Vid\u00e9o \u00e9ducative", "shape": "dot", "size": 5, "title": "Support visuel utilis\u00e9 pour transmettre des connaissances, souvent utilis\u00e9 dans l\u0027apprentissage en ligne pour illustrer des concepts complexes."}]);
+                  edges = new vis.DataSet([{"from": "6120606d-278e-4565-98b8-539617ffb076", "to": 13708, "width": 1}, {"from": "6120606d-278e-4565-98b8-539617ffb076", "to": "dd7f034e-b27f-4cf1-9fd4-44d97a868f5d", "width": 1}, {"from": "6120606d-278e-4565-98b8-539617ffb076", "to": "086f5abc-b2a8-4ca0-b00a-caa301ddb7f0", "width": 1}, {"from": "6120606d-278e-4565-98b8-539617ffb076", "to": "f32d10f7-7645-4d69-92a6-747fd8ccbfca", "width": 1}, {"from": "6120606d-278e-4565-98b8-539617ffb076", "to": "9afb0643-e273-456d-8fd2-4ab13b0d8236", "width": 1}, {"from": "6120606d-278e-4565-98b8-539617ffb076", "to": "44b926d2b3d3403bbde2d6bf4f227f36", "width": 1}, {"from": "6120606d-278e-4565-98b8-539617ffb076", "to": "1ba4425f80644e4d849adddc32277d74", "width": 1}, {"from": "a298f2fb-381c-404f-91a5-0c40e082808b", "to": 13708, "width": 1}, {"from": "a298f2fb-381c-404f-91a5-0c40e082808b", "to": "9afb0643-e273-456d-8fd2-4ab13b0d8236", "width": 1}, {"from": "ba87e2a2-9229-4178-afc7-ff2a563c167f", "to": 13708, "width": 1}, {"from": "ba87e2a2-9229-4178-afc7-ff2a563c167f", "to": "086f5abc-b2a8-4ca0-b00a-caa301ddb7f0", "width": 1}, {"from": "ba87e2a2-9229-4178-afc7-ff2a563c167f", "to": "b83ad9fb-e58f-4695-866e-0f5df6193a1d", "width": 1}, {"from": "ba87e2a2-9229-4178-afc7-ff2a563c167f", "to": "44b926d2b3d3403bbde2d6bf4f227f36", "width": 1}, {"from": "b83ad9fb-e58f-4695-866e-0f5df6193a1d", "to": 13708, "width": 1}, {"from": "b83ad9fb-e58f-4695-866e-0f5df6193a1d", "to": "086f5abc-b2a8-4ca0-b00a-caa301ddb7f0", "width": 1}, {"from": "b83ad9fb-e58f-4695-866e-0f5df6193a1d", "to": "44b926d2b3d3403bbde2d6bf4f227f36", "width": 1}, {"from": "3f7470d7-442d-4922-9f23-70be2de8c8c8", "to": 13708, "width": 1}, {"from": "3f7470d7-442d-4922-9f23-70be2de8c8c8", "to": "8fc6d3ef-ef25-4986-9a69-a6b2300569d6", "width": 1}, {"from": "8fc6d3ef-ef25-4986-9a69-a6b2300569d6", "to": 13708, "width": 1}, {"from": "8fc6d3ef-ef25-4986-9a69-a6b2300569d6", "to": "35731d03-1f0f-45f7-9e26-a44b29a90f40", "width": 1}, {"from": "8fc6d3ef-ef25-4986-9a69-a6b2300569d6", "to": "086f5abc-b2a8-4ca0-b00a-caa301ddb7f0", "width": 1}, {"from": "086f5abc-b2a8-4ca0-b00a-caa301ddb7f0", "to": 13708, "width": 1}, {"from": "086f5abc-b2a8-4ca0-b00a-caa301ddb7f0", "to": "9afb0643-e273-456d-8fd2-4ab13b0d8236", "width": 1}, {"from": "086f5abc-b2a8-4ca0-b00a-caa301ddb7f0", "to": "dd7f034e-b27f-4cf1-9fd4-44d97a868f5d", "width": 1}, {"from": "086f5abc-b2a8-4ca0-b00a-caa301ddb7f0", "to": "f32d10f7-7645-4d69-92a6-747fd8ccbfca", "width": 1}, {"from": "086f5abc-b2a8-4ca0-b00a-caa301ddb7f0", "to": "64bae4eda007470b8df20d2926b9e0b2", "width": 1}, {"from": "086f5abc-b2a8-4ca0-b00a-caa301ddb7f0", "to": "b5c56082236647349af33c8067ca8b38", "width": 1}, {"from": "086f5abc-b2a8-4ca0-b00a-caa301ddb7f0", "to": "1e7fd3d84ca74fdda60070dd322e053c", "width": 1}, {"from": "086f5abc-b2a8-4ca0-b00a-caa301ddb7f0", "to": "b3e57401533842d0be619dce4af41dfc", "width": 1}, {"from": "086f5abc-b2a8-4ca0-b00a-caa301ddb7f0", "to": "08cf7912bdb5460d9f03b6081745246f", "width": 1}, {"from": "086f5abc-b2a8-4ca0-b00a-caa301ddb7f0", "to": "3b3af59a3fa9427a8a632fc7dcb9958b", "width": 1}, {"from": "086f5abc-b2a8-4ca0-b00a-caa301ddb7f0", "to": "1ba4425f80644e4d849adddc32277d74", "width": 1}, {"from": "f32d10f7-7645-4d69-92a6-747fd8ccbfca", "to": 13708, "width": 1}, {"from": "f32d10f7-7645-4d69-92a6-747fd8ccbfca", "to": "dd7f034e-b27f-4cf1-9fd4-44d97a868f5d", "width": 1}, {"from": "f32d10f7-7645-4d69-92a6-747fd8ccbfca", "to": "1ba4425f80644e4d849adddc32277d74", "width": 1}, {"from": "35731d03-1f0f-45f7-9e26-a44b29a90f40", "to": 13708, "width": 1}, {"from": "35731d03-1f0f-45f7-9e26-a44b29a90f40", "to": "7a9a0d8eaaca4a9eacdbd3f5cf15cd73", "width": 1}, {"from": "dd7f034e-b27f-4cf1-9fd4-44d97a868f5d", "to": 13708, "width": 1}, {"from": "dd7f034e-b27f-4cf1-9fd4-44d97a868f5d", "to": "00fa6735-f36a-4e35-b320-7cfbb0cfad71", "width": 1}, {"from": "dd7f034e-b27f-4cf1-9fd4-44d97a868f5d", "to": "9afb0643-e273-456d-8fd2-4ab13b0d8236", "width": 1}, {"from": "dd7f034e-b27f-4cf1-9fd4-44d97a868f5d", "to": "3506bc0fa73340f583a57133ef4e98ff", "width": 1}, {"from": "dd7f034e-b27f-4cf1-9fd4-44d97a868f5d", "to": "1ba4425f80644e4d849adddc32277d74", "width": 1}, {"from": "00fa6735-f36a-4e35-b320-7cfbb0cfad71", "to": 13708, "width": 1}, {"from": "00fa6735-f36a-4e35-b320-7cfbb0cfad71", "to": "3506bc0fa73340f583a57133ef4e98ff", "width": 1}, {"from": "00fa6735-f36a-4e35-b320-7cfbb0cfad71", "to": "bd33333d206847669c1b3ea4a0d415ad", "width": 1}, {"from": "20b4ac97-a77b-42ff-9009-d5e918831173", "to": 13708, "width": 1}, {"from": "9afb0643-e273-456d-8fd2-4ab13b0d8236", "to": 13708, "width": 1}, {"from": "9afb0643-e273-456d-8fd2-4ab13b0d8236", "to": "4aa57e28-c865-4165-bb14-de12ca7b802e", "width": 1}, {"from": "9afb0643-e273-456d-8fd2-4ab13b0d8236", "to": "2f426f30fa264f6f94c2b738c0c0a2e0", "width": 1}, {"from": "16094e09-b367-4d50-b2f5-72c866d3c871", "to": 13708, "width": 1}, {"from": "16094e09-b367-4d50-b2f5-72c866d3c871", "to": "7af5237a7a3843488b590b37b4f9161f", "width": 1}, {"from": "1ba4425f80644e4d849adddc32277d74", "to": 13708, "width": 1}, {"from": "b5c56082236647349af33c8067ca8b38", "to": 13708, "width": 1}, {"from": "b3e57401533842d0be619dce4af41dfc", "to": 13708, "width": 1}, {"from": "3b3af59a3fa9427a8a632fc7dcb9958b", "to": 13708, "width": 1}, {"from": "44b926d2b3d3403bbde2d6bf4f227f36", "to": 13708, "width": 1}, {"from": "64bae4eda007470b8df20d2926b9e0b2", "to": 13708, "width": 1}, {"from": "1e7fd3d84ca74fdda60070dd322e053c", "to": 13708, "width": 1}, {"from": "08cf7912bdb5460d9f03b6081745246f", "to": 13708, "width": 1}, {"from": "7a9a0d8eaaca4a9eacdbd3f5cf15cd73", "to": 13708, "width": 1}, {"from": "3506bc0fa73340f583a57133ef4e98ff", "to": 13708, "width": 1}, {"from": "bd33333d206847669c1b3ea4a0d415ad", "to": 13708, "width": 1}, {"from": "2f426f30fa264f6f94c2b738c0c0a2e0", "to": 13708, "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": true,
+        "filter": [
+            "physics"
+        ]
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "repulsion": {
+            "centralGravity": 0.33,
+            "damping": 0.95,
+            "nodeDistance": 420,
+            "springConstant": 0.1,
+            "springLength": 110
+        },
+        "solver": "repulsion",
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+                  // if this network requires displaying the configure window,
+                  // put it in its div
+                  options.configure["container"] = document.getElementById("config");
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>

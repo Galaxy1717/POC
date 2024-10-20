@@ -1,0 +1,178 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 800px;
+                 background-color: #222222;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+             #config {
+                 float: left;
+                 width: 400px;
+                 height: 600px;
+             }
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+            <div id="config"></div>
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"font": {"color": "white"}, "group": 1, "id": "bfb440a6-36cf-45b4-8f81-0a75095f6440", "label": "Base de donn\u00e9es", "shape": "dot", "size": 5, "title": "Syst\u00e8me organis\u00e9 permettant le stockage, la gestion et la r\u00e9cup\u00e9ration efficace d\u0027informations, essentiel pour les entreprises num\u00e9riques."}, {"font": {"color": "white"}, "group": 2, "id": 13609, "label": "Mathilde Vigneron : Designer Produit et Sp\u00e9cialiste en Marketing Mobile", "shape": "dot", "size": 8, "title": "_YNOV CONNECT_Mobil Marketing, user acquisition \u0026 mode\u0300les e\u0301conomique_B3 \u2013Commun Marcom"}, {"font": {"color": "white"}, "group": 1, "id": "dd43b734-1a0d-41f0-b166-e146f0f7a7c1", "label": "Analyse des donn\u00e9es", "shape": "dot", "size": 5, "title": "Processus d\u0027examen et d\u0027interpr\u00e9tation des donn\u00e9es collect\u00e9es pour optimiser les campagnes marketing et am\u00e9liorer le retour sur investissement."}, {"font": {"color": "white"}, "group": 1, "id": "e208c124-c2d4-43aa-b374-5e9653b2aad4", "label": "Taux de conversion", "shape": "dot", "size": 5, "title": "Le taux de conversion est le pourcentage d\u0027utilisateurs qui r\u00e9alisent une action souhait\u00e9e, comme un achat ou une inscription, apr\u00e8s avoir \u00e9t\u00e9 expos\u00e9s \u00e0 une campagne marketing sur un site web ou via des canaux mobiles. Cet indicateur cl\u00e9 de performance commerciale mesure l\u0027efficacit\u00e9 d\u0027une interface et peut \u00eatre influenc\u00e9 par divers facteurs, tels que l\u0027utilisation strat\u00e9gique des couleurs et d\u0027autres \u00e9l\u00e9ments de design UX. Il repr\u00e9sente donc la proportion de prospects qui deviennent clients suite \u00e0 leur interaction avec une offre."}, {"font": {"color": "white"}, "group": 1, "id": "417084bb-0812-4550-a4a3-09b5eb918f81", "label": "Carte de chaleur", "shape": "dot", "size": 5, "title": "Visualisation graphique montrant les zones d\u0027attention des utilisateurs, o\u00f9 les couleurs chaudes indiquent une forte concentration visuelle."}, {"font": {"color": "white"}, "group": 1, "id": "39b96e7e-7e80-4dc4-b75e-2747a01db106", "label": "Analyse utilisateur", "shape": "dot", "size": 5, "title": "M\u00e9thodologie visant \u00e0 comprendre le comportement et les pr\u00e9f\u00e9rences des utilisateurs lors de l\u0027interaction avec un produit ou service."}, {"font": {"color": "white"}, "group": 1, "id": "bf9dcd29-03f3-4cd8-a076-8331895e019d", "label": "KPI (Indicateurs Cl\u00e9s de Performance)", "shape": "dot", "size": 5, "title": "Les KPI, ou Indicateurs Cl\u00e9s de Performance, sont des mesures quantifiables utilis\u00e9es pour \u00e9valuer le succ\u00e8s et l\u0027efficacit\u00e9 d\u0027un produit, service ou strat\u00e9gie marketing. Ils jouent un r\u00f4le essentiel dans le suivi des performances des \u00e9quipes, notamment dans les objectifs DevOps, en facilitant la prise de d\u00e9cisions \u00e9clair\u00e9es et en permettant d\u0027ajuster les actions si n\u00e9cessaire."}, {"font": {"color": "white"}, "group": 1, "id": "37abfe62-0987-474f-a4f6-6c0c6763851b", "label": "Facteurs contextuels", "shape": "dot", "size": 5, "title": "\u00c9l\u00e9ments influen\u00e7ant le comportement des utilisateurs lors de leur interaction avec une application, tels que l\u0027environnement ou l\u0027\u00e9tat \u00e9motionnel."}, {"font": {"color": "white"}, "group": 1, "id": "e2e266d6-7055-4114-97fd-e9970b9e9fb5", "label": "Tutoriels", "shape": "dot", "size": 5, "title": "Ressources \u00e9ducatives en ligne, souvent sous forme de vid\u00e9os, visant \u00e0 enseigner des comp\u00e9tences sp\u00e9cifiques comme l\u0027utilisation de logiciels."}, {"font": {"color": "white"}, "group": 1, "id": "06d43efb-6cf6-407d-a21b-9e6b3dea35e1", "label": "Prototypage", "shape": "dot", "size": 5, "title": "Processus de cr\u00e9ation d\u0027une version pr\u00e9liminaire d\u0027un produit pour tester des concepts et fonctionnalit\u00e9s avant le d\u00e9veloppement final."}, {"font": {"color": "white"}, "group": 1, "id": "6d5d7744-04f9-4571-8296-6f2959eb74a4", "label": "Empathy Map", "shape": "dot", "size": 5, "title": "Outil visuel et collaboratif utilis\u00e9 en design UX pour comprendre les besoins, \u00e9motions et comportements des utilisateurs, en les classant selon quatre dimensions : ce qu\u0027ils disent, pensent, font et ressentent. Cet outil permet d\u0027identifier leurs pens\u00e9es afin d\u0027am\u00e9liorer leur exp\u00e9rience et l\u0027exp\u00e9rience client."}, {"font": {"color": "white"}, "group": 1, "id": "6aed7834-7355-4425-aefa-2667c144c7e3", "label": "Questions cl\u00e9s", "shape": "dot", "size": 5, "title": "Interrogations fondamentales utilis\u00e9es dans la carte d\u0027empathie pour explorer la perception du client sur son environnement, ses influences et ses \u00e9motions."}, {"font": {"color": "white"}, "group": 1, "id": "9254319f-9b6c-48fd-b195-1b9fdde90a3f", "label": "\u00c9tat d\u0027esprit de l\u0027utilisateur", "shape": "dot", "size": 5, "title": "R\u00e9flexion sur les sentiments, motivations et pr\u00e9occupations des clients qui influencent leur comportement d\u0027achat et leur interaction avec un produit ou service."}, {"font": {"color": "white"}, "group": 1, "id": "5a492283-28dd-4d14-8919-becc43892c23", "label": "Retour Client", "shape": "dot", "size": 5, "title": "Les retours clients, ou retour client, d\u00e9signent les commentaires et \u00e9valuations fournis par les clients sur leur exp\u00e9rience avec un produit ou service. Ces retours sont cruciaux pour ajuster et am\u00e9liorer l\u0027offre d\u0027une entreprise afin de mieux satisfaire la demande et r\u00e9pondre aux attentes des consommateurs."}, {"font": {"color": "white"}, "group": 1, "id": "9f3e6779-e99a-4220-aae2-e935850a4f20", "label": "Commentaire utilisateur", "shape": "dot", "size": 5, "title": "Retour d\u0027exp\u00e9rience et commentaires fournis par les utilisateurs concernant un produit ou service, incluant des retours sur les nouvelles fonctionnalit\u00e9s, essentiels pour l\u0027am\u00e9lioration continue du d\u00e9veloppement et de l\u0027exp\u00e9rience utilisateur."}, {"font": {"color": "white"}, "group": 1, "id": "86ac8608-5316-499b-ae23-e463770368b2", "label": "Exercice", "shape": "dot", "size": 5, "title": "Activit\u00e9 pratique visant \u00e0 am\u00e9liorer des comp\u00e9tences sp\u00e9cifiques, souvent utilis\u00e9e dans le cadre de l\u0027apprentissage ou de la formation."}, {"font": {"color": "white"}, "group": 1, "id": "89dc5ad3-03b3-4c54-b455-d75147f258bc", "label": "Apprentissage continu", "shape": "dot", "size": 5, "title": "L\u0027apprentissage continu fait r\u00e9f\u00e9rence au processus d\u0027am\u00e9lioration constante bas\u00e9 sur les retours d\u0027exp\u00e9rience et l\u0027analyse des interactions avec les utilisateurs."}, {"font": {"color": "white"}, "group": 1, "id": "388946a5-81d7-4e87-af55-4d73c9938c58", "label": "D\u00e9finition des contenus", "shape": "dot", "size": 5, "title": "Phase o\u00f9 l\u0027on \u00e9value la coh\u00e9rence des informations collect\u00e9es et on ajuste le contenu n\u00e9cessaire."}, {"font": {"color": "white"}, "group": 1, "id": "aff3b0a6-6beb-49ad-a459-1ed3face33f4", "label": "Labellisation", "shape": "dot", "size": 5, "title": "Attribution de noms aux groupes form\u00e9s, permettant d\u0027identifier les th\u00e8mes communs."}, {"font": {"color": "white"}, "group": 1, "id": "767d5fa7-61b0-47ad-9729-989ce54f1efb", "label": "Groupement", "shape": "dot", "size": 5, "title": "Processus de classification des cartes en groupes pertinents, facilitant l\u0027organisation des id\u00e9es."}, {"font": {"color": "white"}, "group": 1, "id": "ca6353ed-e504-408c-b929-3e77cf3a352a", "label": "Identification du persona", "shape": "dot", "size": 5, "title": "Processus de d\u00e9finition pr\u00e9cise des caract\u00e9ristiques d\u00e9mographiques et psychographiques d\u0027un client cible pour optimiser le ciblage marketing."}, {"font": {"color": "white"}, "group": 3, "id": "eb16c09edf4948668d1d7b7c09f6550e", "label": "mcq", "shape": "dot", "size": 5, "title": "Quel est l\u0027un des avantages de nommer un persona dans une entreprise ?"}, {"font": {"color": "white"}, "group": 3, "id": "365bfc9a44224356897c8857dcc2f294", "label": "mcq", "shape": "dot", "size": 5, "title": "Comment peut-on facilement identifier l\u0027appartenance d\u0027un persona \u00e0 des groupes sp\u00e9cifiques ?"}, {"font": {"color": "white"}, "group": 5, "id": "59bd00447ae049dcaa8fb3a65f79ec9b", "label": "true_false", "shape": "dot", "size": 5, "title": "Le fait de nommer un persona est seulement utile pour les personnes ext\u00e9rieures \u00e0 l\u0027entreprise."}, {"font": {"color": "white"}, "group": 5, "id": "045499ce4c994250ad71cd54404225bc", "label": "true_false", "shape": "dot", "size": 5, "title": "Il est possible de reconna\u00eetre l\u0027appartenance d\u0027un persona \u00e0 certains groupes en menant des interviews ou des enqu\u00eates."}, {"font": {"color": "white"}, "group": 1, "id": "a3821cd5-c87b-4013-9f0c-42b87d6a5cec", "label": "Parcours utilisateur (UX)", "shape": "dot", "size": 5, "title": "S\u00e9rie d\u0027\u00e9tapes qu\u0027un utilisateur suit lors de son interaction avec un produit ou service, en particulier sur un site web, visant \u00e0 optimiser la satisfaction, l\u0027engagement et la conversion."}, {"font": {"color": "white"}, "group": 1, "id": "6023dfd6-ea81-45fa-aefa-6d1c4958f59a", "label": "Confiance du consommateur", "shape": "dot", "size": 5, "title": "Niveau de s\u00e9curit\u00e9 et de certitude ressenti par un consommateur envers une marque, un produit ou un service, influenc\u00e9 par la clart\u00e9 des informations et la simplicit\u00e9 des choix offerts, crucial pour encourager l\u0027achat et fid\u00e9liser."}, {"font": {"color": "white"}, "group": 1, "id": "1e4e1442-6dcf-40b7-b597-67e0bcf4d818", "label": "Avis clients", "shape": "dot", "size": 5, "title": "Retours d\u0027exp\u00e9rience et opinions laiss\u00e9s par les consommateurs sur un produit ou service, influen\u00e7ant fortement la d\u00e9cision d\u0027achat des prospects gr\u00e2ce \u00e0 la confiance accord\u00e9e aux exp\u00e9riences des pairs."}, {"font": {"color": "white"}, "group": 1, "id": "fbe185ef-1d01-4874-a9f8-7fb60760d59a", "label": "Prospect", "shape": "dot", "size": 5, "title": "Individu ou entreprise potentiellement int\u00e9ress\u00e9 par un produit ou service, qui a manifest\u00e9 un int\u00e9r\u00eat mais n\u0027a pas encore effectu\u00e9 d\u0027achat."}, {"font": {"color": "white"}, "group": 3, "id": "36c3e84b4a1a49dfa1cbc9cfcbabfad5", "label": "mcq", "shape": "dot", "size": 5, "title": "Quel pourcentage de consommateurs trouvent les avis clients plus importants que les promotions ?"}, {"font": {"color": "white"}, "group": 3, "id": "0430240f3a3444f580a63d28661ee4cc", "label": "mcq", "shape": "dot", "size": 5, "title": "Quel r\u00f4le jouent les retours positifs des pairs dans le comportement des clients ?"}, {"font": {"color": "white"}, "group": 3, "id": "e8a0aed4c5bf4219aa7b1801d28a989e", "label": "mcq", "shape": "dot", "size": 5, "title": "Quel facteur est devenu d\u00e9terminant pour influencer un achat avec l\u0027essor du num\u00e9rique ?"}, {"font": {"color": "white"}, "group": 3, "id": "5ce2ecce04d343c38321a6452e318bea", "label": "mcq", "shape": "dot", "size": 5, "title": "Pourquoi les marques valorisent-elles autant les avis clients sur leurs sites ?"}, {"font": {"color": "white"}, "group": 4, "id": "cf7d88af929a447993b5a7c4d69c5290", "label": "fill_in", "shape": "dot", "size": 5, "title": "En phase de d\u00e9cision, 34 % des consommateurs accordent plus d\u0027importance aux avis clients qu\u0027aux \u003cblank\u003e."}, {"font": {"color": "white"}, "group": 4, "id": "94c877b753584e1e991d673194383f54", "label": "fill_in", "shape": "dot", "size": 5, "title": "Les marques utilisent les avis clients sur leur site internet principalement pour \u003cblank\u003e."}, {"font": {"color": "white"}, "group": 5, "id": "b13b60370eac4574aa85fba52924814e", "label": "true_false", "shape": "dot", "size": 5, "title": "34 % des consommateurs accordent plus d\u0027importance aux promotions qu\u0027aux avis clients en phase de d\u00e9cision d\u0027achat, selon American Express."}, {"font": {"color": "white"}, "group": 5, "id": "8f281e21c4494d1bb39e0f4412a8bdc9", "label": "true_false", "shape": "dot", "size": 5, "title": "Les clients se fient aux retours positifs des autres avant de prendre leur d\u00e9cision d\u0027achat."}, {"font": {"color": "white"}, "group": 5, "id": "b4fd212bf8d24cee9bc79531f95e7253", "label": "true_false", "shape": "dot", "size": 5, "title": "Les marques int\u00e8grent les avis clients sur leurs sites internet pour am\u00e9liorer leurs ventes."}, {"font": {"color": "white"}, "group": 1, "id": "24df182e-5fb8-483d-b5eb-19f54f320779", "label": "Besoins des utilisateurs", "shape": "dot", "size": 5, "title": "Exigences fondamentales que les utilisateurs attendent d\u0027un produit ou service pour r\u00e9pondre \u00e0 leurs attentes et am\u00e9liorer leur exp\u00e9rience."}, {"font": {"color": "white"}, "group": 3, "id": "a4bf5ac2a00a43fead862ca4ecbd2405", "label": "mcq", "shape": "dot", "size": 5, "title": "Que doit prendre en compte le design pour \u00eatre efficace dans ce contexte ?"}, {"font": {"color": "white"}, "group": 1, "id": "5563d6ee-f385-4162-9b8f-46d4096bb64e", "label": "Tobii Eyeglasses", "shape": "dot", "size": 5, "title": "Lunettes \u00e9quip\u00e9es de technologie d\u0027eyetracking d\u00e9velopp\u00e9e par Tobii, utilis\u00e9es pour capturer les donn\u00e9es de regard lors d\u0027\u00e9tudes comportementales."}, {"font": {"color": "white"}, "group": 1, "id": "2809c031-7d12-4984-9211-55ce163967ce", "label": "Cr\u00e9ation du dossier", "shape": "dot", "size": 5, "title": "Rassemblement organis\u00e9 d\u0027informations ou documents n\u00e9cessaires pour pr\u00e9senter un projet ou une proposition formelle."}, {"font": {"color": "white"}, "group": 1, "id": "53e06a2d-caf6-4629-a658-09ac86bdbd5a", "label": "Lisibilit\u00e9", "shape": "dot", "size": 5, "title": "La lisibilit\u00e9, ou lisibilit\u00e9 du contenu, est la facilit\u00e9 avec laquelle un texte peut \u00eatre lu et compris. Elle est essentielle pour une communication efficace sur diff\u00e9rents dispositifs, notamment en design graphique. La lisibilit\u00e9 est influenc\u00e9e par divers facteurs tels que la taille de la police, le contraste des couleurs, l\u0027espacement entre les \u00e9l\u00e9ments graphiques, l\u0027alignement et l\u0027utilisation d\u0027espaces blancs. Elle joue un r\u00f4le cl\u00e9 dans la cr\u00e9ation de documents clairs et attrayants, facilitant ainsi l\u0027engagement du lecteur."}, {"font": {"color": "white"}, "group": 1, "id": "da3c70c0-38f0-4759-9c6c-5ac62646191e", "label": "Benchmark concurrentiel UX", "shape": "dot", "size": 5, "title": "Analyse comparative de l\u0027exp\u00e9rience utilisateur entre diff\u00e9rentes applications concurrentes, permettant d\u0027identifier les meilleures pratiques et opportunit\u00e9s d\u0027am\u00e9lioration."}, {"font": {"color": "white"}, "group": 1, "id": "a2a0ebd0-cf46-4f46-84ed-4ca0899c5e28", "label": "Analytique mobile", "shape": "dot", "size": 5, "title": "Outils permettant d\u0027analyser les performances marketing sur mobile, incluant le suivi des comportements et taux de conversion."}]);
+                  edges = new vis.DataSet([{"from": "bfb440a6-36cf-45b4-8f81-0a75095f6440", "to": 13609, "width": 1}, {"from": "dd43b734-1a0d-41f0-b166-e146f0f7a7c1", "to": "e208c124-c2d4-43aa-b374-5e9653b2aad4", "width": 1}, {"from": "417084bb-0812-4550-a4a3-09b5eb918f81", "to": 13609, "width": 1}, {"from": "417084bb-0812-4550-a4a3-09b5eb918f81", "to": "39b96e7e-7e80-4dc4-b75e-2747a01db106", "width": 1}, {"from": "e208c124-c2d4-43aa-b374-5e9653b2aad4", "to": 13609, "width": 1}, {"from": "e208c124-c2d4-43aa-b374-5e9653b2aad4", "to": "bf9dcd29-03f3-4cd8-a076-8331895e019d", "width": 1}, {"from": "e208c124-c2d4-43aa-b374-5e9653b2aad4", "to": "37abfe62-0987-474f-a4f6-6c0c6763851b", "width": 1}, {"from": "e2e266d6-7055-4114-97fd-e9970b9e9fb5", "to": 13609, "width": 1}, {"from": "e2e266d6-7055-4114-97fd-e9970b9e9fb5", "to": "06d43efb-6cf6-407d-a21b-9e6b3dea35e1", "width": 1}, {"from": "6d5d7744-04f9-4571-8296-6f2959eb74a4", "to": 13609, "width": 1}, {"from": "6d5d7744-04f9-4571-8296-6f2959eb74a4", "to": "6aed7834-7355-4425-aefa-2667c144c7e3", "width": 1}, {"from": "6d5d7744-04f9-4571-8296-6f2959eb74a4", "to": "9254319f-9b6c-48fd-b195-1b9fdde90a3f", "width": 1}, {"from": "6d5d7744-04f9-4571-8296-6f2959eb74a4", "to": "5a492283-28dd-4d14-8919-becc43892c23", "width": 1}, {"from": "9f3e6779-e99a-4220-aae2-e935850a4f20", "to": 13609, "width": 1}, {"from": "9f3e6779-e99a-4220-aae2-e935850a4f20", "to": "86ac8608-5316-499b-ae23-e463770368b2", "width": 1}, {"from": "89dc5ad3-03b3-4c54-b455-d75147f258bc", "to": 13609, "width": 1}, {"from": "388946a5-81d7-4e87-af55-4d73c9938c58", "to": 13609, "width": 1}, {"from": "388946a5-81d7-4e87-af55-4d73c9938c58", "to": "aff3b0a6-6beb-49ad-a459-1ed3face33f4", "width": 1}, {"from": "388946a5-81d7-4e87-af55-4d73c9938c58", "to": "767d5fa7-61b0-47ad-9729-989ce54f1efb", "width": 1}, {"from": "5a492283-28dd-4d14-8919-becc43892c23", "to": 13609, "width": 1}, {"from": "bf9dcd29-03f3-4cd8-a076-8331895e019d", "to": 13609, "width": 1}, {"from": "bf9dcd29-03f3-4cd8-a076-8331895e019d", "to": "37abfe62-0987-474f-a4f6-6c0c6763851b", "width": 1}, {"from": "aff3b0a6-6beb-49ad-a459-1ed3face33f4", "to": 13609, "width": 1}, {"from": "aff3b0a6-6beb-49ad-a459-1ed3face33f4", "to": "767d5fa7-61b0-47ad-9729-989ce54f1efb", "width": 1}, {"from": "ca6353ed-e504-408c-b929-3e77cf3a352a", "to": 13609, "width": 1}, {"from": "ca6353ed-e504-408c-b929-3e77cf3a352a", "to": "eb16c09edf4948668d1d7b7c09f6550e", "width": 1}, {"from": "ca6353ed-e504-408c-b929-3e77cf3a352a", "to": "365bfc9a44224356897c8857dcc2f294", "width": 1}, {"from": "ca6353ed-e504-408c-b929-3e77cf3a352a", "to": "59bd00447ae049dcaa8fb3a65f79ec9b", "width": 1}, {"from": "ca6353ed-e504-408c-b929-3e77cf3a352a", "to": "045499ce4c994250ad71cd54404225bc", "width": 1}, {"from": "a3821cd5-c87b-4013-9f0c-42b87d6a5cec", "to": 13609, "width": 1}, {"from": "86ac8608-5316-499b-ae23-e463770368b2", "to": 13609, "width": 1}, {"from": "6023dfd6-ea81-45fa-aefa-6d1c4958f59a", "to": 13609, "width": 1}, {"from": "6aed7834-7355-4425-aefa-2667c144c7e3", "to": 13609, "width": 1}, {"from": "6aed7834-7355-4425-aefa-2667c144c7e3", "to": "9254319f-9b6c-48fd-b195-1b9fdde90a3f", "width": 1}, {"from": "39b96e7e-7e80-4dc4-b75e-2747a01db106", "to": 13609, "width": 1}, {"from": "1e4e1442-6dcf-40b7-b597-67e0bcf4d818", "to": 13609, "width": 1}, {"from": "1e4e1442-6dcf-40b7-b597-67e0bcf4d818", "to": "fbe185ef-1d01-4874-a9f8-7fb60760d59a", "width": 1}, {"from": "1e4e1442-6dcf-40b7-b597-67e0bcf4d818", "to": "36c3e84b4a1a49dfa1cbc9cfcbabfad5", "width": 1}, {"from": "1e4e1442-6dcf-40b7-b597-67e0bcf4d818", "to": "0430240f3a3444f580a63d28661ee4cc", "width": 1}, {"from": "1e4e1442-6dcf-40b7-b597-67e0bcf4d818", "to": "e8a0aed4c5bf4219aa7b1801d28a989e", "width": 1}, {"from": "1e4e1442-6dcf-40b7-b597-67e0bcf4d818", "to": "5ce2ecce04d343c38321a6452e318bea", "width": 1}, {"from": "1e4e1442-6dcf-40b7-b597-67e0bcf4d818", "to": "cf7d88af929a447993b5a7c4d69c5290", "width": 1}, {"from": "1e4e1442-6dcf-40b7-b597-67e0bcf4d818", "to": "94c877b753584e1e991d673194383f54", "width": 1}, {"from": "1e4e1442-6dcf-40b7-b597-67e0bcf4d818", "to": "b13b60370eac4574aa85fba52924814e", "width": 1}, {"from": "1e4e1442-6dcf-40b7-b597-67e0bcf4d818", "to": "8f281e21c4494d1bb39e0f4412a8bdc9", "width": 1}, {"from": "1e4e1442-6dcf-40b7-b597-67e0bcf4d818", "to": "b4fd212bf8d24cee9bc79531f95e7253", "width": 1}, {"from": "767d5fa7-61b0-47ad-9729-989ce54f1efb", "to": 13609, "width": 1}, {"from": "24df182e-5fb8-483d-b5eb-19f54f320779", "to": 13609, "width": 1}, {"from": "24df182e-5fb8-483d-b5eb-19f54f320779", "to": "a4bf5ac2a00a43fead862ca4ecbd2405", "width": 1}, {"from": "9254319f-9b6c-48fd-b195-1b9fdde90a3f", "to": 13609, "width": 1}, {"from": "5563d6ee-f385-4162-9b8f-46d4096bb64e", "to": 13609, "width": 1}, {"from": "2809c031-7d12-4984-9211-55ce163967ce", "to": 13609, "width": 1}, {"from": "53e06a2d-caf6-4629-a658-09ac86bdbd5a", "to": 13609, "width": 1}, {"from": "fbe185ef-1d01-4874-a9f8-7fb60760d59a", "to": 13609, "width": 1}, {"from": "fbe185ef-1d01-4874-a9f8-7fb60760d59a", "to": "5ce2ecce04d343c38321a6452e318bea", "width": 1}, {"from": "fbe185ef-1d01-4874-a9f8-7fb60760d59a", "to": "94c877b753584e1e991d673194383f54", "width": 1}, {"from": "06d43efb-6cf6-407d-a21b-9e6b3dea35e1", "to": 13609, "width": 1}, {"from": "da3c70c0-38f0-4759-9c6c-5ac62646191e", "to": 13609, "width": 1}, {"from": "37abfe62-0987-474f-a4f6-6c0c6763851b", "to": 13609, "width": 1}, {"from": "5ce2ecce04d343c38321a6452e318bea", "to": 13609, "width": 1}, {"from": "94c877b753584e1e991d673194383f54", "to": 13609, "width": 1}, {"from": "b13b60370eac4574aa85fba52924814e", "to": 13609, "width": 1}, {"from": "365bfc9a44224356897c8857dcc2f294", "to": 13609, "width": 1}, {"from": "59bd00447ae049dcaa8fb3a65f79ec9b", "to": 13609, "width": 1}, {"from": "a4bf5ac2a00a43fead862ca4ecbd2405", "to": 13609, "width": 1}, {"from": "eb16c09edf4948668d1d7b7c09f6550e", "to": 13609, "width": 1}, {"from": "045499ce4c994250ad71cd54404225bc", "to": 13609, "width": 1}, {"from": "36c3e84b4a1a49dfa1cbc9cfcbabfad5", "to": 13609, "width": 1}, {"from": "0430240f3a3444f580a63d28661ee4cc", "to": 13609, "width": 1}, {"from": "e8a0aed4c5bf4219aa7b1801d28a989e", "to": 13609, "width": 1}, {"from": "cf7d88af929a447993b5a7c4d69c5290", "to": 13609, "width": 1}, {"from": "8f281e21c4494d1bb39e0f4412a8bdc9", "to": 13609, "width": 1}, {"from": "b4fd212bf8d24cee9bc79531f95e7253", "to": 13609, "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": true,
+        "filter": [
+            "physics"
+        ]
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "repulsion": {
+            "centralGravity": 0.33,
+            "damping": 0.95,
+            "nodeDistance": 420,
+            "springConstant": 0.1,
+            "springLength": 110
+        },
+        "solver": "repulsion",
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+                  // if this network requires displaying the configure window,
+                  // put it in its div
+                  options.configure["container"] = document.getElementById("config");
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>

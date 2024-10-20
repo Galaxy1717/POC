@@ -1,0 +1,178 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 800px;
+                 background-color: #222222;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+             #config {
+                 float: left;
+                 width: 400px;
+                 height: 600px;
+             }
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+            <div id="config"></div>
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"font": {"color": "white"}, "group": 1, "id": "e44741eb-3c1c-48d8-b46e-7d408e88cd58", "label": "Consultation d\u0027actualit\u00e9s en ligne", "shape": "dot", "size": 5, "title": "Pratique croissante o\u00f9 les individus utilisent les r\u00e9seaux sociaux comme principales sources d\u0027information, transformant le paysage m\u00e9diatique traditionnel."}, {"font": {"color": "white"}, "group": 2, "id": 13609, "label": "Mathilde Vigneron : Designer Produit et Sp\u00e9cialiste en Marketing Mobile", "shape": "dot", "size": 8, "title": "_YNOV CONNECT_Mobil Marketing, user acquisition \u0026 mode\u0300les e\u0301conomique_B3 \u2013Commun Marcom"}, {"font": {"color": "white"}, "group": 1, "id": "338ccd27-cd96-47f9-a433-9d1c2484b141", "label": "R\u00e9seaux sociaux", "shape": "dot", "size": 5, "title": "R\u00e9seaux sociaux sont des plateformes num\u00e9riques en ligne qui permettent aux utilisateurs d\u0027interagir, de partager du contenu et de se connecter entre eux et avec des marques. Ces plateformes jouent un r\u00f4le crucial dans le marketing moderne, favorisant l\u0027engagement des utilisateurs et la fid\u00e9lisation des clients, tout en connaissant une croissance exponentielle d\u0027utilisateurs \u00e0 travers le monde."}, {"font": {"color": "white"}, "group": 1, "id": "a2b8f5cf-f178-4fb2-8e06-9894547e7652", "label": "M\u00e9dias en ligne", "shape": "dot", "size": 5, "title": "Plateformes num\u00e9riques comme les r\u00e9seaux sociaux (Facebook, Instagram) permettant une interaction directe avec l\u0027audience."}, {"font": {"color": "white"}, "group": 1, "id": "b7ceafcb-848e-4b47-8fca-c4ed65366c70", "label": "M\u00e9dias traditionnels", "shape": "dot", "size": 5, "title": "Supports de communication classiques tels que la t\u00e9l\u00e9vision, la radio et la presse \u00e9crite, utilis\u00e9s pour atteindre un large public."}, {"font": {"color": "white"}, "group": 1, "id": "f8f563ff-6ec9-4520-b03e-da9a48ab1773", "label": "Canaux de communication", "shape": "dot", "size": 5, "title": "M\u00e9dias et moyens par lesquels une entreprise atteint son audience cible et transmet des messages marketing, incluant \u00e0 la fois les m\u00e9dias traditionnels (tels que la t\u00e9l\u00e9vision, la radio, et les journaux) et num\u00e9riques (comme les sites web, les emails, et les r\u00e9seaux sociaux)."}, {"font": {"color": "white"}, "group": 1, "id": "7adda1c3-151f-487e-b8e4-5c72c5b16153", "label": "Contenu digital", "shape": "dot", "size": 5, "title": "Informations sous forme \u00e9crite ou visuelle diffus\u00e9es en ligne, jouant un r\u00f4le cl\u00e9 dans l\u0027attraction et l\u0027engagement des clients potentiels."}, {"font": {"color": "white"}, "group": 1, "id": "a1944013-01a5-459d-9bd0-a14620e118cc", "label": "S\u00e9mantique", "shape": "dot", "size": 5, "title": "\u00c9tude du sens des mots et expressions utilis\u00e9s dans le contenu digital, essentielle pour optimiser le r\u00e9f\u00e9rencement naturel."}, {"font": {"color": "white"}, "group": 1, "id": "6d5d7744-04f9-4571-8296-6f2959eb74a4", "label": "Empathy Map", "shape": "dot", "size": 5, "title": "Outil visuel et collaboratif utilis\u00e9 en design UX pour comprendre les besoins, \u00e9motions et comportements des utilisateurs, en les classant selon quatre dimensions : ce qu\u0027ils disent, pensent, font et ressentent. Cet outil permet d\u0027identifier leurs pens\u00e9es afin d\u0027am\u00e9liorer leur exp\u00e9rience et l\u0027exp\u00e9rience client."}, {"font": {"color": "white"}, "group": 1, "id": "6aed7834-7355-4425-aefa-2667c144c7e3", "label": "Questions cl\u00e9s", "shape": "dot", "size": 5, "title": "Interrogations fondamentales utilis\u00e9es dans la carte d\u0027empathie pour explorer la perception du client sur son environnement, ses influences et ses \u00e9motions."}, {"font": {"color": "white"}, "group": 1, "id": "388946a5-81d7-4e87-af55-4d73c9938c58", "label": "D\u00e9finition des contenus", "shape": "dot", "size": 5, "title": "Phase o\u00f9 l\u0027on \u00e9value la coh\u00e9rence des informations collect\u00e9es et on ajuste le contenu n\u00e9cessaire."}, {"font": {"color": "white"}, "group": 1, "id": "e2e266d6-7055-4114-97fd-e9970b9e9fb5", "label": "Tutoriels", "shape": "dot", "size": 5, "title": "Ressources \u00e9ducatives en ligne, souvent sous forme de vid\u00e9os, visant \u00e0 enseigner des comp\u00e9tences sp\u00e9cifiques comme l\u0027utilisation de logiciels."}, {"font": {"color": "white"}, "group": 1, "id": "20e11c25-aeaf-421e-8f29-37fbb525f548", "label": "Utilisation d\u0027Internet", "shape": "dot", "size": 5, "title": "Fr\u00e9quence et mani\u00e8re dont les utilisateurs interagissent avec le web, en augmentation notable sur les appareils mobiles depuis 2021."}, {"font": {"color": "white"}, "group": 1, "id": "a21faec3-d32a-4c71-91f4-aefc4c598939", "label": "Communication Visuelle", "shape": "dot", "size": 5, "title": "La communication visuelle englobe l\u0027utilisation coh\u00e9rente de supports graphiques, tels que affiches, brochures et contenus num\u00e9riques, pour transmettre des messages ou informations. Elle joue un r\u00f4le cl\u00e9 dans le marketing et l\u0027identit\u00e9 de marque en influen\u00e7ant les perceptions des consommateurs \u00e0 travers des \u00e9l\u00e9ments graphiques, couleurs et images. De plus, elle inclut la communication avec le client, un processus d\u0027interaction essentiel pour \u00e9tablir une compr\u00e9hension mutuelle entre professionnels et clients, garantissant ainsi la r\u00e9ussite d\u0027un projet."}, {"font": {"color": "white"}, "group": 1, "id": "b98cc38b-e8fc-4a81-9b12-cd74415bfe33", "label": "Typographie", "shape": "dot", "size": 5, "title": "La typographie et les typographies d\u00e9signent l\u0027art et la technique de conception, disposition et arrangement des caract\u00e8res \u00e9crits, englobant les styles de caract\u00e8res utilis\u00e9s dans le design graphique. Elles influencent non seulement l\u0027esth\u00e9tique et la lisibilit\u00e9 d\u0027un projet visuel, mais jouent \u00e9galement un r\u00f4le crucial dans la communication visuelle, l\u0027identit\u00e9 de marque ainsi que sur les interfaces num\u00e9riques, les sites web et le design graphique. La typographie est essentielle dans la cr\u00e9ation d\u0027une charte graphique pour assurer une coh\u00e9rence visuelle et une exp\u00e9rience utilisateur optimale."}, {"font": {"color": "white"}, "group": 1, "id": "fede3a96-f073-484e-8b37-7c9abb196f1f", "label": "The New Yorker", "shape": "dot", "size": 5, "title": "The New Yorker est un magazine am\u00e9ricain r\u00e9put\u00e9 pour son journalisme approfondi, ses critiques culturelles et ses essais litt\u00e9raires."}, {"font": {"color": "white"}, "group": 1, "id": "2809c031-7d12-4984-9211-55ce163967ce", "label": "Cr\u00e9ation du dossier", "shape": "dot", "size": 5, "title": "Rassemblement organis\u00e9 d\u0027informations ou documents n\u00e9cessaires pour pr\u00e9senter un projet ou une proposition formelle."}, {"font": {"color": "white"}, "group": 4, "id": "ef66e7f5ac7d4e3d9969152d5f9ab6ca", "label": "fill_in", "shape": "dot", "size": 5, "title": "Pour qu\u0027un site soit mieux positionn\u00e9 en fonction des recherches des utilisateurs, il est crucial de travailler sur \u003cblank\u003e pour utiliser les mots-cl\u00e9s ad\u00e9quats."}, {"font": {"color": "white"}, "group": 5, "id": "41a09144155a4525929dce4641d15adc", "label": "true_false", "shape": "dot", "size": 5, "title": "La s\u00e9mantique consiste \u00e0 utiliser les expressions et mots-cl\u00e9s les plus appropri\u00e9s pour am\u00e9liorer le classement d\u0027un site sur les moteurs de recherche."}, {"font": {"color": "white"}, "group": 1, "id": "0ddf6c00-325e-44b2-bd25-99b086552b49", "label": "Publicit\u00e9", "shape": "dot", "size": 5, "title": "Utilisation strat\u00e9gique des \u00e9l\u00e9ments distinctifs pour capter l\u0027attention et am\u00e9liorer la m\u00e9morisation des produits."}, {"font": {"color": "white"}, "group": 1, "id": "dd1fe4fc-14d6-4513-834c-ba936d69ba68", "label": "Surcharge num\u00e9rique", "shape": "dot", "size": 5, "title": "\u00c9tat d\u0027\u00eatre submerg\u00e9 par un exc\u00e8s d\u0027informations et de technologies, entra\u00eenant un d\u00e9sir de revenir \u00e0 des \u00e9l\u00e9ments plus simples ou nostalgiques."}, {"font": {"color": "white"}, "group": 1, "id": "354f00f5-bf8a-4d2f-9cec-fc43e20d7772", "label": "Bouche-\u00e0-oreille num\u00e9rique", "shape": "dot", "size": 5, "title": "Transmission d\u0027informations et recommandations entre consommateurs via internet, impactant significativement le comportement d\u0027achat."}, {"font": {"color": "white"}, "group": 5, "id": "df1b799cd115455ca376a6a06dfb3d11", "label": "true_false", "shape": "dot", "size": 5, "title": "L\u0027essor du num\u00e9rique a r\u00e9duit l\u0027importance du bouche-\u00e0-oreille dans les d\u00e9cisions d\u0027achat."}, {"font": {"color": "white"}, "group": 1, "id": "c995c9e2-72dc-4604-af04-5150ff57d400", "label": "D\u00e9cisions d\u0027achat", "shape": "dot", "size": 5, "title": "Processus par lequel un consommateur choisit d\u0027acheter un produit ou service, souvent influenc\u00e9 par des facteurs externes comme les avis."}, {"font": {"color": "white"}, "group": 1, "id": "ebc49ee7-62f8-402a-b735-83d9fc31a3d1", "label": "livres", "shape": "dot", "size": 5, "title": "Les livres sont des \u0153uvres \u00e9crites publi\u00e9es sous forme imprim\u00e9e ou num\u00e9rique, jouant un r\u00f4le cl\u00e9 dans la diffusion du savoir et de la culture."}, {"font": {"color": "white"}, "group": 1, "id": "a2a0ebd0-cf46-4f46-84ed-4ca0899c5e28", "label": "Analytique mobile", "shape": "dot", "size": 5, "title": "Outils permettant d\u0027analyser les performances marketing sur mobile, incluant le suivi des comportements et taux de conversion."}]);
+                  edges = new vis.DataSet([{"from": "e44741eb-3c1c-48d8-b46e-7d408e88cd58", "to": 13609, "width": 1}, {"from": "e44741eb-3c1c-48d8-b46e-7d408e88cd58", "to": "338ccd27-cd96-47f9-a433-9d1c2484b141", "width": 1}, {"from": "a2b8f5cf-f178-4fb2-8e06-9894547e7652", "to": 13609, "width": 1}, {"from": "a2b8f5cf-f178-4fb2-8e06-9894547e7652", "to": "b7ceafcb-848e-4b47-8fca-c4ed65366c70", "width": 1}, {"from": "a2b8f5cf-f178-4fb2-8e06-9894547e7652", "to": "f8f563ff-6ec9-4520-b03e-da9a48ab1773", "width": 1}, {"from": "7adda1c3-151f-487e-b8e4-5c72c5b16153", "to": 13609, "width": 1}, {"from": "7adda1c3-151f-487e-b8e4-5c72c5b16153", "to": "a1944013-01a5-459d-9bd0-a14620e118cc", "width": 1}, {"from": "6d5d7744-04f9-4571-8296-6f2959eb74a4", "to": 13609, "width": 1}, {"from": "6d5d7744-04f9-4571-8296-6f2959eb74a4", "to": "6aed7834-7355-4425-aefa-2667c144c7e3", "width": 1}, {"from": "388946a5-81d7-4e87-af55-4d73c9938c58", "to": 13609, "width": 1}, {"from": "b7ceafcb-848e-4b47-8fca-c4ed65366c70", "to": 13609, "width": 1}, {"from": "b7ceafcb-848e-4b47-8fca-c4ed65366c70", "to": "f8f563ff-6ec9-4520-b03e-da9a48ab1773", "width": 1}, {"from": "f8f563ff-6ec9-4520-b03e-da9a48ab1773", "to": 13609, "width": 1}, {"from": "e2e266d6-7055-4114-97fd-e9970b9e9fb5", "to": 13609, "width": 1}, {"from": "20e11c25-aeaf-421e-8f29-37fbb525f548", "to": 13609, "width": 1}, {"from": "a21faec3-d32a-4c71-91f4-aefc4c598939", "to": 13609, "width": 1}, {"from": "b98cc38b-e8fc-4a81-9b12-cd74415bfe33", "to": 13609, "width": 1}, {"from": "fede3a96-f073-484e-8b37-7c9abb196f1f", "to": 13609, "width": 1}, {"from": "2809c031-7d12-4984-9211-55ce163967ce", "to": 13609, "width": 1}, {"from": "a1944013-01a5-459d-9bd0-a14620e118cc", "to": 13609, "width": 1}, {"from": "a1944013-01a5-459d-9bd0-a14620e118cc", "to": "ef66e7f5ac7d4e3d9969152d5f9ab6ca", "width": 1}, {"from": "a1944013-01a5-459d-9bd0-a14620e118cc", "to": "41a09144155a4525929dce4641d15adc", "width": 1}, {"from": "0ddf6c00-325e-44b2-bd25-99b086552b49", "to": 13609, "width": 1}, {"from": "dd1fe4fc-14d6-4513-834c-ba936d69ba68", "to": 13609, "width": 1}, {"from": "354f00f5-bf8a-4d2f-9cec-fc43e20d7772", "to": 13609, "width": 1}, {"from": "354f00f5-bf8a-4d2f-9cec-fc43e20d7772", "to": "df1b799cd115455ca376a6a06dfb3d11", "width": 1}, {"from": "c995c9e2-72dc-4604-af04-5150ff57d400", "to": 13609, "width": 1}, {"from": "338ccd27-cd96-47f9-a433-9d1c2484b141", "to": 13609, "width": 1}, {"from": "ebc49ee7-62f8-402a-b735-83d9fc31a3d1", "to": 13609, "width": 1}, {"from": "6aed7834-7355-4425-aefa-2667c144c7e3", "to": 13609, "width": 1}, {"from": "ef66e7f5ac7d4e3d9969152d5f9ab6ca", "to": 13609, "width": 1}, {"from": "41a09144155a4525929dce4641d15adc", "to": 13609, "width": 1}, {"from": "df1b799cd115455ca376a6a06dfb3d11", "to": 13609, "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": true,
+        "filter": [
+            "physics"
+        ]
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "repulsion": {
+            "centralGravity": 0.33,
+            "damping": 0.95,
+            "nodeDistance": 420,
+            "springConstant": 0.1,
+            "springLength": 110
+        },
+        "solver": "repulsion",
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+                  // if this network requires displaying the configure window,
+                  // put it in its div
+                  options.configure["container"] = document.getElementById("config");
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>

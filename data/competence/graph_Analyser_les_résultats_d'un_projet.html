@@ -1,0 +1,178 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 800px;
+                 background-color: #222222;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+             #config {
+                 float: left;
+                 width: 400px;
+                 height: 600px;
+             }
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+            <div id="config"></div>
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"font": {"color": "white"}, "group": 1, "id": "6950796e-29f2-4064-93d6-b57b697a2787", "label": "Am\u00e9lioration continue", "shape": "dot", "size": 5, "title": "Processus et philosophie d\u0027optimisation r\u00e9guli\u00e8re et continue des processus et produits, fond\u00e9e sur les retours d\u0027exp\u00e9rience et les contributions, visant \u00e0 am\u00e9liorer la qualit\u00e9 du contenu ou du produit final, particuli\u00e8rement cruciale dans des environnements tels que DevOps pour s\u0027adapter aux changements rapides du march\u00e9."}, {"font": {"color": "white"}, "group": 1, "id": "a3e4a324-8a40-4d42-90c1-995c08e2c180", "label": "Suivi de l\u0027avancement", "shape": "dot", "size": 5, "title": "Pratique consistant \u00e0 monitorer r\u00e9guli\u00e8rement les progr\u00e8s r\u00e9alis\u00e9s dans un projet afin d\u0027assurer une bonne gestion du temps et des ressources."}, {"font": {"color": "white"}, "group": 1, "id": "0fbe4a93-bbc1-40bb-863b-fc9a2392042a", "label": "Contributions personnelles", "shape": "dot", "size": 5, "title": "Modifications individuelles apport\u00e9es par chaque membre d\u0027une \u00e9quipe dans un projet collaboratif, cruciales pour le d\u00e9veloppement collectif et l\u0027apprentissage partag\u00e9."}, {"font": {"color": "white"}, "group": 1, "id": "0dddae51-ce19-42d5-a47b-e48f7783a11a", "label": "Donn\u00e9es client master", "shape": "dot", "size": 5, "title": "Informations essentielles sur les clients utilis\u00e9es pour la gestion des relations commerciales."}, {"font": {"color": "white"}, "group": 2, "id": 13615, "label": "M\u00e9thodologie de Tests : Importance et Types", "shape": "dot", "size": 8, "title": "01-Introduction"}, {"font": {"color": "white"}, "group": 1, "id": "6bd33c42-180f-420a-9dea-e485fece2bc7", "label": "M\u00e9thodologie de tests", "shape": "dot", "size": 5, "title": "Approche syst\u00e9matique pour concevoir, ex\u00e9cuter et \u00e9valuer des tests afin d\u0027assurer le bon fonctionnement et la qualit\u00e9 des syst\u00e8mes informatiques et logiciels."}, {"font": {"color": "white"}, "group": 1, "id": "bf9dcd29-03f3-4cd8-a076-8331895e019d", "label": "KPI (Indicateurs Cl\u00e9s de Performance)", "shape": "dot", "size": 5, "title": "Les KPI, ou Indicateurs Cl\u00e9s de Performance, sont des mesures quantifiables utilis\u00e9es pour \u00e9valuer le succ\u00e8s et l\u0027efficacit\u00e9 d\u0027un produit, service ou strat\u00e9gie marketing. Ils jouent un r\u00f4le essentiel dans le suivi des performances des \u00e9quipes, notamment dans les objectifs DevOps, en facilitant la prise de d\u00e9cisions \u00e9clair\u00e9es et en permettant d\u0027ajuster les actions si n\u00e9cessaire."}, {"font": {"color": "white"}, "group": 1, "id": "7df0cd08-ad3f-47c5-be22-f545fc9a5cc5", "label": "Audit DevOps", "shape": "dot", "size": 5, "title": "\u00c9valuation syst\u00e9matique des pratiques de d\u00e9veloppement et d\u0027exploitation de logiciels, visant \u00e0 identifier les am\u00e9liorations possibles dans une entreprise."}, {"font": {"color": "white"}, "group": 1, "id": "8dddeec2-f692-489c-bccf-de963a04301f", "label": "Surveillance", "shape": "dot", "size": 5, "title": "La surveillance et la surveillance continue d\u00e9signent l\u0027observation en temps r\u00e9el des performances des applications en production, \u00e0 l\u0027aide d\u0027outils pour d\u00e9tecter rapidement les probl\u00e8mes, assurer leur bon fonctionnement et garantir une disponibilit\u00e9 optimale. Cette pratique est essentielle pour maintenir la performance de l\u0027application."}, {"font": {"color": "white"}, "group": 1, "id": "e208c124-c2d4-43aa-b374-5e9653b2aad4", "label": "Taux de conversion", "shape": "dot", "size": 5, "title": "Le taux de conversion est le pourcentage d\u0027utilisateurs qui r\u00e9alisent une action souhait\u00e9e, comme un achat ou une inscription, apr\u00e8s avoir \u00e9t\u00e9 expos\u00e9s \u00e0 une campagne marketing sur un site web ou via des canaux mobiles. Cet indicateur cl\u00e9 de performance commerciale mesure l\u0027efficacit\u00e9 d\u0027une interface et peut \u00eatre influenc\u00e9 par divers facteurs, tels que l\u0027utilisation strat\u00e9gique des couleurs et d\u0027autres \u00e9l\u00e9ments de design UX. Il repr\u00e9sente donc la proportion de prospects qui deviennent clients suite \u00e0 leur interaction avec une offre."}, {"font": {"color": "white"}, "group": 1, "id": "ef6bfe65-7e12-4b65-9a46-982ac13d333b", "label": "Taux de rebond", "shape": "dot", "size": 5, "title": "Pourcentage d\u0027utilisateurs quittant un site apr\u00e8s avoir consult\u00e9 une seule page, indicatif de l\u0027engagement, de la pertinence du contenu et d\u0027un manque potentiel de satisfaction. Ce taux peut \u00e9galement \u00eatre influenc\u00e9 par des facteurs tels que la rapidit\u00e9 de chargement du site."}, {"font": {"color": "white"}, "group": 1, "id": "5b7b4dd7-8934-4844-b72c-ab548c3cebf9", "label": "Communication continue", "shape": "dot", "size": 5, "title": "\u00c9change r\u00e9gulier d\u0027informations entre membres d\u0027une \u00e9quipe pour assurer coh\u00e9rence et \u00e9viter conflits lors du d\u00e9veloppement collaboratif."}, {"font": {"color": "white"}, "group": 5, "id": "d6bd0764ccf246428af8c8b2ede99275", "label": "true_false", "shape": "dot", "size": 5, "title": "La communication continue entre les membres de l\u0027\u00e9quipe joue un r\u00f4le cl\u00e9 pour \u00e9viter les conflits de code."}, {"font": {"color": "white"}, "group": 1, "id": "a6b2b424-96d2-44e9-a1be-41569d34d757", "label": "M\u00e9triques", "shape": "dot", "size": 5, "title": "Les m\u00e9triques sont des mesures quantitatives des performances d\u0027un syst\u00e8me, essentielles pour l\u0027analyse et l\u0027optimisation."}, {"font": {"color": "white"}, "group": 1, "id": "ef9924e3-17cd-43c9-a9ef-ce1be42be0d2", "label": "Tableau de bord", "shape": "dot", "size": 5, "title": "Un tableau de bord est une interface graphique dans Cloud Monitoring qui permet aux utilisateurs de visualiser en temps r\u00e9el les m\u00e9triques cl\u00e9s, les journaux critiques et la sant\u00e9 des services. Il offre ainsi une vue d\u0027ensemble compl\u00e8te du syst\u00e8me, facilitant le suivi et l\u0027analyse des performances des applications."}, {"font": {"color": "white"}, "group": 3, "id": "e35cf03bb22946d089182d3dea2e1fda", "label": "mcq", "shape": "dot", "size": 5, "title": "Quelles donn\u00e9es sont collect\u00e9es gr\u00e2ce au monitoring des syst\u00e8mes et applications ?"}, {"font": {"color": "white"}, "group": 3, "id": "52ffee1d0c7b4b70aaa8f087e8b274dc", "label": "mcq", "shape": "dot", "size": 5, "title": "Quelle est la fonction principale du monitoring dans les syst\u00e8mes informatiques ?"}, {"font": {"color": "white"}, "group": 3, "id": "4cda475bb96646f7bfa915d43a130eb0", "label": "mcq", "shape": "dot", "size": 5, "title": "Quels types de m\u00e9triques peuvent \u00eatre surveill\u00e9s dans un syst\u00e8me informatique ?"}, {"font": {"color": "white"}, "group": 3, "id": "9f3e39b2a48b4d44bb2059d1049579a4", "label": "mcq", "shape": "dot", "size": 5, "title": "Que se passe-t-il lorsque les m\u00e9triques d\u00e9passent un seuil pr\u00e9d\u00e9fini ?"}, {"font": {"color": "white"}, "group": 4, "id": "ac9594314c9e4b80be9de34416e83a06", "label": "fill_in", "shape": "dot", "size": 5, "title": "Le monitoring permet de collecter des donn\u00e9es pertinentes pour \u00e9valuer \u003cblank\u003e des syst\u00e8mes, des applications ou des services."}, {"font": {"color": "white"}, "group": 4, "id": "e2308c756b7e409297151468b07f998f", "label": "fill_in", "shape": "dot", "size": 5, "title": "Les alertes sont des notifications d\u00e9clench\u00e9es lorsque les \u003cblank\u003e d\u00e9passent des seuils pr\u00e9d\u00e9finis."}, {"font": {"color": "white"}, "group": 5, "id": "14ef2820963249b7b14a8deb51a54b07", "label": "true_false", "shape": "dot", "size": 5, "title": "Le monitoring permet de collecter des donn\u00e9es pertinentes sur le fonctionnement des syst\u00e8mes."}, {"font": {"color": "white"}, "group": 5, "id": "d0023f8bc71c41fba69d9b38f9b4cb6a", "label": "true_false", "shape": "dot", "size": 5, "title": "Le monitoring permet uniquement de surveiller la disponibilit\u00e9 des syst\u00e8mes sans g\u00e9n\u00e9rer d\u0027alertes."}, {"font": {"color": "white"}, "group": 5, "id": "131ea187a0e84d469c08d865ebbb7dec", "label": "true_false", "shape": "dot", "size": 5, "title": "Le nombre de requ\u00eates par seconde est un exemple de m\u00e9trique."}, {"font": {"color": "white"}, "group": 1, "id": "0c8f39f2-b61a-47ce-8e34-170588997194", "label": "Cloud Logging", "shape": "dot", "size": 5, "title": "Service de Google Cloud qui collecte, stocke et analyse les journaux d\u0027activit\u00e9 g\u00e9n\u00e9r\u00e9s par les applications et services, facilitant ainsi le d\u00e9bogage et l\u0027analyse des performances pour une utilisation ult\u00e9rieure."}, {"font": {"color": "white"}, "group": 1, "id": "a7cd3446-b616-486b-8de2-24e73d3a2dce", "label": "M\u00e9triques personnalis\u00e9es", "shape": "dot", "size": 5, "title": "Indicateurs d\u00e9finis par l\u0027utilisateur pour mesurer et surveiller des aspects sp\u00e9cifiques des performances d\u0027une application, offrant une visibilit\u00e9 accrue sur son fonctionnement sur GCP."}, {"font": {"color": "white"}, "group": 1, "id": "7529519a-fe2a-4715-9b51-b91601817371", "label": "Rapport de test", "shape": "dot", "size": 5, "title": "Un document r\u00e9sumant les r\u00e9sultats des tests effectu\u00e9s, incluant le nombre de r\u00e9ussites, d\u0027\u00e9checs et d\u0027autres m\u00e9triques pertinentes."}, {"font": {"color": "white"}, "group": 1, "id": "0aafea4b-0121-4b8a-b2e1-b805dfeb9f67", "label": "Assertions", "shape": "dot", "size": 5, "title": "Les assertions sont des d\u00e9clarations v\u00e9rifiant que les r\u00e9sultats d\u0027un test correspondent aux attentes, et elles repr\u00e9sentent des v\u00e9rifications dans les tests qui valident les r\u00e9sultats d\u0027un syst\u00e8me. Elles sont essentielles pour garantir la fiabilit\u00e9 du code et valider le bon fonctionnement des fonctionnalit\u00e9s."}, {"font": {"color": "white"}, "group": 1, "id": "dc5259e9-1182-4f14-91ed-a69c78fdc43e", "label": "Gestion des attentes", "shape": "dot", "size": 5, "title": "Processus par lequel les d\u00e9veloppeurs d\u00e9finissent clairement ce qu\u0027ils attendent comme r\u00e9sultats dans leurs tests unitaires."}, {"font": {"color": "white"}, "group": 1, "id": "a84377b1-e0ee-4b0e-b619-4b2a804872a2", "label": "Mocking et Stubs", "shape": "dot", "size": 5, "title": "Le mocking et les stubs sont des techniques de test qui permettent de simuler le comportement d\u0027objets complexes afin de tester des unit\u00e9s sp\u00e9cifiques isol\u00e9ment, sans d\u00e9pendances externes. Ces m\u00e9thodes facilitent la v\u00e9rification des interactions entre les composants en cr\u00e9ant des versions simplifi\u00e9es ou simul\u00e9es d\u0027objets, permettant ainsi aux d\u00e9veloppeurs de se concentrer sur l\u0027interface et la logique m\u00e9tier sans \u00eatre affect\u00e9s par les comportements r\u00e9els des d\u00e9pendances."}, {"font": {"color": "white"}, "group": 1, "id": "24f06b27-24c7-47ee-bd5d-cfe50756bac9", "label": "Outils de Mutation Testing", "shape": "dot", "size": 5, "title": "Logiciels comme Stryker et Pitest qui automatisent le processus de mutation testing pour divers langages de programmation."}, {"font": {"color": "white"}, "group": 1, "id": "b0f58e74-7080-43c5-9b52-055312004dba", "label": "Score de Mutation", "shape": "dot", "size": 5, "title": "Mesure de l\u0027efficacit\u00e9 des tests, calcul\u00e9e comme le ratio entre le nombre de mutants d\u00e9tect\u00e9s et le nombre total de mutants."}, {"font": {"color": "white"}, "group": 1, "id": "b2ff72ca-d781-4a8e-853e-30af461e524b", "label": "Points importants", "shape": "dot", "size": 5, "title": "\u00c9l\u00e9ments cl\u00e9s \u00e0 retenir ou \u00e0 consid\u00e9rer lors de l\u0027\u00e9valuation ou de l\u0027analyse d\u0027un sujet particulier."}, {"font": {"color": "white"}, "group": 1, "id": "ded98c11-bbf3-45b9-9a2f-c53dfe196ac0", "label": "Acceptance Tests", "shape": "dot", "size": 5, "title": "Les tests d\u0027acceptation, ou Acceptance Tests, sont des tests r\u00e9alis\u00e9s pour valider que le logiciel r\u00e9pond aux exigences fonctionnelles et non fonctionnelles sp\u00e9cifi\u00e9es par les utilisateurs ou clients. Ils garantissent que le produit est pr\u00eat \u00e0 \u00eatre livr\u00e9 avant sa mise en production, en s\u0027assurant qu\u0027il fonctionne comme pr\u00e9vu dans un environnement r\u00e9el."}, {"font": {"color": "white"}, "group": 1, "id": "a6a5964a-705b-420d-b5ce-1ebac2c41ba9", "label": "Donn\u00e9es de production", "shape": "dot", "size": 5, "title": "Les donn\u00e9es r\u00e9elles utilis\u00e9es dans l\u0027environnement de production, essentielles pour le fonctionnement correct de l\u0027application."}, {"font": {"color": "white"}, "group": 3, "id": "2c06d10579cb4d1498e8b154b7d910a1", "label": "mcq", "shape": "dot", "size": 5, "title": "Pourquoi est-il essentiel de surveiller continuellement les environnements QA, Preprod et Prod ?"}, {"font": {"color": "white"}, "group": 1, "id": "87ac2569-9c29-47b8-b073-e09d2eebd50e", "label": "New Relic", "shape": "dot", "size": 5, "title": "Plateforme commerciale de monitoring qui fournit des analyses de performance applicative en temps r\u00e9el, aidant \u00e0 optimiser les performances des applications."}, {"font": {"color": "white"}, "group": 1, "id": "9baaa644-5080-4c20-9ef6-f3c3d06cb4da", "label": "Outils de monitoring", "shape": "dot", "size": 5, "title": "Solutions logicielles utilis\u00e9es pour surveiller l\u0027\u00e9tat des syst\u00e8mes informatiques, incluant des options open source comme Prometheus et commerciales comme New Relic."}, {"font": {"color": "white"}, "group": 3, "id": "36d9d33ce95143929c73e22de7b20f01", "label": "mcq", "shape": "dot", "size": 5, "title": "Quelle est l\u0027importance principale du monitoring dans une organisation informatique ?"}, {"font": {"color": "white"}, "group": 5, "id": "d728522065114da3b91476063d703694", "label": "true_false", "shape": "dot", "size": 5, "title": "Le monitoring est uniquement utilis\u00e9 pour am\u00e9liorer la vitesse des syst\u00e8mes informatiques."}, {"font": {"color": "white"}, "group": 3, "id": "c6ef4a6defc54c468d451ff771e72ec6", "label": "mcq", "shape": "dot", "size": 5, "title": "Quelle est l\u0027avantage principal de la surveillance en temps r\u00e9el des applications en production ?"}, {"font": {"color": "white"}, "group": 5, "id": "e6805576cc85429cad941198b830d276", "label": "true_false", "shape": "dot", "size": 5, "title": "La surveillance en temps r\u00e9el permet une d\u00e9tection rapide des probl\u00e8mes dans les applications en production."}, {"font": {"color": "white"}, "group": 5, "id": "42611cf4ba18447bbb0e9ad1e2d7f617", "label": "true_false", "shape": "dot", "size": 5, "title": "La surveillance continue apr\u00e8s la mise en production permet de corriger les probl\u00e8mes avant qu\u0027ils ne surviennent en QA."}, {"font": {"color": "white"}, "group": 3, "id": "db34d57701544c39b11a17cf2254142e", "label": "mcq", "shape": "dot", "size": 5, "title": "Que permet une infrastructure de monitoring efficace pour une organisation ?"}, {"font": {"color": "white"}, "group": 1, "id": "386e549a-337f-42ee-b9d6-4c3517373f38", "label": "Test de charge", "shape": "dot", "size": 5, "title": "\u00c9valuation de la capacit\u00e9 d\u0027un syst\u00e8me \u00e0 g\u00e9rer un volume \u00e9lev\u00e9 d\u0027utilisateurs ou de transactions simultan\u00e9es."}, {"font": {"color": "white"}, "group": 1, "id": "de587e24-076f-4eb9-a843-e636d35f0c8f", "label": "succ\u00e8s", "shape": "dot", "size": 5, "title": "Le succ\u00e8s est l\u0027\u00e9tat d\u0027une action ou d\u0027un projet ayant atteint ses objectifs souhait\u00e9s ou pr\u00e9\u00e9tablis. Il se manifeste lorsque toutes les \u00e9tapes d\u0027un processus ont \u00e9t\u00e9 compl\u00e9t\u00e9es avec efficacit\u00e9 et sans erreurs, et il est souvent mesur\u00e9 par des indicateurs de performance sp\u00e9cifiques ou des crit\u00e8res pr\u00e9d\u00e9finis. Le succ\u00e8s implique \u00e9galement la garantie de la qualit\u00e9 et de la fonctionnalit\u00e9 du produit final."}, {"font": {"color": "white"}, "group": 1, "id": "0ffe2f05-6237-4364-be36-69daf847bc77", "label": "D\u00e9brief", "shape": "dot", "size": 5, "title": "Un d\u00e9brief est une analyse ou un retour d\u0027exp\u00e9rience apr\u00e8s un \u00e9v\u00e9nement, permettant d\u0027\u00e9valuer les r\u00e9sultats et d\u0027identifier des am\u00e9liorations."}, {"font": {"color": "white"}, "group": 1, "id": "9f3e6779-e99a-4220-aae2-e935850a4f20", "label": "Commentaire utilisateur", "shape": "dot", "size": 5, "title": "Retour d\u0027exp\u00e9rience et commentaires fournis par les utilisateurs concernant un produit ou service, incluant des retours sur les nouvelles fonctionnalit\u00e9s, essentiels pour l\u0027am\u00e9lioration continue du d\u00e9veloppement et de l\u0027exp\u00e9rience utilisateur."}, {"font": {"color": "white"}, "group": 1, "id": "8cfe3c8d-558a-44c3-8e30-f8297911c562", "label": "Mod\u00e8le", "shape": "dot", "size": 5, "title": "Repr\u00e9sentation simplifi\u00e9e d\u0027un concept ou d\u0027un syst\u00e8me, utilis\u00e9e pour comprendre et organiser des informations complexes."}, {"font": {"color": "white"}, "group": 1, "id": "11d0f0ec-aa9f-4c47-b10f-62c2628b1651", "label": "Monitoring et journalisation", "shape": "dot", "size": 5, "title": "Outils int\u00e9gr\u00e9s dans Cloud Run pour suivre les performances des applications en temps r\u00e9el et enregistrer les \u00e9v\u00e9nements pour une analyse ult\u00e9rieure."}, {"font": {"color": "white"}, "group": 1, "id": "014b1e3e-986f-44a9-a30a-cfd7a0d7fd9f", "label": "MySQL", "shape": "dot", "size": 5, "title": "Syst\u00e8me de gestion de bases de donn\u00e9es relationnelles open-source, largement utilis\u00e9 dans le d\u00e9veloppement d\u0027applications web."}, {"font": {"color": "white"}, "group": 1, "id": "25d8b085-b1a7-41fe-a903-4ee8101bb8c2", "label": "projets critiques", "shape": "dot", "size": 5, "title": "Initiatives essentielles au succ\u00e8s op\u00e9rationnel d\u0027une entreprise, n\u00e9cessitant une attention particuli\u00e8re en raison de leur impact potentiel sur les r\u00e9sultats financiers."}, {"font": {"color": "white"}, "group": 1, "id": "93243cf1-1c62-40e6-b2ac-c4f1322cfadb", "label": "Utilisabilit\u00e9", "shape": "dot", "size": 5, "title": "Mesure de l\u0027efficacit\u00e9 et de la satisfaction d\u0027une interface utilisateur, essentielle pour garantir une interaction fluide et intuitive."}, {"font": {"color": "white"}, "group": 1, "id": "e4e00df2-6ad3-4027-8271-ad91f9aee0ea", "label": "Granularit\u00e9 des tests", "shape": "dot", "size": 5, "title": "Niveau de d\u00e9tail dans le choix des unit\u00e9s \u00e0 tester, influen\u00e7ant l\u0027efficacit\u00e9 et la clart\u00e9 des r\u00e9sultats."}, {"font": {"color": "white"}, "group": 1, "id": "bf2e32cb-e846-41c1-a9c3-26d5c2c4bd57", "label": "Contenu compr\u00e9hensible", "shape": "dot", "size": 5, "title": "Un contenu lisible et coh\u00e9rent, o\u00f9 l\u0027ordre des \u00e9l\u00e9ments et l\u0027encha\u00eenement de la lecture facilitent la compr\u00e9hension."}, {"font": {"color": "white"}, "group": 1, "id": "11afaa7c-260c-4026-8c12-8e41349d2ad9", "label": "Tests peu co\u00fbteux en maintenance", "shape": "dot", "size": 5, "title": "M\u00e9thodes de test qui n\u00e9cessitent peu d\u0027efforts pour \u00eatre mises \u00e0 jour, permettant une \u00e9valuation efficace des algorithmes et interfaces sans engendrer de co\u00fbts \u00e9lev\u00e9s."}, {"font": {"color": "white"}, "group": 1, "id": "e4a345b6-4fc4-47f8-8d2d-d69a6ed5ebee", "label": "Requ\u00eates efficaces", "shape": "dot", "size": 5, "title": "Capacit\u00e9 de GraphQL \u00e0 r\u00e9cup\u00e9rer toutes les donn\u00e9es n\u00e9cessaires en une seule requ\u00eate, r\u00e9duisant le nombre d\u0027appels au serveur."}, {"font": {"color": "white"}, "group": 1, "id": "7a544001-0f22-460b-af33-ef22ad2e8e37", "label": "Restauration des donn\u00e9es", "shape": "dot", "size": 5, "title": "La restauration des donn\u00e9es implique la r\u00e9cup\u00e9ration d\u0027informations perdues ou corrompues \u00e0 partir de sauvegardes, garantissant la continuit\u00e9 op\u00e9rationnelle en cas d\u0027incident."}, {"font": {"color": "white"}, "group": 1, "id": "e1b5208c-7875-4a1c-ab42-c907216dea01", "label": "ORM (Mapping Objet-Relationnel)", "shape": "dot", "size": 5, "title": "Interface entre un programme applicatif et une base de donn\u00e9es relationnelle, facilitant la communication et la mod\u00e9lisation des donn\u00e9es."}]);
+                  edges = new vis.DataSet([{"from": "6950796e-29f2-4064-93d6-b57b697a2787", "to": "a3e4a324-8a40-4d42-90c1-995c08e2c180", "width": 1}, {"from": "6950796e-29f2-4064-93d6-b57b697a2787", "to": "0fbe4a93-bbc1-40bb-863b-fc9a2392042a", "width": 1}, {"from": "0dddae51-ce19-42d5-a47b-e48f7783a11a", "to": 13615, "width": 1}, {"from": "0dddae51-ce19-42d5-a47b-e48f7783a11a", "to": "6bd33c42-180f-420a-9dea-e485fece2bc7", "width": 1}, {"from": "a3e4a324-8a40-4d42-90c1-995c08e2c180", "to": "0fbe4a93-bbc1-40bb-863b-fc9a2392042a", "width": 1}, {"from": "bf9dcd29-03f3-4cd8-a076-8331895e019d", "to": "7df0cd08-ad3f-47c5-be22-f545fc9a5cc5", "width": 1}, {"from": "bf9dcd29-03f3-4cd8-a076-8331895e019d", "to": "8dddeec2-f692-489c-bccf-de963a04301f", "width": 1}, {"from": "bf9dcd29-03f3-4cd8-a076-8331895e019d", "to": "e208c124-c2d4-43aa-b374-5e9653b2aad4", "width": 1}, {"from": "bf9dcd29-03f3-4cd8-a076-8331895e019d", "to": "ef6bfe65-7e12-4b65-9a46-982ac13d333b", "width": 1}, {"from": "5b7b4dd7-8934-4844-b72c-ab548c3cebf9", "to": "d6bd0764ccf246428af8c8b2ede99275", "width": 1}, {"from": "a6b2b424-96d2-44e9-a1be-41569d34d757", "to": "ef9924e3-17cd-43c9-a9ef-ce1be42be0d2", "width": 1}, {"from": "a6b2b424-96d2-44e9-a1be-41569d34d757", "to": "e35cf03bb22946d089182d3dea2e1fda", "width": 1}, {"from": "a6b2b424-96d2-44e9-a1be-41569d34d757", "to": "52ffee1d0c7b4b70aaa8f087e8b274dc", "width": 1}, {"from": "a6b2b424-96d2-44e9-a1be-41569d34d757", "to": "4cda475bb96646f7bfa915d43a130eb0", "width": 1}, {"from": "a6b2b424-96d2-44e9-a1be-41569d34d757", "to": "9f3e39b2a48b4d44bb2059d1049579a4", "width": 1}, {"from": "a6b2b424-96d2-44e9-a1be-41569d34d757", "to": "ac9594314c9e4b80be9de34416e83a06", "width": 1}, {"from": "a6b2b424-96d2-44e9-a1be-41569d34d757", "to": "e2308c756b7e409297151468b07f998f", "width": 1}, {"from": "a6b2b424-96d2-44e9-a1be-41569d34d757", "to": "14ef2820963249b7b14a8deb51a54b07", "width": 1}, {"from": "a6b2b424-96d2-44e9-a1be-41569d34d757", "to": "d0023f8bc71c41fba69d9b38f9b4cb6a", "width": 1}, {"from": "a6b2b424-96d2-44e9-a1be-41569d34d757", "to": "131ea187a0e84d469c08d865ebbb7dec", "width": 1}, {"from": "0c8f39f2-b61a-47ce-8e34-170588997194", "to": "ef9924e3-17cd-43c9-a9ef-ce1be42be0d2", "width": 1}, {"from": "0c8f39f2-b61a-47ce-8e34-170588997194", "to": "a7cd3446-b616-486b-8de2-24e73d3a2dce", "width": 1}, {"from": "7529519a-fe2a-4715-9b51-b91601817371", "to": 13615, "width": 1}, {"from": "7529519a-fe2a-4715-9b51-b91601817371", "to": "0aafea4b-0121-4b8a-b2e1-b805dfeb9f67", "width": 1}, {"from": "a7cd3446-b616-486b-8de2-24e73d3a2dce", "to": "ef9924e3-17cd-43c9-a9ef-ce1be42be0d2", "width": 1}, {"from": "dc5259e9-1182-4f14-91ed-a69c78fdc43e", "to": "a84377b1-e0ee-4b0e-b619-4b2a804872a2", "width": 1}, {"from": "24f06b27-24c7-47ee-bd5d-cfe50756bac9", "to": "b0f58e74-7080-43c5-9b52-055312004dba", "width": 1}, {"from": "b2ff72ca-d781-4a8e-853e-30af461e524b", "to": "6bd33c42-180f-420a-9dea-e485fece2bc7", "width": 1}, {"from": "ded98c11-bbf3-45b9-9a2f-c53dfe196ac0", "to": 13615, "width": 1}, {"from": "0aafea4b-0121-4b8a-b2e1-b805dfeb9f67", "to": 13615, "width": 1}, {"from": "a6a5964a-705b-420d-b5ce-1ebac2c41ba9", "to": "8dddeec2-f692-489c-bccf-de963a04301f", "width": 1}, {"from": "a6a5964a-705b-420d-b5ce-1ebac2c41ba9", "to": "2c06d10579cb4d1498e8b154b7d910a1", "width": 1}, {"from": "7df0cd08-ad3f-47c5-be22-f545fc9a5cc5", "to": "8dddeec2-f692-489c-bccf-de963a04301f", "width": 1}, {"from": "87ac2569-9c29-47b8-b073-e09d2eebd50e", "to": "9baaa644-5080-4c20-9ef6-f3c3d06cb4da", "width": 1}, {"from": "87ac2569-9c29-47b8-b073-e09d2eebd50e", "to": "36d9d33ce95143929c73e22de7b20f01", "width": 1}, {"from": "87ac2569-9c29-47b8-b073-e09d2eebd50e", "to": "d728522065114da3b91476063d703694", "width": 1}, {"from": "6bd33c42-180f-420a-9dea-e485fece2bc7", "to": 13615, "width": 1}, {"from": "8dddeec2-f692-489c-bccf-de963a04301f", "to": "c6ef4a6defc54c468d451ff771e72ec6", "width": 1}, {"from": "8dddeec2-f692-489c-bccf-de963a04301f", "to": "2c06d10579cb4d1498e8b154b7d910a1", "width": 1}, {"from": "8dddeec2-f692-489c-bccf-de963a04301f", "to": "e6805576cc85429cad941198b830d276", "width": 1}, {"from": "8dddeec2-f692-489c-bccf-de963a04301f", "to": "42611cf4ba18447bbb0e9ad1e2d7f617", "width": 1}, {"from": "9baaa644-5080-4c20-9ef6-f3c3d06cb4da", "to": "36d9d33ce95143929c73e22de7b20f01", "width": 1}, {"from": "9baaa644-5080-4c20-9ef6-f3c3d06cb4da", "to": "e35cf03bb22946d089182d3dea2e1fda", "width": 1}, {"from": "9baaa644-5080-4c20-9ef6-f3c3d06cb4da", "to": "52ffee1d0c7b4b70aaa8f087e8b274dc", "width": 1}, {"from": "9baaa644-5080-4c20-9ef6-f3c3d06cb4da", "to": "4cda475bb96646f7bfa915d43a130eb0", "width": 1}, {"from": "9baaa644-5080-4c20-9ef6-f3c3d06cb4da", "to": "db34d57701544c39b11a17cf2254142e", "width": 1}, {"from": "9baaa644-5080-4c20-9ef6-f3c3d06cb4da", "to": "ac9594314c9e4b80be9de34416e83a06", "width": 1}, {"from": "9baaa644-5080-4c20-9ef6-f3c3d06cb4da", "to": "d728522065114da3b91476063d703694", "width": 1}, {"from": "9baaa644-5080-4c20-9ef6-f3c3d06cb4da", "to": "14ef2820963249b7b14a8deb51a54b07", "width": 1}, {"from": "386e549a-337f-42ee-b9d6-4c3517373f38", "to": 13615, "width": 1}, {"from": "e208c124-c2d4-43aa-b374-5e9653b2aad4", "to": "ef6bfe65-7e12-4b65-9a46-982ac13d333b", "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": true,
+        "filter": [
+            "physics"
+        ]
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "repulsion": {
+            "centralGravity": 0.33,
+            "damping": 0.95,
+            "nodeDistance": 420,
+            "springConstant": 0.1,
+            "springLength": 110
+        },
+        "solver": "repulsion",
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+                  // if this network requires displaying the configure window,
+                  // put it in its div
+                  options.configure["container"] = document.getElementById("config");
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>

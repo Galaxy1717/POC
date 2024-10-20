@@ -1,0 +1,178 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 800px;
+                 background-color: #222222;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+             #config {
+                 float: left;
+                 width: 400px;
+                 height: 600px;
+             }
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+            <div id="config"></div>
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"font": {"color": "white"}, "group": 1, "id": "97773262-3ef9-493f-8aea-44b4ef91a06d", "label": "Marketing", "shape": "dot", "size": 5, "title": "Discipline visant \u00e0 promouvoir et vendre des produits ou services, incluant des strat\u00e9gies comme le mass mailing, le suivi de campagnes sponsoris\u00e9es, ainsi que des techniques pour attirer et fid\u00e9liser les clients dans un environnement concurrentiel."}, {"font": {"color": "white"}, "group": 1, "id": "372cb9c1-16a5-4610-bf5d-8479cc009f75", "label": "\u00c9co-responsabilit\u00e9", "shape": "dot", "size": 5, "title": "Engagement \u00e0 r\u00e9duire l\u0027impact environnemental dans toutes les activit\u00e9s, y compris la conception et le d\u00e9veloppement web."}, {"font": {"color": "white"}, "group": 1, "id": "6d35ed94-c063-4944-b49e-ccf41ccc7ff8", "label": "SEO (Search Engine Optimization)", "shape": "dot", "size": 9, "title": "Le SEO (Search Engine Optimization ou Optimisation pour les moteurs de recherche) et le r\u00e9f\u00e9rencement d\u00e9signent la m\u00eame pratique, qui consiste en un ensemble de techniques et de strat\u00e9gies visant \u00e0 optimiser le contenu, la structure et l\u0027accessibilit\u00e9 des sites web afin d\u0027am\u00e9liorer leur classement et leur visibilit\u00e9 organique dans les r\u00e9sultats naturels des moteurs de recherche. Cela inclut des pratiques telles que l\u0027optimisation pour les appareils mobiles, l\u0027utilisation de mots-cl\u00e9s pertinents, l\u0027am\u00e9lioration de l\u0027exp\u00e9rience utilisateur, la cr\u00e9ation de liens entrants, ainsi que d\u0027autres m\u00e9thodes permettant d\u0027attirer un trafic organique accru sans recourir \u00e0 des paiements directs. Le r\u00e9f\u00e9rencement naturel est essentiel pour rendre un site plus pertinent tant pour les utilisateurs que pour les moteurs de recherche, et il joue un r\u00f4le crucial dans la strat\u00e9gie marketing num\u00e9rique globale."}, {"font": {"color": "white"}, "group": 1, "id": "287ef751-850a-45f8-8aea-12aa5b7582a2", "label": "Webmarketing", "shape": "dot", "size": 5, "title": "Le webmarketing d\u00e9signe l\u0027ensemble des techniques marketing appliqu\u00e9es sur Internet, incluant le mobile marketing, pour promouvoir efficacement des produits ou services et atteindre les utilisateurs mobiles."}, {"font": {"color": "white"}, "group": 2, "id": 13609, "label": "Mathilde Vigneron : Designer Produit et Sp\u00e9cialiste en Marketing Mobile", "shape": "dot", "size": 8, "title": "_YNOV CONNECT_Mobil Marketing, user acquisition \u0026 mode\u0300les e\u0301conomique_B3 \u2013Commun Marcom"}, {"font": {"color": "white"}, "group": 1, "id": "d7224c6f-a919-460d-af12-6dfbeacde495", "label": "Visibilit\u00e9 en ligne", "shape": "dot", "size": 5, "title": "La visibilit\u00e9 en ligne d\u00e9signe la capacit\u00e9 d\u0027une entreprise ou d\u0027une marque \u00e0 \u00eatre facilement per\u00e7ue et trouv\u00e9e sur Internet, ce qui est essentiel pour attirer de nouveaux clients et prospects. Cela inclut le degr\u00e9 de reconnaissance par le public ainsi que l\u0027efficacit\u00e9 des strat\u00e9gies mises en place pour se d\u00e9marquer dans un environnement concurrentiel, notamment \u00e0 travers les moteurs de recherche et d\u0027autres moyens de navigation, contribuant ainsi \u00e0 l\u0027augmentation des ventes."}, {"font": {"color": "white"}, "group": 1, "id": "e208c124-c2d4-43aa-b374-5e9653b2aad4", "label": "Taux de conversion", "shape": "dot", "size": 5, "title": "Le taux de conversion est le pourcentage d\u0027utilisateurs qui r\u00e9alisent une action souhait\u00e9e, comme un achat ou une inscription, apr\u00e8s avoir \u00e9t\u00e9 expos\u00e9s \u00e0 une campagne marketing sur un site web ou via des canaux mobiles. Cet indicateur cl\u00e9 de performance commerciale mesure l\u0027efficacit\u00e9 d\u0027une interface et peut \u00eatre influenc\u00e9 par divers facteurs, tels que l\u0027utilisation strat\u00e9gique des couleurs et d\u0027autres \u00e9l\u00e9ments de design UX. Il repr\u00e9sente donc la proportion de prospects qui deviennent clients suite \u00e0 leur interaction avec une offre."}, {"font": {"color": "white"}, "group": 3, "id": "96de6341e9db41a78edad0d40b97ea6e", "label": "mcq", "shape": "dot", "size": 5, "title": "Quel est l\u0027un des avantages \u00e0 am\u00e9liorer l\u0027accessibilit\u00e9 d\u0027un site web ?"}, {"font": {"color": "white"}, "group": 1, "id": "7843365f-32d0-4ace-98d4-f900474fa71e", "label": "UI Designer", "shape": "dot", "size": 5, "title": "Designer d\u0027interface utilisateur responsable de l\u0027apparence visuelle et de l\u0027interactivit\u00e9 d\u0027un produit num\u00e9rique, compl\u00e9mentaire au travail de l\u0027UX designer."}, {"font": {"color": "white"}, "group": 1, "id": "daa3aac2-81f4-4cc8-a13f-65ad4d1424af", "label": "Psychologie cognitive", "shape": "dot", "size": 5, "title": "\u00c9tude scientifique des processus mentaux tels que la m\u00e9moire et le raisonnement, essentielle pour comprendre comment les utilisateurs interagissent avec les interfaces."}, {"font": {"color": "white"}, "group": 1, "id": "baebe016-d0cc-4e32-9346-f7e1124193a3", "label": "Conception d\u0027Exp\u00e9rience Utilisateur (UX)", "shape": "dot", "size": 9, "title": "La conception d\u0027exp\u00e9rience utilisateur (UX) est une discipline centr\u00e9e sur l\u0027optimisation des interactions entre les utilisateurs et les produits ou services num\u00e9riques. Elle vise \u00e0 am\u00e9liorer la satisfaction et l\u0027efficacit\u00e9 de l\u0027utilisation en cr\u00e9ant des interfaces utilisateur intuitives et attrayantes, tout en tenant compte des comportements, besoins cognitifs et pr\u00e9f\u00e9rences des utilisateurs finaux. Ce processus englobe \u00e0 la fois l\u0027esth\u00e9tique et la fonctionnalit\u00e9, influen\u00e7ant ainsi l\u0027exp\u00e9rience globale par des choix visuels et structurels. Les professionnels tels que les designers UX et UI travaillent \u00e0 \u00e9tablir des interactions significatives, simplifiant l\u0027interaction utilisateur tout en g\u00e9rant la complexit\u00e9 sous-jacente du syst\u00e8me."}, {"font": {"color": "white"}, "group": 3, "id": "47e18ea434d1468fbf90431150106f5a", "label": "mcq", "shape": "dot", "size": 5, "title": "Quel est l\u0027objectif principal du r\u00e9f\u00e9rencement naturel (SEO) pour une entreprise ?"}, {"font": {"color": "white"}, "group": 3, "id": "5c606750887c4757b7d7e67a0202c610", "label": "mcq", "shape": "dot", "size": 5, "title": "Que doit faire une entreprise pour am\u00e9liorer son r\u00e9f\u00e9rencement SEO ?"}, {"font": {"color": "white"}, "group": 3, "id": "0c79cb0dbec84141bd9db5cb2edd85ee", "label": "mcq", "shape": "dot", "size": 5, "title": "Quel facteur, en plus de la s\u00e9mantique, am\u00e9liore naturellement la visibilit\u00e9 d\u0027un site web ?"}, {"font": {"color": "white"}, "group": 4, "id": "ef66e7f5ac7d4e3d9969152d5f9ab6ca", "label": "fill_in", "shape": "dot", "size": 5, "title": "Pour qu\u0027un site soit mieux positionn\u00e9 en fonction des recherches des utilisateurs, il est crucial de travailler sur \u003cblank\u003e pour utiliser les mots-cl\u00e9s ad\u00e9quats."}, {"font": {"color": "white"}, "group": 5, "id": "1ede30a3a3304374b0a8050a6236b341", "label": "true_false", "shape": "dot", "size": 5, "title": "Le nom de marque aide \u00e0 am\u00e9liorer le r\u00e9f\u00e9rencement naturel sur les moteurs de recherche."}, {"font": {"color": "white"}, "group": 5, "id": "3f048550008d42839cb0450f76db11d5", "label": "true_false", "shape": "dot", "size": 5, "title": "La production de contenu digital r\u00e9gulier est importante pour am\u00e9liorer le r\u00e9f\u00e9rencement et attirer de nouveaux clients."}, {"font": {"color": "white"}, "group": 1, "id": "6023dfd6-ea81-45fa-aefa-6d1c4958f59a", "label": "Confiance du consommateur", "shape": "dot", "size": 5, "title": "Niveau de s\u00e9curit\u00e9 et de certitude ressenti par un consommateur envers une marque, un produit ou un service, influenc\u00e9 par la clart\u00e9 des informations et la simplicit\u00e9 des choix offerts, crucial pour encourager l\u0027achat et fid\u00e9liser."}, {"font": {"color": "white"}, "group": 1, "id": "784d7e55-3719-435a-86eb-e3028d2e8919", "label": "Wireframing", "shape": "dot", "size": 5, "title": "Le wireframing est une technique de conception pr\u00e9liminaire qui consiste \u00e0 cr\u00e9er des maquettes sch\u00e9matiques d\u00e9taill\u00e9es, appel\u00e9es wireframes, pour visualiser et clarifier la structure d\u0027une interface utilisateur. Ces repr\u00e9sentations simplifi\u00e9es illustrent l\u0027organisation des \u00e9l\u00e9ments fonctionnels sans se concentrer sur le design graphique final, mettant en \u00e9vidence les composants visuels et fonctionnels essentiels. Le wireframing facilite ainsi la communication entre les acteurs d\u0027un projet et sert de base pour le d\u00e9veloppement ult\u00e9rieur de l\u0027interface."}, {"font": {"color": "white"}, "group": 1, "id": "ef6bfe65-7e12-4b65-9a46-982ac13d333b", "label": "Taux de rebond", "shape": "dot", "size": 5, "title": "Pourcentage d\u0027utilisateurs quittant un site apr\u00e8s avoir consult\u00e9 une seule page, indicatif de l\u0027engagement, de la pertinence du contenu et d\u0027un manque potentiel de satisfaction. Ce taux peut \u00e9galement \u00eatre influenc\u00e9 par des facteurs tels que la rapidit\u00e9 de chargement du site."}, {"font": {"color": "white"}, "group": 1, "id": "bbec4b6c-ecb2-4980-a828-4ea2e6a15f47", "label": "Coh\u00e9rence", "shape": "dot", "size": 5, "title": "Uniformit\u00e9 dans le design et les interactions au sein d\u0027une interface ou d\u0027une application, favorisant une meilleure compr\u00e9hension et garantissant une exp\u00e9rience fluide pour l\u0027utilisateur."}, {"font": {"color": "white"}, "group": 3, "id": "a4bf5ac2a00a43fead862ca4ecbd2405", "label": "mcq", "shape": "dot", "size": 5, "title": "Que doit prendre en compte le design pour \u00eatre efficace dans ce contexte ?"}, {"font": {"color": "white"}, "group": 5, "id": "c7bfc2ca1b974d1681e04e56abcb83d3", "label": "true_false", "shape": "dot", "size": 5, "title": "Les fonctions les plus importantes d\u0027une interface doivent \u00eatre repr\u00e9sent\u00e9es de mani\u00e8re plus visible pour prioriser leur usage."}, {"font": {"color": "white"}, "group": 5, "id": "a445f4b4019a4cff837aa3d8e9bba2c5", "label": "true_false", "shape": "dot", "size": 5, "title": "Il n\u0027est pas n\u00e9cessaire de prendre en compte la personnalit\u00e9 du service lors de la cr\u00e9ation de CTA."}, {"font": {"color": "white"}, "group": 5, "id": "5af9805f30b344e6988f400813071094", "label": "true_false", "shape": "dot", "size": 5, "title": "Pour \u00e9viter de perdre l\u0027utilisateur, il est essentiel de suivre des normes de clart\u00e9 et de coh\u00e9rence dans l\u0027interface."}, {"font": {"color": "white"}, "group": 5, "id": "c76032a02e6a4f45976fee77342cf113", "label": "true_false", "shape": "dot", "size": 5, "title": "Le design doit inclure l\u0027exp\u00e9rience utilisateur pour \u00eatre efficace."}, {"font": {"color": "white"}, "group": 5, "id": "237d060ac8a04e529f583f5e1347fc67", "label": "true_false", "shape": "dot", "size": 5, "title": "Le terme \u0027design\u0027 dans ce contexte signifie principalement \u0027cr\u00e9ation visuelle\u0027."}, {"font": {"color": "white"}, "group": 1, "id": "a2024caf-bad3-4b20-a384-8d3cea0b2ff7", "label": "Dribbble", "shape": "dot", "size": 5, "title": "Plateforme en ligne pour designers permettant de partager des travaux cr\u00e9atifs et de s\u0027inspirer des tendances actuelles."}, {"font": {"color": "white"}, "group": 1, "id": "7c15d1a8-6a39-4bb9-b353-1112c86b8900", "label": "Communication digitale", "shape": "dot", "size": 5, "title": "\u00c9change d\u0027informations via des plateformes num\u00e9riques, n\u00e9cessitant une ergonomie adapt\u00e9e pour optimiser l\u0027interaction."}, {"font": {"color": "white"}, "group": 1, "id": "d5978979-95eb-4c2f-bbf0-34d3ca920f47", "label": "Objectifs strat\u00e9giques", "shape": "dot", "size": 5, "title": "Buts d\u00e9finis par un site web ou une application qui guident le design et l\u0027ergonomie en fonction des besoins des usagers."}, {"font": {"color": "white"}, "group": 1, "id": "d90c15d6-a890-40ff-9021-d9e24563d56a", "label": "Contexte d\u0027utilisation", "shape": "dot", "size": 5, "title": "Ensemble des conditions dans lesquelles un produit est utilis\u00e9, influen\u00e7ant son ergonomie et son efficacit\u00e9."}, {"font": {"color": "white"}, "group": 1, "id": "824ed510-a8b6-49e8-b6a1-03338f5078d0", "label": "Simplicit\u00e9", "shape": "dot", "size": 5, "title": "Simplicit\u00e9 d\u00e9signe une approche de design qui privil\u00e9gie la r\u00e9duction des \u00e9l\u00e9ments superflus pour cr\u00e9er des interfaces claires, intuitives et esth\u00e9tiquement plaisantes. Ce principe vise \u00e0 rendre les interfaces faciles \u00e0 comprendre et \u00e0 utiliser, favorisant ainsi une exp\u00e9rience utilisateur optimale en mettant l\u0027accent sur le minimalisme, la fonctionnalit\u00e9 et la r\u00e9duction de la courbe d\u0027apprentissage."}, {"font": {"color": "white"}, "group": 4, "id": "a7ed5fd278444bf88b94b4a8dc1d34f9", "label": "fill_in", "shape": "dot", "size": 5, "title": "88% des utilisateurs sont moins susceptibles de retourner sur un site apr\u00e8s \u003cblank\u003e."}, {"font": {"color": "white"}, "group": 1, "id": "a298f2fb-381c-404f-91a5-0c40e082808b", "label": "\u00c9l\u00e9ments graphiques", "shape": "dot", "size": 5, "title": "Les \u00e9l\u00e9ments graphiques, ou \u00e9l\u00e9ment graphique au singulier, sont des composants visuels utilis\u00e9s dans le design num\u00e9rique, comprenant des images, boutons, ic\u00f4nes, illustrations, motifs et typographie. Ils sont essentiels pour la communication visuelle et aident \u00e0 la compr\u00e9hension d\u0027informations complexes tout en influen\u00e7ant l\u0027interaction utilisateur au sein d\u0027une interface."}, {"font": {"color": "white"}, "group": 3, "id": "74d6ad304c8c4756803e679f5c81c5ba", "label": "mcq", "shape": "dot", "size": 5, "title": "\u00c0 quoi sert principalement un design system dans une organisation ?"}, {"font": {"color": "white"}, "group": 1, "id": "53e06a2d-caf6-4629-a658-09ac86bdbd5a", "label": "Lisibilit\u00e9", "shape": "dot", "size": 5, "title": "La lisibilit\u00e9, ou lisibilit\u00e9 du contenu, est la facilit\u00e9 avec laquelle un texte peut \u00eatre lu et compris. Elle est essentielle pour une communication efficace sur diff\u00e9rents dispositifs, notamment en design graphique. La lisibilit\u00e9 est influenc\u00e9e par divers facteurs tels que la taille de la police, le contraste des couleurs, l\u0027espacement entre les \u00e9l\u00e9ments graphiques, l\u0027alignement et l\u0027utilisation d\u0027espaces blancs. Elle joue un r\u00f4le cl\u00e9 dans la cr\u00e9ation de documents clairs et attrayants, facilitant ainsi l\u0027engagement du lecteur."}, {"font": {"color": "white"}, "group": 1, "id": "218f57e5-3fb5-4ee0-9b45-85b91529a437", "label": "Banni\u00e8res publicitaires", "shape": "dot", "size": 5, "title": "Annonces visuelles plac\u00e9es sur une page web, dont la gestion doit respecter des crit\u00e8res d\u0027intrusivit\u00e9 et de dur\u00e9e d\u0027affichage."}, {"font": {"color": "white"}, "group": 5, "id": "8575c3f03e7d4498b1eba5d752c95f42", "label": "true_false", "shape": "dot", "size": 5, "title": "Les \u00e9l\u00e9ments ergonomiques doivent \u00eatre s\u00e9lectionn\u00e9s en fonction de l\u0027\u00e9tude des usagers."}, {"font": {"color": "white"}, "group": 3, "id": "916215f011f14f91a35952bc1992d123", "label": "mcq", "shape": "dot", "size": 5, "title": "Quel aspect devrait \u00eatre \u00e9vit\u00e9 pour ne pas perdre l\u0027utilisateur ?"}, {"font": {"color": "white"}, "group": 3, "id": "8217ad5333024525bdfdd890cf843cfb", "label": "mcq", "shape": "dot", "size": 5, "title": "Quel est un risque de ne pas adapter une campagne marketing aux mobiles ?"}, {"font": {"color": "white"}, "group": 5, "id": "486167e179c1429eacc12bb2005ff2e4", "label": "true_false", "shape": "dot", "size": 5, "title": "Les tests A/B permettent de tester diff\u00e9rentes approches marketing dans le but de comprendre ce qui fonctionne le mieux aupr\u00e8s des utilisateurs mobiles."}, {"font": {"color": "white"}, "group": 3, "id": "cf5d22df526b473d886b2f9185bbbade", "label": "mcq", "shape": "dot", "size": 5, "title": "Quel est l\u0027objectif principal du wireframe par rapport aux \u00e9l\u00e9ments pr\u00e9sents ?"}, {"font": {"color": "white"}, "group": 3, "id": "cfb5a24978ac4fb2bf3fa2db59ed0ebe", "label": "mcq", "shape": "dot", "size": 5, "title": "Quelle est l\u0027utilit\u00e9 des wireframes dans le processus de cr\u00e9ation web?"}, {"font": {"color": "white"}, "group": 5, "id": "a9e39306cb3b4f74b096fd9dd4b2697a", "label": "true_false", "shape": "dot", "size": 5, "title": "Le wireframe consiste \u00e0 d\u00e9finir l\u0027organisation des \u00e9l\u00e9ments et des formes tout en travaillant l\u0027aspect visuel."}, {"font": {"color": "white"}, "group": 1, "id": "b73644a0-a450-4aa4-9e3b-96cc1c0da4c7", "label": "Image", "shape": "dot", "size": 5, "title": "Repr\u00e9sentations visuelles d\u0027un sujet, essentielles pour la communication et l\u0027interpr\u00e9tation dans le design graphique et le contenu num\u00e9rique, influen\u00e7ant la perception et l\u0027\u00e9motion du spectateur tout en n\u00e9cessitant des alternatives textuelles pour l\u0027accessibilit\u00e9."}, {"font": {"color": "white"}, "group": 1, "id": "9221e73f-167f-425b-8345-bb3232061e0b", "label": "Longue tra\u00eene", "shape": "dot", "size": 5, "title": "Strat\u00e9gie marketing o\u00f9 un petit nombre de produits g\u00e9n\u00e8re la majorit\u00e9 des ventes, tandis que beaucoup d\u0027autres en g\u00e9n\u00e8rent peu."}, {"font": {"color": "white"}, "group": 1, "id": "7f68a084-10a3-4266-90e0-653c0f007cfd", "label": "Design-first", "shape": "dot", "size": 5, "title": "Approche de conception priorisant l\u0027esth\u00e9tique et l\u0027exp\u00e9rience utilisateur d\u00e8s le d\u00e9but du processus de d\u00e9veloppement."}, {"font": {"color": "white"}, "group": 1, "id": "a2ed3777-a1b4-47a1-8983-706adaa17b4e", "label": "crit\u00e8re 11.9", "shape": "dot", "size": 5, "title": "Exigence d\u0027accessibilit\u00e9 demandant que les intitul\u00e9s des boutons soient pertinents et informatifs pour l\u0027utilisateur."}, {"font": {"color": "white"}, "group": 1, "id": "c2dea517-fa6e-4150-9c20-4a1c2eb9869a", "label": "Sentiment d\u0027avancer", "shape": "dot", "size": 5, "title": "Le sentiment d\u0027avancer d\u00e9crit la perception positive de progr\u00e8s dans un projet, souvent li\u00e9 \u00e0 l\u0027identification rapide et \u00e0 la r\u00e9solution de probl\u00e8mes."}, {"font": {"color": "white"}, "group": 1, "id": "5b7b4dd7-8934-4844-b72c-ab548c3cebf9", "label": "Communication continue", "shape": "dot", "size": 5, "title": "\u00c9change r\u00e9gulier d\u0027informations entre membres d\u0027une \u00e9quipe pour assurer coh\u00e9rence et \u00e9viter conflits lors du d\u00e9veloppement collaboratif."}, {"font": {"color": "white"}, "group": 1, "id": "991e534d-656c-4e1f-b591-407211354ea5", "label": "Coordination entre \u00e9quipes", "shape": "dot", "size": 5, "title": "La collaboration n\u00e9cessaire entre les \u00e9quipes de d\u00e9veloppement, test et exploitation pour assurer une transition fluide entre les diff\u00e9rents environnements."}, {"font": {"color": "white"}, "group": 1, "id": "26aa58a3-38c4-42af-894c-4680f9597eae", "label": "Livraison Rapide", "shape": "dot", "size": 5, "title": "Capacit\u00e9 \u00e0 mettre rapidement de nouvelles fonctionnalit\u00e9s \u00e0 disposition des utilisateurs, cruciale pour maintenir un avantage concurrentiel."}, {"font": {"color": "white"}, "group": 1, "id": "0fbe4a93-bbc1-40bb-863b-fc9a2392042a", "label": "Contributions personnelles", "shape": "dot", "size": 5, "title": "Modifications individuelles apport\u00e9es par chaque membre d\u0027une \u00e9quipe dans un projet collaboratif, cruciales pour le d\u00e9veloppement collectif et l\u0027apprentissage partag\u00e9."}, {"font": {"color": "white"}, "group": 1, "id": "fb401322-f14a-43b2-84dd-a1a613750ca3", "label": "Logistique", "shape": "dot", "size": 5, "title": "Gestion des flux de biens, services et informations entre le point d\u0027origine et le point de consommation."}, {"font": {"color": "white"}, "group": 1, "id": "93fc10ca-887a-4aa2-8576-0c524a2f81f7", "label": "t\u00e2ches (todo list)", "shape": "dot", "size": 5, "title": "Outil ou application simple utilis\u00e9e pour organiser, suivre et g\u00e9rer l\u0027accomplissement d\u0027activit\u00e9s ou objectifs \u00e0 r\u00e9aliser, souvent utilis\u00e9e comme projet d\u0027apprentissage en d\u00e9veloppement web."}]);
+                  edges = new vis.DataSet([{"from": "97773262-3ef9-493f-8aea-44b4ef91a06d", "to": "372cb9c1-16a5-4610-bf5d-8479cc009f75", "width": 1}, {"from": "97773262-3ef9-493f-8aea-44b4ef91a06d", "to": "6d35ed94-c063-4944-b49e-ccf41ccc7ff8", "width": 1}, {"from": "287ef751-850a-45f8-8aea-12aa5b7582a2", "to": 13609, "width": 1}, {"from": "287ef751-850a-45f8-8aea-12aa5b7582a2", "to": "d7224c6f-a919-460d-af12-6dfbeacde495", "width": 1}, {"from": "287ef751-850a-45f8-8aea-12aa5b7582a2", "to": "6d35ed94-c063-4944-b49e-ccf41ccc7ff8", "width": 1}, {"from": "d7224c6f-a919-460d-af12-6dfbeacde495", "to": 13609, "width": 1}, {"from": "d7224c6f-a919-460d-af12-6dfbeacde495", "to": "6d35ed94-c063-4944-b49e-ccf41ccc7ff8", "width": 1}, {"from": "d7224c6f-a919-460d-af12-6dfbeacde495", "to": "e208c124-c2d4-43aa-b374-5e9653b2aad4", "width": 1}, {"from": "d7224c6f-a919-460d-af12-6dfbeacde495", "to": "96de6341e9db41a78edad0d40b97ea6e", "width": 1}, {"from": "7843365f-32d0-4ace-98d4-f900474fa71e", "to": "daa3aac2-81f4-4cc8-a13f-65ad4d1424af", "width": 1}, {"from": "7843365f-32d0-4ace-98d4-f900474fa71e", "to": "baebe016-d0cc-4e32-9346-f7e1124193a3", "width": 1}, {"from": "6d35ed94-c063-4944-b49e-ccf41ccc7ff8", "to": 13609, "width": 1}, {"from": "6d35ed94-c063-4944-b49e-ccf41ccc7ff8", "to": "372cb9c1-16a5-4610-bf5d-8479cc009f75", "width": 1}, {"from": "6d35ed94-c063-4944-b49e-ccf41ccc7ff8", "to": "96de6341e9db41a78edad0d40b97ea6e", "width": 1}, {"from": "6d35ed94-c063-4944-b49e-ccf41ccc7ff8", "to": "47e18ea434d1468fbf90431150106f5a", "width": 1}, {"from": "6d35ed94-c063-4944-b49e-ccf41ccc7ff8", "to": "5c606750887c4757b7d7e67a0202c610", "width": 1}, {"from": "6d35ed94-c063-4944-b49e-ccf41ccc7ff8", "to": "0c79cb0dbec84141bd9db5cb2edd85ee", "width": 1}, {"from": "6d35ed94-c063-4944-b49e-ccf41ccc7ff8", "to": "ef66e7f5ac7d4e3d9969152d5f9ab6ca", "width": 1}, {"from": "6d35ed94-c063-4944-b49e-ccf41ccc7ff8", "to": "1ede30a3a3304374b0a8050a6236b341", "width": 1}, {"from": "6d35ed94-c063-4944-b49e-ccf41ccc7ff8", "to": "3f048550008d42839cb0450f76db11d5", "width": 1}, {"from": "baebe016-d0cc-4e32-9346-f7e1124193a3", "to": 13609, "width": 1}, {"from": "baebe016-d0cc-4e32-9346-f7e1124193a3", "to": "6023dfd6-ea81-45fa-aefa-6d1c4958f59a", "width": 1}, {"from": "baebe016-d0cc-4e32-9346-f7e1124193a3", "to": "daa3aac2-81f4-4cc8-a13f-65ad4d1424af", "width": 1}, {"from": "baebe016-d0cc-4e32-9346-f7e1124193a3", "to": "e208c124-c2d4-43aa-b374-5e9653b2aad4", "width": 1}, {"from": "baebe016-d0cc-4e32-9346-f7e1124193a3", "to": "784d7e55-3719-435a-86eb-e3028d2e8919", "width": 1}, {"from": "baebe016-d0cc-4e32-9346-f7e1124193a3", "to": "ef6bfe65-7e12-4b65-9a46-982ac13d333b", "width": 1}, {"from": "baebe016-d0cc-4e32-9346-f7e1124193a3", "to": "bbec4b6c-ecb2-4980-a828-4ea2e6a15f47", "width": 1}, {"from": "baebe016-d0cc-4e32-9346-f7e1124193a3", "to": "a4bf5ac2a00a43fead862ca4ecbd2405", "width": 1}, {"from": "baebe016-d0cc-4e32-9346-f7e1124193a3", "to": "c7bfc2ca1b974d1681e04e56abcb83d3", "width": 1}, {"from": "baebe016-d0cc-4e32-9346-f7e1124193a3", "to": "a445f4b4019a4cff837aa3d8e9bba2c5", "width": 1}, {"from": "baebe016-d0cc-4e32-9346-f7e1124193a3", "to": "5af9805f30b344e6988f400813071094", "width": 1}, {"from": "baebe016-d0cc-4e32-9346-f7e1124193a3", "to": "c76032a02e6a4f45976fee77342cf113", "width": 1}, {"from": "baebe016-d0cc-4e32-9346-f7e1124193a3", "to": "237d060ac8a04e529f583f5e1347fc67", "width": 1}, {"from": "a2024caf-bad3-4b20-a384-8d3cea0b2ff7", "to": "784d7e55-3719-435a-86eb-e3028d2e8919", "width": 1}, {"from": "7c15d1a8-6a39-4bb9-b353-1112c86b8900", "to": "d5978979-95eb-4c2f-bbf0-34d3ca920f47", "width": 1}, {"from": "7c15d1a8-6a39-4bb9-b353-1112c86b8900", "to": "d90c15d6-a890-40ff-9021-d9e24563d56a", "width": 1}, {"from": "824ed510-a8b6-49e8-b6a1-03338f5078d0", "to": 13609, "width": 1}, {"from": "824ed510-a8b6-49e8-b6a1-03338f5078d0", "to": "bbec4b6c-ecb2-4980-a828-4ea2e6a15f47", "width": 1}, {"from": "824ed510-a8b6-49e8-b6a1-03338f5078d0", "to": "ef6bfe65-7e12-4b65-9a46-982ac13d333b", "width": 1}, {"from": "824ed510-a8b6-49e8-b6a1-03338f5078d0", "to": "e208c124-c2d4-43aa-b374-5e9653b2aad4", "width": 1}, {"from": "824ed510-a8b6-49e8-b6a1-03338f5078d0", "to": "a7ed5fd278444bf88b94b4a8dc1d34f9", "width": 1}, {"from": "a298f2fb-381c-404f-91a5-0c40e082808b", "to": "74d6ad304c8c4756803e679f5c81c5ba", "width": 1}, {"from": "53e06a2d-caf6-4629-a658-09ac86bdbd5a", "to": 13609, "width": 1}, {"from": "53e06a2d-caf6-4629-a658-09ac86bdbd5a", "to": "218f57e5-3fb5-4ee0-9b45-85b91529a437", "width": 1}, {"from": "53e06a2d-caf6-4629-a658-09ac86bdbd5a", "to": "a445f4b4019a4cff837aa3d8e9bba2c5", "width": 1}, {"from": "6023dfd6-ea81-45fa-aefa-6d1c4958f59a", "to": 13609, "width": 1}, {"from": "d90c15d6-a890-40ff-9021-d9e24563d56a", "to": "d5978979-95eb-4c2f-bbf0-34d3ca920f47", "width": 1}, {"from": "d90c15d6-a890-40ff-9021-d9e24563d56a", "to": "8575c3f03e7d4498b1eba5d752c95f42", "width": 1}, {"from": "bbec4b6c-ecb2-4980-a828-4ea2e6a15f47", "to": 13609, "width": 1}, {"from": "bbec4b6c-ecb2-4980-a828-4ea2e6a15f47", "to": "e208c124-c2d4-43aa-b374-5e9653b2aad4", "width": 1}, {"from": "bbec4b6c-ecb2-4980-a828-4ea2e6a15f47", "to": "ef6bfe65-7e12-4b65-9a46-982ac13d333b", "width": 1}, {"from": "bbec4b6c-ecb2-4980-a828-4ea2e6a15f47", "to": "916215f011f14f91a35952bc1992d123", "width": 1}, {"from": "bbec4b6c-ecb2-4980-a828-4ea2e6a15f47", "to": "a7ed5fd278444bf88b94b4a8dc1d34f9", "width": 1}, {"from": "bbec4b6c-ecb2-4980-a828-4ea2e6a15f47", "to": "5af9805f30b344e6988f400813071094", "width": 1}, {"from": "e208c124-c2d4-43aa-b374-5e9653b2aad4", "to": 13609, "width": 1}, {"from": "e208c124-c2d4-43aa-b374-5e9653b2aad4", "to": "ef6bfe65-7e12-4b65-9a46-982ac13d333b", "width": 1}, {"from": "e208c124-c2d4-43aa-b374-5e9653b2aad4", "to": "8217ad5333024525bdfdd890cf843cfb", "width": 1}, {"from": "e208c124-c2d4-43aa-b374-5e9653b2aad4", "to": "486167e179c1429eacc12bb2005ff2e4", "width": 1}, {"from": "784d7e55-3719-435a-86eb-e3028d2e8919", "to": 13609, "width": 1}, {"from": "784d7e55-3719-435a-86eb-e3028d2e8919", "to": "cf5d22df526b473d886b2f9185bbbade", "width": 1}, {"from": "784d7e55-3719-435a-86eb-e3028d2e8919", "to": "cfb5a24978ac4fb2bf3fa2db59ed0ebe", "width": 1}, {"from": "784d7e55-3719-435a-86eb-e3028d2e8919", "to": "a9e39306cb3b4f74b096fd9dd4b2697a", "width": 1}, {"from": "ef6bfe65-7e12-4b65-9a46-982ac13d333b", "to": 13609, "width": 1}, {"from": "ef6bfe65-7e12-4b65-9a46-982ac13d333b", "to": "a7ed5fd278444bf88b94b4a8dc1d34f9", "width": 1}, {"from": "a4bf5ac2a00a43fead862ca4ecbd2405", "to": 13609, "width": 1}, {"from": "c76032a02e6a4f45976fee77342cf113", "to": 13609, "width": 1}, {"from": "237d060ac8a04e529f583f5e1347fc67", "to": 13609, "width": 1}, {"from": "47e18ea434d1468fbf90431150106f5a", "to": 13609, "width": 1}, {"from": "5af9805f30b344e6988f400813071094", "to": 13609, "width": 1}, {"from": "916215f011f14f91a35952bc1992d123", "to": 13609, "width": 1}, {"from": "cf5d22df526b473d886b2f9185bbbade", "to": 13609, "width": 1}, {"from": "5c606750887c4757b7d7e67a0202c610", "to": 13609, "width": 1}, {"from": "0c79cb0dbec84141bd9db5cb2edd85ee", "to": 13609, "width": 1}, {"from": "ef66e7f5ac7d4e3d9969152d5f9ab6ca", "to": 13609, "width": 1}, {"from": "3f048550008d42839cb0450f76db11d5", "to": 13609, "width": 1}, {"from": "a445f4b4019a4cff837aa3d8e9bba2c5", "to": 13609, "width": 1}, {"from": "cfb5a24978ac4fb2bf3fa2db59ed0ebe", "to": 13609, "width": 1}, {"from": "a9e39306cb3b4f74b096fd9dd4b2697a", "to": 13609, "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": true,
+        "filter": [
+            "physics"
+        ]
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "repulsion": {
+            "centralGravity": 0.33,
+            "damping": 0.95,
+            "nodeDistance": 420,
+            "springConstant": 0.1,
+            "springLength": 110
+        },
+        "solver": "repulsion",
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+                  // if this network requires displaying the configure window,
+                  // put it in its div
+                  options.configure["container"] = document.getElementById("config");
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>

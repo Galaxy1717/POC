@@ -1,0 +1,178 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 800px;
+                 background-color: #222222;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+             #config {
+                 float: left;
+                 width: 400px;
+                 height: 600px;
+             }
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+            <div id="config"></div>
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"font": {"color": "white"}, "group": 1, "id": "97773262-3ef9-493f-8aea-44b4ef91a06d", "label": "Marketing", "shape": "dot", "size": 5, "title": "Discipline visant \u00e0 promouvoir et vendre des produits ou services, incluant des strat\u00e9gies comme le mass mailing, le suivi de campagnes sponsoris\u00e9es, ainsi que des techniques pour attirer et fid\u00e9liser les clients dans un environnement concurrentiel."}, {"font": {"color": "white"}, "group": 1, "id": "c39fe47c-99bf-4319-981d-05167bec6fe9", "label": "Performance", "shape": "dot", "size": 5, "title": "La performance d\u0027un site web, ou performance de site, d\u00e9signe la capacit\u00e9 d\u0027un site \u00e0 fonctionner efficacement sous diverses conditions. Cela inclut des aspects tels que la vitesse de chargement, l\u0027exp\u00e9rience utilisateur, le taux de conversion, le trafic, le SEO et l\u0027engagement utilisateur. Ces \u00e9l\u00e9ments sont essentiels pour optimiser la visibilit\u00e9 en ligne et influencer directement la satisfaction des utilisateurs dans un contexte num\u00e9rique."}, {"font": {"color": "white"}, "group": 1, "id": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "label": "Exp\u00e9rience Utilisateur et Client", "shape": "dot", "size": 21, "title": "L\u0027exp\u00e9rience utilisateur (UX) et l\u0027exp\u00e9rience client englobent toutes les \u00e9motions, attitudes et r\u00e9actions d\u0027un utilisateur lors de son interaction avec un produit ou service. L\u0027UX vise \u00e0 optimiser la satisfaction en am\u00e9liorant la perception globale influenc\u00e9e par le design, les fonctionnalit\u00e9s, l\u0027interface, l\u0027utilisabilit\u00e9 et le plaisir d\u0027utilisation. L\u0027interface utilisateur (UI), qui constitue le point de contact visuel et interactif entre l\u0027utilisateur et le syst\u00e8me, joue un r\u00f4le crucial dans la convivialit\u00e9 et l\u0027esth\u00e9tique du produit num\u00e9rique. De plus, l\u0027UX mobile se concentre sur la cr\u00e9ation d\u0027interfaces conviviales pour maximiser l\u0027engagement des utilisateurs sur appareils mobiles. Ensemble, ces concepts visent \u00e0 r\u00e9duire les frictions durant le processus d\u0027achat et \u00e0 influencer la fid\u00e9lit\u00e9 des utilisateurs dans un environnement num\u00e9rique."}, {"font": {"color": "white"}, "group": 1, "id": "e9efe22e-bd43-48e9-8899-f1d1eededf4e", "label": "RGPD (R\u00e8glement G\u00e9n\u00e9ral sur la Protection des Donn\u00e9es)", "shape": "dot", "size": 5, "title": "Le RGPD est une l\u00e9gislation de l\u0027Union europ\u00e9enne qui \u00e9tablit des r\u00e8gles strictes concernant le traitement des donn\u00e9es personnelles, visant \u00e0 prot\u00e9ger les droits des citoyens europ\u00e9ens en mati\u00e8re de confidentialit\u00e9. Il impose des obligations aux organisations traitant ces informations et renforce les droits individuels, garantissant ainsi un niveau \u00e9lev\u00e9 de protection pour la vie priv\u00e9e. Le respect de ces r\u00e8gles, connu sous le nom de conformit\u00e9 RGPD, est essentiel pour assurer que les donn\u00e9es personnelles sont collect\u00e9es et utilis\u00e9es de mani\u00e8re responsable et s\u00e9curis\u00e9e."}, {"font": {"color": "white"}, "group": 1, "id": "e208c124-c2d4-43aa-b374-5e9653b2aad4", "label": "Taux de conversion", "shape": "dot", "size": 5, "title": "Le taux de conversion est le pourcentage d\u0027utilisateurs qui r\u00e9alisent une action souhait\u00e9e, comme un achat ou une inscription, apr\u00e8s avoir \u00e9t\u00e9 expos\u00e9s \u00e0 une campagne marketing sur un site web ou via des canaux mobiles. Cet indicateur cl\u00e9 de performance commerciale mesure l\u0027efficacit\u00e9 d\u0027une interface et peut \u00eatre influenc\u00e9 par divers facteurs, tels que l\u0027utilisation strat\u00e9gique des couleurs et d\u0027autres \u00e9l\u00e9ments de design UX. Il repr\u00e9sente donc la proportion de prospects qui deviennent clients suite \u00e0 leur interaction avec une offre."}, {"font": {"color": "white"}, "group": 2, "id": 13609, "label": "Mathilde Vigneron : Designer Produit et Sp\u00e9cialiste en Marketing Mobile", "shape": "dot", "size": 8, "title": "_YNOV CONNECT_Mobil Marketing, user acquisition \u0026 mode\u0300les e\u0301conomique_B3 \u2013Commun Marcom"}, {"font": {"color": "white"}, "group": 1, "id": "d7224c6f-a919-460d-af12-6dfbeacde495", "label": "Visibilit\u00e9 en ligne", "shape": "dot", "size": 5, "title": "La visibilit\u00e9 en ligne d\u00e9signe la capacit\u00e9 d\u0027une entreprise ou d\u0027une marque \u00e0 \u00eatre facilement per\u00e7ue et trouv\u00e9e sur Internet, ce qui est essentiel pour attirer de nouveaux clients et prospects. Cela inclut le degr\u00e9 de reconnaissance par le public ainsi que l\u0027efficacit\u00e9 des strat\u00e9gies mises en place pour se d\u00e9marquer dans un environnement concurrentiel, notamment \u00e0 travers les moteurs de recherche et d\u0027autres moyens de navigation, contribuant ainsi \u00e0 l\u0027augmentation des ventes."}, {"font": {"color": "white"}, "group": 1, "id": "adc8dc13-f786-4914-8a14-7ba79f9406d6", "label": "Responsive Design", "shape": "dot", "size": 6, "title": "La conception r\u00e9active, ou responsive design, est une approche de conception web qui permet aux sites et emails de s\u0027adapter automatiquement \u00e0 diff\u00e9rentes tailles d\u0027\u00e9cran et formats. Elle ajuste dynamiquement le contenu selon la largeur de l\u0027\u00e9cran, optimisant ainsi l\u0027exp\u00e9rience utilisateur sur tous les appareils, y compris mobiles et tablettes. Cette m\u00e9thode garantit une accessibilit\u00e9 am\u00e9lior\u00e9e et une exp\u00e9rience utilisateur coh\u00e9rente sans n\u00e9cessiter la cr\u00e9ation de maquettes s\u00e9par\u00e9es. Avec l\u0027augmentation du trafic mobile, cette approche est devenue essentielle pour r\u00e9pondre aux besoins vari\u00e9s des utilisateurs sur toutes les plateformes."}, {"font": {"color": "white"}, "group": 1, "id": "bbec4b6c-ecb2-4980-a828-4ea2e6a15f47", "label": "Coh\u00e9rence", "shape": "dot", "size": 5, "title": "Uniformit\u00e9 dans le design et les interactions au sein d\u0027une interface ou d\u0027une application, favorisant une meilleure compr\u00e9hension et garantissant une exp\u00e9rience fluide pour l\u0027utilisateur."}, {"font": {"color": "white"}, "group": 1, "id": "824ed510-a8b6-49e8-b6a1-03338f5078d0", "label": "Simplicit\u00e9", "shape": "dot", "size": 5, "title": "Simplicit\u00e9 d\u00e9signe une approche de design qui privil\u00e9gie la r\u00e9duction des \u00e9l\u00e9ments superflus pour cr\u00e9er des interfaces claires, intuitives et esth\u00e9tiquement plaisantes. Ce principe vise \u00e0 rendre les interfaces faciles \u00e0 comprendre et \u00e0 utiliser, favorisant ainsi une exp\u00e9rience utilisateur optimale en mettant l\u0027accent sur le minimalisme, la fonctionnalit\u00e9 et la r\u00e9duction de la courbe d\u0027apprentissage."}, {"font": {"color": "white"}, "group": 1, "id": "bf9dcd29-03f3-4cd8-a076-8331895e019d", "label": "KPI (Indicateurs Cl\u00e9s de Performance)", "shape": "dot", "size": 5, "title": "Les KPI, ou Indicateurs Cl\u00e9s de Performance, sont des mesures quantifiables utilis\u00e9es pour \u00e9valuer le succ\u00e8s et l\u0027efficacit\u00e9 d\u0027un produit, service ou strat\u00e9gie marketing. Ils jouent un r\u00f4le essentiel dans le suivi des performances des \u00e9quipes, notamment dans les objectifs DevOps, en facilitant la prise de d\u00e9cisions \u00e9clair\u00e9es et en permettant d\u0027ajuster les actions si n\u00e9cessaire."}, {"font": {"color": "white"}, "group": 3, "id": "8217ad5333024525bdfdd890cf843cfb", "label": "mcq", "shape": "dot", "size": 5, "title": "Quel est un risque de ne pas adapter une campagne marketing aux mobiles ?"}, {"font": {"color": "white"}, "group": 4, "id": "e90463e2623e45b7aa7f996dfc2579bc", "label": "fill_in", "shape": "dot", "size": 5, "title": "Les campagnes peuvent \u00eatre optimis\u00e9es en surveillant les performances via des outils \u003cblank\u003e qui analysent la navigation des utilisateurs mobiles et les taux de conversion."}, {"font": {"color": "white"}, "group": 5, "id": "486167e179c1429eacc12bb2005ff2e4", "label": "true_false", "shape": "dot", "size": 5, "title": "Les tests A/B permettent de tester diff\u00e9rentes approches marketing dans le but de comprendre ce qui fonctionne le mieux aupr\u00e8s des utilisateurs mobiles."}, {"font": {"color": "white"}, "group": 5, "id": "20f0c140b108422da73a48463484a150", "label": "true_false", "shape": "dot", "size": 5, "title": "Chaque dollar investi dans l\u0027exp\u00e9rience utilisateur (UX) peut rapporter entre 2 et 100 dollars."}, {"font": {"color": "white"}, "group": 1, "id": "287ef751-850a-45f8-8aea-12aa5b7582a2", "label": "Webmarketing", "shape": "dot", "size": 5, "title": "Le webmarketing d\u00e9signe l\u0027ensemble des techniques marketing appliqu\u00e9es sur Internet, incluant le mobile marketing, pour promouvoir efficacement des produits ou services et atteindre les utilisateurs mobiles."}, {"font": {"color": "white"}, "group": 1, "id": "9639a3d5-c874-4c14-9acd-54637974eae7", "label": "Contenus", "shape": "dot", "size": 5, "title": "Les contenus d\u00e9signent la qualit\u00e9 et la pertinence des informations et m\u00e9dias pr\u00e9sent\u00e9s sur un site web, qui sont essentiels pour r\u00e9pondre aux besoins des utilisateurs, attirer et retenir leur attention."}, {"font": {"color": "white"}, "group": 1, "id": "6023dfd6-ea81-45fa-aefa-6d1c4958f59a", "label": "Confiance du consommateur", "shape": "dot", "size": 5, "title": "Niveau de s\u00e9curit\u00e9 et de certitude ressenti par un consommateur envers une marque, un produit ou un service, influenc\u00e9 par la clart\u00e9 des informations et la simplicit\u00e9 des choix offerts, crucial pour encourager l\u0027achat et fid\u00e9liser."}, {"font": {"color": "white"}, "group": 1, "id": "68fa2d67-f897-4e62-8392-2bdbe88e0df2", "label": "Choix limit\u00e9", "shape": "dot", "size": 5, "title": "Strat\u00e9gie visant \u00e0 r\u00e9duire le nombre d\u0027options pr\u00e9sent\u00e9es aux utilisateurs pour acc\u00e9l\u00e9rer leur processus d\u00e9cisionnel."}, {"font": {"color": "white"}, "group": 3, "id": "916215f011f14f91a35952bc1992d123", "label": "mcq", "shape": "dot", "size": 5, "title": "Quel aspect devrait \u00eatre \u00e9vit\u00e9 pour ne pas perdre l\u0027utilisateur ?"}, {"font": {"color": "white"}, "group": 5, "id": "5af9805f30b344e6988f400813071094", "label": "true_false", "shape": "dot", "size": 5, "title": "Pour \u00e9viter de perdre l\u0027utilisateur, il est essentiel de suivre des normes de clart\u00e9 et de coh\u00e9rence dans l\u0027interface."}, {"font": {"color": "white"}, "group": 3, "id": "078c5a40a6ba4a0d859d037fdac4d6b2", "label": "mcq", "shape": "dot", "size": 5, "title": "Que doivent savoir les individus au moment de la collecte de leurs donn\u00e9es ?"}, {"font": {"color": "white"}, "group": 3, "id": "2abe03da70394ff1a61664b3f1071ff6", "label": "mcq", "shape": "dot", "size": 5, "title": "Que doivent devenir les donn\u00e9es apr\u00e8s leur utilisation pour l\u0027objectif pr\u00e9vu ?"}, {"font": {"color": "white"}, "group": 3, "id": "75911bacb3da4e979de2636dadd081b0", "label": "mcq", "shape": "dot", "size": 5, "title": "Une soci\u00e9t\u00e9 chinoise proposant un e-commerce en fran\u00e7ais doit-elle respecter le RGPD ?"}, {"font": {"color": "white"}, "group": 4, "id": "1fec1b9a5fcb4155b162a422b580583b", "label": "fill_in", "shape": "dot", "size": 5, "title": "Les individus doivent \u00eatre inform\u00e9s d\u00e8s la collecte de leurs donn\u00e9es des \u003cblank\u003e et des modalit\u00e9s d\u0027exercice de ces droits."}, {"font": {"color": "white"}, "group": 4, "id": "4492d8980c4845dd9f502bc13f08b611", "label": "fill_in", "shape": "dot", "size": 5, "title": "Le RGPD s\u0027applique \u00e0 tout organisme public ou priv\u00e9, quelles que soient sa taille et son activit\u00e9, d\u00e8s lors qu\u0027il collecte et traite des donn\u00e9es personnelles, m\u00eame si l\u0027organisme est situ\u00e9 en dehors de l\u0027Union europ\u00e9enne, comme par exemple une soci\u00e9t\u00e9 \u00e9tablie en \u003cblank\u003e, proposant un site de e-commerce en fran\u00e7ais et livrant des produits en France."}, {"font": {"color": "white"}, "group": 5, "id": "ec725adb44a6479eb9be0e5010aa8584", "label": "true_false", "shape": "dot", "size": 5, "title": "La CNIL peut imposer une sanction pouvant atteindre 4 % du chiffre d\u0027affaires annuel mondial d\u0027une entreprise en cas de violation des r\u00e8gles du RGPD."}, {"font": {"color": "white"}, "group": 5, "id": "66f992bff64445abb49ef55e79ec26cf", "label": "true_false", "shape": "dot", "size": 5, "title": "Les personnes doivent \u00eatre inform\u00e9es de l\u0027utilisation de leurs donn\u00e9es uniquement apr\u00e8s leur collecte."}, {"font": {"color": "white"}, "group": 5, "id": "0c786fc868744da0ad56677a65c6cd9a", "label": "true_false", "shape": "dot", "size": 5, "title": "Les donn\u00e9es personnelles ne peuvent jamais \u00eatre collect\u00e9es \u00e0 l\u0027insu des individus."}, {"font": {"color": "white"}, "group": 5, "id": "a40cdc8533454786917d9b357ccc2699", "label": "true_false", "shape": "dot", "size": 5, "title": "Les donn\u00e9es peuvent \u00eatre r\u00e9utilis\u00e9es pour n\u0027importe quel objectif tant qu\u0027elles sont collect\u00e9es l\u00e9galement."}, {"font": {"color": "white"}, "group": 5, "id": "5a45539ee9d445b7887aec05dc08b750", "label": "true_false", "shape": "dot", "size": 5, "title": "Le principe de finalit\u00e9 emp\u00eache la collecte de donn\u00e9es \u0027au cas o\u00f9\u0027."}, {"font": {"color": "white"}, "group": 5, "id": "731108feac094ba79e227a1b6d691a6e", "label": "true_false", "shape": "dot", "size": 5, "title": "Les donn\u00e9es doivent \u00eatre conserv\u00e9es en base active aussi longtemps que possible, m\u00eame apr\u00e8s r\u00e9alisation de l\u0027objectif."}, {"font": {"color": "white"}, "group": 5, "id": "0a907608fdb94c44acdc7c615ecb092e", "label": "true_false", "shape": "dot", "size": 5, "title": "Une fois les objectifs atteints, les donn\u00e9es peuvent \u00eatre soit d\u00e9truites, soit anonymis\u00e9es, soit archiv\u00e9es dans le respect des obligations l\u00e9gales."}, {"font": {"color": "white"}, "group": 5, "id": "379d97c89b614eb7b88e8b5ca97669d3", "label": "true_false", "shape": "dot", "size": 5, "title": "La protection des donn\u00e9es personnelles est une pr\u00e9occupation croissante li\u00e9e au RGPD."}, {"font": {"color": "white"}, "group": 5, "id": "2bdd5ad347854331aa8bdf0877bb0bf8", "label": "true_false", "shape": "dot", "size": 5, "title": "Seules les entreprises bas\u00e9es dans l\u0027Union europ\u00e9enne doivent respecter le RGPD."}, {"font": {"color": "white"}, "group": 5, "id": "65cb6c094e334bdfa5c13415d9338029", "label": "true_false", "shape": "dot", "size": 5, "title": "Une entreprise situ\u00e9e en Chine vendant des produits aux consommateurs fran\u00e7ais doit respecter le RGPD."}, {"font": {"color": "white"}, "group": 1, "id": "7c15d1a8-6a39-4bb9-b353-1112c86b8900", "label": "Communication digitale", "shape": "dot", "size": 5, "title": "\u00c9change d\u0027informations via des plateformes num\u00e9riques, n\u00e9cessitant une ergonomie adapt\u00e9e pour optimiser l\u0027interaction."}, {"font": {"color": "white"}, "group": 3, "id": "e7b0c7a7f26b446883a03cce065173dd", "label": "mcq", "shape": "dot", "size": 5, "title": "Quelle \u00e9tape vient imm\u00e9diatement apr\u00e8s la lecture du contenu par l\u0027utilisateur ?"}, {"font": {"color": "white"}, "group": 3, "id": "d4e9ab91b0d543e59d4284af6b4ebc5f", "label": "mcq", "shape": "dot", "size": 5, "title": "Pourquoi la taille de l\u0027\u00e9cran mobile peut poser probl\u00e8me lors de la conception ?"}, {"font": {"color": "white"}, "group": 3, "id": "a4bf5ac2a00a43fead862ca4ecbd2405", "label": "mcq", "shape": "dot", "size": 5, "title": "Que doit prendre en compte le design pour \u00eatre efficace dans ce contexte ?"}, {"font": {"color": "white"}, "group": 4, "id": "15aaf95744024038ac5c23a58c47e7ff", "label": "fill_in", "shape": "dot", "size": 5, "title": "Ne pas adapter correctement le contenu aux appareils mobiles peut entra\u00eener \u003cblank\u003e pour les utilisateurs."}, {"font": {"color": "white"}, "group": 5, "id": "a89e80f3f1dc43a68ce19fbb0af28b4a", "label": "true_false", "shape": "dot", "size": 5, "title": "L\u0027utilisateur va d\u0027abord trouver le call to action avant de lire le contenu."}, {"font": {"color": "white"}, "group": 5, "id": "5dfa078c93a7429e8dc56bddb5e73e9f", "label": "true_false", "shape": "dot", "size": 5, "title": "Le mobile repr\u00e9sente plus de 52% du trafic en ligne, ce qui rend le responsive design essentiel."}, {"font": {"color": "white"}, "group": 5, "id": "c76032a02e6a4f45976fee77342cf113", "label": "true_false", "shape": "dot", "size": 5, "title": "Le design doit inclure l\u0027exp\u00e9rience utilisateur pour \u00eatre efficace."}, {"font": {"color": "white"}, "group": 5, "id": "237d060ac8a04e529f583f5e1347fc67", "label": "true_false", "shape": "dot", "size": 5, "title": "Le terme \u0027design\u0027 dans ce contexte signifie principalement \u0027cr\u00e9ation visuelle\u0027."}, {"font": {"color": "white"}, "group": 4, "id": "046002d154f54faba26d356d715ab78c", "label": "fill_in", "shape": "dot", "size": 5, "title": "Pour offrir une bonne exp\u00e9rience utilisateur sur mobile, il est important d\u0027adapter l\u0027interface de votre site \u00e0 la taille de l\u0027\u00e9cran, ce qui peut \u00eatre r\u00e9alis\u00e9 gr\u00e2ce \u00e0 un site \u003cblank\u003e."}, {"font": {"color": "white"}, "group": 5, "id": "053de79d8f01448d8c9ae2f115f8abaf", "label": "true_false", "shape": "dot", "size": 5, "title": "Les pages Responsive ne fonctionnent correctement que lorsque leur largeur est entre 400 et 4000 pixels."}, {"font": {"color": "white"}, "group": 5, "id": "cc8ce2b19f52403790617b85986c9f73", "label": "true_false", "shape": "dot", "size": 5, "title": "Un site responsive design s\u0027adapte \u00e0 la taille de la fen\u00eatre du navigateur pour offrir une meilleure exp\u00e9rience utilisateur sur mobile."}, {"font": {"color": "white"}, "group": 1, "id": "7f7bc3fd-58c8-4cec-8710-e67a26f5a1dd", "label": "NotificationService", "shape": "dot", "size": 5, "title": "Service utilis\u00e9 pour envoyer et g\u00e9rer des notifications aux utilisateurs, y compris des alertes, des liens d\u0027activation par email, et souvent int\u00e9gr\u00e9 dans des processus comme la cr\u00e9ation d\u0027utilisateur, tout en prenant en compte les d\u00e9tails souvent n\u00e9glig\u00e9s lors des tests."}, {"font": {"color": "white"}, "group": 1, "id": "ec55ef1f-c143-437e-bfde-cd949f81d42b", "label": "Conversion d\u0027action", "shape": "dot", "size": 5, "title": "Mesure du succ\u00e8s d\u0027une interaction sur un site web, souvent augment\u00e9e par le respect des principes ergonomiques."}, {"font": {"color": "white"}, "group": 1, "id": "bf2e32cb-e846-41c1-a9c3-26d5c2c4bd57", "label": "Contenu compr\u00e9hensible", "shape": "dot", "size": 5, "title": "Un contenu lisible et coh\u00e9rent, o\u00f9 l\u0027ordre des \u00e9l\u00e9ments et l\u0027encha\u00eenement de la lecture facilitent la compr\u00e9hension."}, {"font": {"color": "white"}, "group": 1, "id": "218f57e5-3fb5-4ee0-9b45-85b91529a437", "label": "Banni\u00e8res publicitaires", "shape": "dot", "size": 5, "title": "Annonces visuelles plac\u00e9es sur une page web, dont la gestion doit respecter des crit\u00e8res d\u0027intrusivit\u00e9 et de dur\u00e9e d\u0027affichage."}, {"font": {"color": "white"}, "group": 1, "id": "0dddae51-ce19-42d5-a47b-e48f7783a11a", "label": "Donn\u00e9es client master", "shape": "dot", "size": 5, "title": "Informations essentielles sur les clients utilis\u00e9es pour la gestion des relations commerciales."}, {"font": {"color": "white"}, "group": 1, "id": "26aa58a3-38c4-42af-894c-4680f9597eae", "label": "Livraison Rapide", "shape": "dot", "size": 5, "title": "Capacit\u00e9 \u00e0 mettre rapidement de nouvelles fonctionnalit\u00e9s \u00e0 disposition des utilisateurs, cruciale pour maintenir un avantage concurrentiel."}, {"font": {"color": "white"}, "group": 1, "id": "77e5ae9a-6d43-443b-8de9-fe1cbea5f1b4", "label": "Intitul\u00e9 visible", "shape": "dot", "size": 5, "title": "Texte affich\u00e9 sur un bouton ou un lien, servant d\u0027\u00e9tiquette pour un champ de formulaire, essentiel pour l\u0027accessibilit\u00e9 et la navigation utilisateur."}, {"font": {"color": "white"}, "group": 1, "id": "369bc64a-140a-4d3c-b8d4-3a34f841e8b8", "label": "Taux de conformit\u00e9 d\u0027accessibilit\u00e9", "shape": "dot", "size": 5, "title": "Le taux de conformit\u00e9 d\u0027accessibilit\u00e9 mesure le respect des exigences d\u0027accessibilit\u00e9 sur un service en ligne sp\u00e9cifique, calcul\u00e9 par le rapport entre les crit\u00e8res valid\u00e9s et les crit\u00e8res applicables. Il repr\u00e9sente ainsi un pourcentage qui indique le niveau global de conformit\u00e9 aux normes d\u0027accessibilit\u00e9, permettant d\u0027\u00e9valuer l\u0027efficacit\u00e9 des mesures mises en place pour garantir l\u0027acc\u00e8s \u00e0 tous les utilisateurs."}, {"font": {"color": "white"}, "group": 1, "id": "93fc10ca-887a-4aa2-8576-0c524a2f81f7", "label": "t\u00e2ches (todo list)", "shape": "dot", "size": 5, "title": "Outil ou application simple utilis\u00e9e pour organiser, suivre et g\u00e9rer l\u0027accomplissement d\u0027activit\u00e9s ou objectifs \u00e0 r\u00e9aliser, souvent utilis\u00e9e comme projet d\u0027apprentissage en d\u00e9veloppement web."}]);
+                  edges = new vis.DataSet([{"from": "97773262-3ef9-493f-8aea-44b4ef91a06d", "to": "c39fe47c-99bf-4319-981d-05167bec6fe9", "width": 1}, {"from": "97773262-3ef9-493f-8aea-44b4ef91a06d", "to": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "width": 1}, {"from": "97773262-3ef9-493f-8aea-44b4ef91a06d", "to": "e9efe22e-bd43-48e9-8899-f1d1eededf4e", "width": 1}, {"from": "e208c124-c2d4-43aa-b374-5e9653b2aad4", "to": 13609, "width": 1}, {"from": "e208c124-c2d4-43aa-b374-5e9653b2aad4", "to": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "width": 1}, {"from": "e208c124-c2d4-43aa-b374-5e9653b2aad4", "to": "d7224c6f-a919-460d-af12-6dfbeacde495", "width": 1}, {"from": "e208c124-c2d4-43aa-b374-5e9653b2aad4", "to": "adc8dc13-f786-4914-8a14-7ba79f9406d6", "width": 1}, {"from": "e208c124-c2d4-43aa-b374-5e9653b2aad4", "to": "bbec4b6c-ecb2-4980-a828-4ea2e6a15f47", "width": 1}, {"from": "e208c124-c2d4-43aa-b374-5e9653b2aad4", "to": "824ed510-a8b6-49e8-b6a1-03338f5078d0", "width": 1}, {"from": "e208c124-c2d4-43aa-b374-5e9653b2aad4", "to": "bf9dcd29-03f3-4cd8-a076-8331895e019d", "width": 1}, {"from": "e208c124-c2d4-43aa-b374-5e9653b2aad4", "to": "8217ad5333024525bdfdd890cf843cfb", "width": 1}, {"from": "e208c124-c2d4-43aa-b374-5e9653b2aad4", "to": "e90463e2623e45b7aa7f996dfc2579bc", "width": 1}, {"from": "e208c124-c2d4-43aa-b374-5e9653b2aad4", "to": "486167e179c1429eacc12bb2005ff2e4", "width": 1}, {"from": "e208c124-c2d4-43aa-b374-5e9653b2aad4", "to": "20f0c140b108422da73a48463484a150", "width": 1}, {"from": "287ef751-850a-45f8-8aea-12aa5b7582a2", "to": 13609, "width": 1}, {"from": "287ef751-850a-45f8-8aea-12aa5b7582a2", "to": "d7224c6f-a919-460d-af12-6dfbeacde495", "width": 1}, {"from": "287ef751-850a-45f8-8aea-12aa5b7582a2", "to": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "width": 1}, {"from": "287ef751-850a-45f8-8aea-12aa5b7582a2", "to": "9639a3d5-c874-4c14-9acd-54637974eae7", "width": 1}, {"from": "287ef751-850a-45f8-8aea-12aa5b7582a2", "to": "adc8dc13-f786-4914-8a14-7ba79f9406d6", "width": 1}, {"from": "6023dfd6-ea81-45fa-aefa-6d1c4958f59a", "to": 13609, "width": 1}, {"from": "6023dfd6-ea81-45fa-aefa-6d1c4958f59a", "to": "68fa2d67-f897-4e62-8392-2bdbe88e0df2", "width": 1}, {"from": "bbec4b6c-ecb2-4980-a828-4ea2e6a15f47", "to": 13609, "width": 1}, {"from": "bbec4b6c-ecb2-4980-a828-4ea2e6a15f47", "to": "adc8dc13-f786-4914-8a14-7ba79f9406d6", "width": 1}, {"from": "bbec4b6c-ecb2-4980-a828-4ea2e6a15f47", "to": "824ed510-a8b6-49e8-b6a1-03338f5078d0", "width": 1}, {"from": "bbec4b6c-ecb2-4980-a828-4ea2e6a15f47", "to": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "width": 1}, {"from": "bbec4b6c-ecb2-4980-a828-4ea2e6a15f47", "to": "916215f011f14f91a35952bc1992d123", "width": 1}, {"from": "bbec4b6c-ecb2-4980-a828-4ea2e6a15f47", "to": "20f0c140b108422da73a48463484a150", "width": 1}, {"from": "bbec4b6c-ecb2-4980-a828-4ea2e6a15f47", "to": "5af9805f30b344e6988f400813071094", "width": 1}, {"from": "9639a3d5-c874-4c14-9acd-54637974eae7", "to": "d7224c6f-a919-460d-af12-6dfbeacde495", "width": 1}, {"from": "9639a3d5-c874-4c14-9acd-54637974eae7", "to": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "width": 1}, {"from": "d7224c6f-a919-460d-af12-6dfbeacde495", "to": 13609, "width": 1}, {"from": "d7224c6f-a919-460d-af12-6dfbeacde495", "to": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "width": 1}, {"from": "e9efe22e-bd43-48e9-8899-f1d1eededf4e", "to": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "width": 1}, {"from": "e9efe22e-bd43-48e9-8899-f1d1eededf4e", "to": "c39fe47c-99bf-4319-981d-05167bec6fe9", "width": 1}, {"from": "e9efe22e-bd43-48e9-8899-f1d1eededf4e", "to": "078c5a40a6ba4a0d859d037fdac4d6b2", "width": 1}, {"from": "e9efe22e-bd43-48e9-8899-f1d1eededf4e", "to": "2abe03da70394ff1a61664b3f1071ff6", "width": 1}, {"from": "e9efe22e-bd43-48e9-8899-f1d1eededf4e", "to": "75911bacb3da4e979de2636dadd081b0", "width": 1}, {"from": "e9efe22e-bd43-48e9-8899-f1d1eededf4e", "to": "1fec1b9a5fcb4155b162a422b580583b", "width": 1}, {"from": "e9efe22e-bd43-48e9-8899-f1d1eededf4e", "to": "4492d8980c4845dd9f502bc13f08b611", "width": 1}, {"from": "e9efe22e-bd43-48e9-8899-f1d1eededf4e", "to": "ec725adb44a6479eb9be0e5010aa8584", "width": 1}, {"from": "e9efe22e-bd43-48e9-8899-f1d1eededf4e", "to": "66f992bff64445abb49ef55e79ec26cf", "width": 1}, {"from": "e9efe22e-bd43-48e9-8899-f1d1eededf4e", "to": "0c786fc868744da0ad56677a65c6cd9a", "width": 1}, {"from": "e9efe22e-bd43-48e9-8899-f1d1eededf4e", "to": "a40cdc8533454786917d9b357ccc2699", "width": 1}, {"from": "e9efe22e-bd43-48e9-8899-f1d1eededf4e", "to": "5a45539ee9d445b7887aec05dc08b750", "width": 1}, {"from": "e9efe22e-bd43-48e9-8899-f1d1eededf4e", "to": "731108feac094ba79e227a1b6d691a6e", "width": 1}, {"from": "e9efe22e-bd43-48e9-8899-f1d1eededf4e", "to": "0a907608fdb94c44acdc7c615ecb092e", "width": 1}, {"from": "e9efe22e-bd43-48e9-8899-f1d1eededf4e", "to": "379d97c89b614eb7b88e8b5ca97669d3", "width": 1}, {"from": "e9efe22e-bd43-48e9-8899-f1d1eededf4e", "to": "2bdd5ad347854331aa8bdf0877bb0bf8", "width": 1}, {"from": "e9efe22e-bd43-48e9-8899-f1d1eededf4e", "to": "65cb6c094e334bdfa5c13415d9338029", "width": 1}, {"from": "7c15d1a8-6a39-4bb9-b353-1112c86b8900", "to": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "width": 1}, {"from": "bf9dcd29-03f3-4cd8-a076-8331895e019d", "to": 13609, "width": 1}, {"from": "bf9dcd29-03f3-4cd8-a076-8331895e019d", "to": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "width": 1}, {"from": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "to": 13609, "width": 1}, {"from": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "to": "c39fe47c-99bf-4319-981d-05167bec6fe9", "width": 1}, {"from": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "to": "824ed510-a8b6-49e8-b6a1-03338f5078d0", "width": 1}, {"from": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "to": "adc8dc13-f786-4914-8a14-7ba79f9406d6", "width": 1}, {"from": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "to": "8217ad5333024525bdfdd890cf843cfb", "width": 1}, {"from": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "to": "e7b0c7a7f26b446883a03cce065173dd", "width": 1}, {"from": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "to": "d4e9ab91b0d543e59d4284af6b4ebc5f", "width": 1}, {"from": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "to": "916215f011f14f91a35952bc1992d123", "width": 1}, {"from": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "to": "a4bf5ac2a00a43fead862ca4ecbd2405", "width": 1}, {"from": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "to": "15aaf95744024038ac5c23a58c47e7ff", "width": 1}, {"from": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "to": "a89e80f3f1dc43a68ce19fbb0af28b4a", "width": 1}, {"from": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "to": "20f0c140b108422da73a48463484a150", "width": 1}, {"from": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "to": "5dfa078c93a7429e8dc56bddb5e73e9f", "width": 1}, {"from": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "to": "5af9805f30b344e6988f400813071094", "width": 1}, {"from": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "to": "c76032a02e6a4f45976fee77342cf113", "width": 1}, {"from": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "to": "237d060ac8a04e529f583f5e1347fc67", "width": 1}, {"from": "adc8dc13-f786-4914-8a14-7ba79f9406d6", "to": 13609, "width": 1}, {"from": "adc8dc13-f786-4914-8a14-7ba79f9406d6", "to": "824ed510-a8b6-49e8-b6a1-03338f5078d0", "width": 1}, {"from": "adc8dc13-f786-4914-8a14-7ba79f9406d6", "to": "8217ad5333024525bdfdd890cf843cfb", "width": 1}, {"from": "adc8dc13-f786-4914-8a14-7ba79f9406d6", "to": "d4e9ab91b0d543e59d4284af6b4ebc5f", "width": 1}, {"from": "adc8dc13-f786-4914-8a14-7ba79f9406d6", "to": "15aaf95744024038ac5c23a58c47e7ff", "width": 1}, {"from": "adc8dc13-f786-4914-8a14-7ba79f9406d6", "to": "046002d154f54faba26d356d715ab78c", "width": 1}, {"from": "adc8dc13-f786-4914-8a14-7ba79f9406d6", "to": "053de79d8f01448d8c9ae2f115f8abaf", "width": 1}, {"from": "adc8dc13-f786-4914-8a14-7ba79f9406d6", "to": "5dfa078c93a7429e8dc56bddb5e73e9f", "width": 1}, {"from": "adc8dc13-f786-4914-8a14-7ba79f9406d6", "to": "cc8ce2b19f52403790617b85986c9f73", "width": 1}, {"from": "824ed510-a8b6-49e8-b6a1-03338f5078d0", "to": 13609, "width": 1}, {"from": "824ed510-a8b6-49e8-b6a1-03338f5078d0", "to": "20f0c140b108422da73a48463484a150", "width": 1}, {"from": "5af9805f30b344e6988f400813071094", "to": 13609, "width": 1}, {"from": "a4bf5ac2a00a43fead862ca4ecbd2405", "to": 13609, "width": 1}, {"from": "a89e80f3f1dc43a68ce19fbb0af28b4a", "to": 13609, "width": 1}, {"from": "c76032a02e6a4f45976fee77342cf113", "to": 13609, "width": 1}, {"from": "237d060ac8a04e529f583f5e1347fc67", "to": 13609, "width": 1}, {"from": "5dfa078c93a7429e8dc56bddb5e73e9f", "to": 13609, "width": 1}, {"from": "053de79d8f01448d8c9ae2f115f8abaf", "to": 13609, "width": 1}, {"from": "cc8ce2b19f52403790617b85986c9f73", "to": 13609, "width": 1}, {"from": "916215f011f14f91a35952bc1992d123", "to": 13609, "width": 1}, {"from": "e7b0c7a7f26b446883a03cce065173dd", "to": 13609, "width": 1}, {"from": "d4e9ab91b0d543e59d4284af6b4ebc5f", "to": 13609, "width": 1}, {"from": "046002d154f54faba26d356d715ab78c", "to": 13609, "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": true,
+        "filter": [
+            "physics"
+        ]
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "repulsion": {
+            "centralGravity": 0.33,
+            "damping": 0.95,
+            "nodeDistance": 420,
+            "springConstant": 0.1,
+            "springLength": 110
+        },
+        "solver": "repulsion",
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+                  // if this network requires displaying the configure window,
+                  // put it in its div
+                  options.configure["container"] = document.getElementById("config");
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>

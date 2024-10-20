@@ -1,0 +1,178 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 800px;
+                 background-color: #222222;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+             #config {
+                 float: left;
+                 width: 400px;
+                 height: 600px;
+             }
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+            <div id="config"></div>
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"font": {"color": "white"}, "group": 1, "id": "9c7cbcbd-6820-4fcd-bd00-88a36b11fe80", "label": "Analyse des Besoins du Client", "shape": "dot", "size": 5, "title": "Processus d\u0027\u00e9valuation des exigences explicites et implicites d\u0027un client afin de fournir des solutions adapt\u00e9es \u00e0 ses attentes."}, {"font": {"color": "white"}, "group": 2, "id": 13679, "label": "Cr\u00e9ation et Design Digital : Strat\u00e9gies de Communication", "shape": "dot", "size": 8, "title": "ON_SE_FAIT_UN_BRIEF"}, {"font": {"color": "white"}, "group": 1, "id": "a21faec3-d32a-4c71-91f4-aefc4c598939", "label": "Communication Visuelle", "shape": "dot", "size": 5, "title": "La communication visuelle englobe l\u0027utilisation coh\u00e9rente de supports graphiques, tels que affiches, brochures et contenus num\u00e9riques, pour transmettre des messages ou informations. Elle joue un r\u00f4le cl\u00e9 dans le marketing et l\u0027identit\u00e9 de marque en influen\u00e7ant les perceptions des consommateurs \u00e0 travers des \u00e9l\u00e9ments graphiques, couleurs et images. De plus, elle inclut la communication avec le client, un processus d\u0027interaction essentiel pour \u00e9tablir une compr\u00e9hension mutuelle entre professionnels et clients, garantissant ainsi la r\u00e9ussite d\u0027un projet."}, {"font": {"color": "white"}, "group": 1, "id": "008d5789-6187-488a-86aa-9faf7453aed1", "label": "Questions Essentielles", "shape": "dot", "size": 5, "title": "Interrogations cl\u00e9s pos\u00e9es au client pour clarifier ses besoins et attentes avant le d\u00e9but d\u0027un projet cr\u00e9atif."}, {"font": {"color": "white"}, "group": 1, "id": "4de058a8-3e3f-4ded-ace0-e2803ffcd4a2", "label": "Phase de Veille", "shape": "dot", "size": 5, "title": "\u00c9tape pr\u00e9liminaire o\u00f9 le designer s\u0027informe sur l\u0027univers du client pour mieux comprendre ses valeurs et son march\u00e9 avant de cr\u00e9er."}, {"font": {"color": "white"}, "group": 1, "id": "eeb00c3b-7094-4aaa-97fa-84575f839496", "label": "Brief Cr\u00e9atif", "shape": "dot", "size": 5, "title": "Document d\u00e9crivant les attentes et objectifs d\u0027un projet cr\u00e9atif, servant de guide pour les designers dans leur processus de cr\u00e9ation."}, {"font": {"color": "white"}, "group": 1, "id": "3898834d-4869-40af-9c13-784f85193239", "label": "Diagnostic", "shape": "dot", "size": 5, "title": "Un diagnostic dans le contexte commercial fait r\u00e9f\u00e9rence \u00e0 l\u0027analyse approfondie des besoins d\u0027un client, permettant de formuler des recommandations adapt\u00e9es pour atteindre ses objectifs."}, {"font": {"color": "white"}, "group": 1, "id": "cd9588ea-7f16-4451-b3a6-0f32db06aefb", "label": "Relation client", "shape": "dot", "size": 5, "title": "La relation client est l\u0027interaction entre une entreprise et ses clients, essentielle pour comprendre leurs besoins et am\u00e9liorer la satisfaction par des solutions personnalis\u00e9es."}, {"font": {"color": "white"}, "group": 1, "id": "46f98aa1-718b-4130-a429-5e0c698e2f72", "label": "Design Thinking", "shape": "dot", "size": 5, "title": "M\u00e9thodologie centr\u00e9e sur l\u0027utilisateur visant \u00e0 r\u00e9soudre des probl\u00e8mes complexes par l\u0027empathie, la d\u00e9finition, l\u0027id\u00e9ation, le prototypage et le test."}, {"font": {"color": "white"}, "group": 3, "id": "58ea0ae414de45e78e0aaa0b8a416973", "label": "mcq", "shape": "dot", "size": 5, "title": "Quelle m\u00e9thode fait partie des \u00e9volutions r\u00e9centes du m\u00e9tier de Designer ?"}, {"font": {"color": "white"}, "group": 1, "id": "5a492283-28dd-4d14-8919-becc43892c23", "label": "Retour Client", "shape": "dot", "size": 5, "title": "Les retours clients, ou retour client, d\u00e9signent les commentaires et \u00e9valuations fournis par les clients sur leur exp\u00e9rience avec un produit ou service. Ces retours sont cruciaux pour ajuster et am\u00e9liorer l\u0027offre d\u0027une entreprise afin de mieux satisfaire la demande et r\u00e9pondre aux attentes des consommateurs."}, {"font": {"color": "white"}, "group": 1, "id": "00522abb-60ff-48e1-b79b-47f8a1110004", "label": "Validation client", "shape": "dot", "size": 5, "title": "La validation client est le processus par lequel un client approuve une proposition ou un projet avant sa finalisation, garantissant que ses attentes sont satisfaites."}, {"font": {"color": "white"}, "group": 1, "id": "db341085-611c-4716-98cd-c2bf4c26b09d", "label": "Propositions", "shape": "dot", "size": 5, "title": "Les propositions sont des suggestions ou offres pr\u00e9sent\u00e9es aux clients, n\u00e9cessitant leur validation pour avancer dans le processus de cr\u00e9ation."}, {"font": {"color": "white"}, "group": 1, "id": "fe737afc-c2ea-4900-962f-90007a8f24dd", "label": "Questionnaire", "shape": "dot", "size": 5, "title": "Un questionnaire est un outil de collecte d\u0027informations structur\u00e9, utilis\u00e9 pour obtenir des retours clients, permettant d\u0027analyser leurs opinions et besoins."}, {"font": {"color": "white"}, "group": 1, "id": "c046e017-bd93-494e-935f-03880b12ef92", "label": "Sp\u00e9cifications du produit", "shape": "dot", "size": 5, "title": "D\u00e9tails techniques et exigences pr\u00e9cises concernant un produit ou service demand\u00e9 par le client."}, {"font": {"color": "white"}, "group": 1, "id": "e7135db8-6662-4cf1-a1eb-f53f50d8cb30", "label": "\u00c9valuation des co\u00fbts", "shape": "dot", "size": 5, "title": "Analyse des d\u00e9penses li\u00e9es \u00e0 un projet, incluant mat\u00e9riaux et main-d\u0027\u0153uvre, pour assurer la viabilit\u00e9 financi\u00e8re."}, {"font": {"color": "white"}, "group": 1, "id": "a8a00071-1e94-47d4-ae1f-c4d1d56d0f25", "label": "Suivi de projet", "shape": "dot", "size": 5, "title": "Processus de gestion permettant de surveiller l\u0027avancement des t\u00e2ches et d\u0027ajuster les d\u00e9lais en fonction des besoins."}, {"font": {"color": "white"}, "group": 1, "id": "e3db3cdb-5474-48f7-833c-0bdae33ed61a", "label": "Dossier d\u0027Ex\u00e9cution", "shape": "dot", "size": 5, "title": "Document technique d\u00e9taillant les sp\u00e9cifications et les \u00e9l\u00e9ments n\u00e9cessaires \u00e0 la r\u00e9alisation d\u0027un projet, crucial pour assurer sa bonne mise en \u0153uvre."}, {"font": {"color": "white"}, "group": 1, "id": "e8e75b45-13b4-4f6e-9d73-880e752f07a4", "label": "Argumentaire solide", "shape": "dot", "size": 5, "title": "Raisonnement bien structur\u00e9 soutenant une proposition unique, essentiel pour convaincre un client de sa pertinence."}, {"font": {"color": "white"}, "group": 1, "id": "296f12ab-03eb-495e-a89c-a642b60fb59f", "label": "Stylescape", "shape": "dot", "size": 5, "title": "Un stylescape est un outil de conception visuelle \u00e9labor\u00e9 qui repr\u00e9sente l\u0027identit\u00e9 d\u0027une marque en regroupant typographie, couleurs, images et \u00e9l\u00e9ments graphiques. Il d\u00e9finit une direction esth\u00e9tique et communique l\u0027essence d\u0027un projet ou d\u0027une marque en illustrant une vision cr\u00e9ative. Enrichissant la pr\u00e9sentation des propositions, il transmet \u00e9galement l\u0027identit\u00e9 ainsi que l\u0027exp\u00e9rience globale souhait\u00e9es."}, {"font": {"color": "white"}, "group": 1, "id": "7a20dc11-ce45-4c13-a1a2-a10b92ce1a6d", "label": "Note d\u0027intention", "shape": "dot", "size": 5, "title": "Document synth\u00e9tique exprimant les id\u00e9es et l\u0027approche d\u0027un projet, servant de base \u00e0 la discussion avec le client."}, {"font": {"color": "white"}, "group": 1, "id": "90da4202-90b8-4ca5-8958-1e7d343da9ff", "label": "Veille", "shape": "dot", "size": 5, "title": "Phase d\u0027observation et d\u0027analyse des tendances et facteurs externes influen\u00e7ant un projet, essentielle pour une compr\u00e9hension approfondie du brief."}, {"font": {"color": "white"}, "group": 1, "id": "c3fa5716-aedd-4faf-a2f9-b805c8102d83", "label": "Lexique client", "shape": "dot", "size": 5, "title": "Ensemble de termes sp\u00e9cifiques utilis\u00e9s par le client, r\u00e9v\u00e9lant ses priorit\u00e9s et nuances essentielles pour comprendre son brief."}, {"font": {"color": "white"}, "group": 1, "id": "bfd3b88d-6a3f-4ce1-a53e-4970949c52f6", "label": "Opportunit\u00e9s de march\u00e9", "shape": "dot", "size": 5, "title": "Possibilit\u00e9s identifi\u00e9es pour introduire des produits ou services en r\u00e9ponse aux besoins \u00e9volutifs des consommateurs."}, {"font": {"color": "white"}, "group": 1, "id": "4752ada0-b3bc-480a-b0d2-15bee717abf1", "label": "Am\u00e9liorations de produit", "shape": "dot", "size": 5, "title": "Modifications apport\u00e9es \u00e0 un produit existant pour mieux r\u00e9pondre aux besoins des clients ou se d\u00e9marquer sur le march\u00e9."}, {"font": {"color": "white"}, "group": 1, "id": "6c1bd4de-74eb-4f44-8cba-ab1b994939a8", "label": "Probl\u00e8mes potentiels", "shape": "dot", "size": 5, "title": "Difficult\u00e9s anticip\u00e9es dans l\u0027utilisation correcte d\u0027\u00e9l\u00e9ments de design, pouvant nuire \u00e0 la perception de la marque."}, {"font": {"color": "white"}, "group": 1, "id": "5de70e87-5ec8-41e0-bed3-9c9a885ac069", "label": "Produit", "shape": "dot", "size": 5, "title": "Bien ou service con\u00e7u pour r\u00e9pondre aux besoins sp\u00e9cifiques des consommateurs, essentiel dans le mix marketing pour assurer la satisfaction et la fid\u00e9lit\u00e9."}, {"font": {"color": "white"}, "group": 1, "id": "bf9dcd29-03f3-4cd8-a076-8331895e019d", "label": "KPI (Indicateurs Cl\u00e9s de Performance)", "shape": "dot", "size": 5, "title": "Les KPI, ou Indicateurs Cl\u00e9s de Performance, sont des mesures quantifiables utilis\u00e9es pour \u00e9valuer le succ\u00e8s et l\u0027efficacit\u00e9 d\u0027un produit, service ou strat\u00e9gie marketing. Ils jouent un r\u00f4le essentiel dans le suivi des performances des \u00e9quipes, notamment dans les objectifs DevOps, en facilitant la prise de d\u00e9cisions \u00e9clair\u00e9es et en permettant d\u0027ajuster les actions si n\u00e9cessaire."}, {"font": {"color": "white"}, "group": 1, "id": "0e2b76bd-fa95-4a2e-9aa6-621ca5664d4c", "label": "\u00c9valuation", "shape": "dot", "size": 5, "title": "Processus d\u0027analyse des id\u00e9es d\u00e9velopp\u00e9es selon des crit\u00e8res sp\u00e9cifiques pour affiner et am\u00e9liorer les propositions."}, {"font": {"color": "white"}, "group": 4, "id": "a4211a89a66041cea75d9f65c5dd02c6", "label": "fill_in", "shape": "dot", "size": 5, "title": "Lors du d\u00e9veloppement d\u0027une id\u00e9e, des ajustements et r\u00e9visions sont effectu\u00e9s en fonction des \u003cblank\u003e pour l\u0027am\u00e9liorer."}, {"font": {"color": "white"}, "group": 5, "id": "d26ff603d732470c83c52a9b3dec2af2", "label": "true_false", "shape": "dot", "size": 5, "title": "Les id\u00e9es d\u00e9velopp\u00e9es peuvent faire l\u0027objet de plusieurs it\u00e9rations pour s\u0027assurer qu\u0027elles remplissent les crit\u00e8res du projet."}, {"font": {"color": "white"}, "group": 1, "id": "2414d865-830b-4ca5-a094-d8217f6b09f0", "label": "Human Problems", "shape": "dot", "size": 5, "title": "D\u00e9fis ou besoins rencontr\u00e9s par les individus que les entreprises cherchent \u00e0 r\u00e9soudre gr\u00e2ce \u00e0 des solutions technologiques innovantes."}, {"font": {"color": "white"}, "group": 1, "id": "f1ab6b4e-ff62-4372-988c-6d4c7f225258", "label": "Collecte et synth\u00e8se", "shape": "dot", "size": 5, "title": "\u00c9tape finale de compilation des id\u00e9es g\u00e9n\u00e9r\u00e9es pour identifier celles qui sont pertinentes pour le processus cr\u00e9atif."}, {"font": {"color": "white"}, "group": 1, "id": "19751c74-c86a-4d3f-b10b-e970f96c7839", "label": "Mind mapping", "shape": "dot", "size": 5, "title": "M\u00e9thode visuelle d\u0027organisation des id\u00e9es \u00e0 travers des branches repr\u00e9sentant des concepts li\u00e9s, facilitant la structuration non lin\u00e9aire, la cr\u00e9ativit\u00e9 et la compr\u00e9hension des concepts complexes, utilis\u00e9e dans divers domaines comme l\u0027apprentissage et la planification."}, {"font": {"color": "white"}, "group": 1, "id": "9f541978-2e43-4f46-95cb-bd682ce56c82", "label": "\u00c9change d\u0027id\u00e9es", "shape": "dot", "size": 5, "title": "Phase o\u00f9 les participants partagent et d\u00e9veloppent les id\u00e9es des autres, renfor\u00e7ant la collaboration et l\u0027enrichissement collectif."}, {"font": {"color": "white"}, "group": 1, "id": "60a56d6c-06b8-46b7-bb05-01412059e6ad", "label": "Persona marketing", "shape": "dot", "size": 5, "title": "Repr\u00e9sentation semi-fictive ou fictive d\u0027un client id\u00e9al, fond\u00e9e sur des donn\u00e9es d\u00e9mographiques, comportementales et r\u00e9elles, utilis\u00e9e pour comprendre ses besoins, motivations et comportements afin de guider les strat\u00e9gies de marketing et personnaliser les offres."}, {"font": {"color": "white"}, "group": 1, "id": "47f3ae64-d3f0-43aa-8a62-159646d6de54", "label": "Enregistrement des id\u00e9es", "shape": "dot", "size": 5, "title": "Pratique consistant \u00e0 noter toutes les suggestions \u00e9mises lors du brainstorming pour \u00e9valuation ult\u00e9rieure, garantissant que rien n\u0027est oubli\u00e9."}, {"font": {"color": "white"}, "group": 1, "id": "2bacd866-2993-42c8-8bf3-0d1e31c4bca5", "label": "Client", "shape": "dot", "size": 5, "title": "Un individu ou une organisation qui ach\u00e8te des biens ou services, essentiel dans le cadre commercial pour \u00e9tablir des relations et g\u00e9n\u00e9rer des revenus."}, {"font": {"color": "white"}, "group": 1, "id": "4c7bd337-41a5-4fa5-be76-8ba4d625aba3", "label": "D\u00e9pendances", "shape": "dot", "size": 5, "title": "Les d\u00e9pendances d\u00e9signent les relations entre diff\u00e9rentes t\u00e2ches dans un projet, o\u00f9 certaines doivent \u00eatre compl\u00e9t\u00e9es avant que d\u0027autres puissent commencer. Elles incluent \u00e9galement les biblioth\u00e8ques, modules ou packages externes n\u00e9cessaires au bon fonctionnement d\u0027un logiciel, g\u00e9r\u00e9es par des outils comme Composer ou d\u0027autres gestionnaires de paquets pour \u00e9viter les conflits et assurer une int\u00e9gration harmonieuse. La gestion des d\u00e9pendances est cruciale lors de la construction d\u0027images Docker, garantissant que toutes les ressources n\u00e9cessaires sont disponibles et correctement configur\u00e9es."}, {"font": {"color": "white"}, "group": 1, "id": "3c0fff2a-064d-4ce2-803c-abb4d7b1c5ed", "label": "dossier de pr\u00e9sentation", "shape": "dot", "size": 5, "title": "Document structur\u00e9 pr\u00e9sentant un projet ou une entreprise, essentiel pour communiquer des id\u00e9es et convaincre des clients potentiels."}]);
+                  edges = new vis.DataSet([{"from": "9c7cbcbd-6820-4fcd-bd00-88a36b11fe80", "to": 13679, "width": 1}, {"from": "9c7cbcbd-6820-4fcd-bd00-88a36b11fe80", "to": "a21faec3-d32a-4c71-91f4-aefc4c598939", "width": 1}, {"from": "9c7cbcbd-6820-4fcd-bd00-88a36b11fe80", "to": "008d5789-6187-488a-86aa-9faf7453aed1", "width": 1}, {"from": "9c7cbcbd-6820-4fcd-bd00-88a36b11fe80", "to": "4de058a8-3e3f-4ded-ace0-e2803ffcd4a2", "width": 1}, {"from": "9c7cbcbd-6820-4fcd-bd00-88a36b11fe80", "to": "eeb00c3b-7094-4aaa-97fa-84575f839496", "width": 1}, {"from": "3898834d-4869-40af-9c13-784f85193239", "to": 13679, "width": 1}, {"from": "3898834d-4869-40af-9c13-784f85193239", "to": "cd9588ea-7f16-4451-b3a6-0f32db06aefb", "width": 1}, {"from": "46f98aa1-718b-4130-a429-5e0c698e2f72", "to": "58ea0ae414de45e78e0aaa0b8a416973", "width": 1}, {"from": "5a492283-28dd-4d14-8919-becc43892c23", "to": "00522abb-60ff-48e1-b79b-47f8a1110004", "width": 1}, {"from": "5a492283-28dd-4d14-8919-becc43892c23", "to": "db341085-611c-4716-98cd-c2bf4c26b09d", "width": 1}, {"from": "5a492283-28dd-4d14-8919-becc43892c23", "to": "fe737afc-c2ea-4900-962f-90007a8f24dd", "width": 1}, {"from": "c046e017-bd93-494e-935f-03880b12ef92", "to": "e7135db8-6662-4cf1-a1eb-f53f50d8cb30", "width": 1}, {"from": "c046e017-bd93-494e-935f-03880b12ef92", "to": "a8a00071-1e94-47d4-ae1f-c4d1d56d0f25", "width": 1}, {"from": "00522abb-60ff-48e1-b79b-47f8a1110004", "to": "db341085-611c-4716-98cd-c2bf4c26b09d", "width": 1}, {"from": "00522abb-60ff-48e1-b79b-47f8a1110004", "to": "fe737afc-c2ea-4900-962f-90007a8f24dd", "width": 1}, {"from": "e3db3cdb-5474-48f7-833c-0bdae33ed61a", "to": "a21faec3-d32a-4c71-91f4-aefc4c598939", "width": 1}, {"from": "008d5789-6187-488a-86aa-9faf7453aed1", "to": 13679, "width": 1}, {"from": "008d5789-6187-488a-86aa-9faf7453aed1", "to": "a21faec3-d32a-4c71-91f4-aefc4c598939", "width": 1}, {"from": "008d5789-6187-488a-86aa-9faf7453aed1", "to": "4de058a8-3e3f-4ded-ace0-e2803ffcd4a2", "width": 1}, {"from": "008d5789-6187-488a-86aa-9faf7453aed1", "to": "eeb00c3b-7094-4aaa-97fa-84575f839496", "width": 1}, {"from": "e8e75b45-13b4-4f6e-9d73-880e752f07a4", "to": 13679, "width": 1}, {"from": "e8e75b45-13b4-4f6e-9d73-880e752f07a4", "to": "296f12ab-03eb-495e-a89c-a642b60fb59f", "width": 1}, {"from": "e8e75b45-13b4-4f6e-9d73-880e752f07a4", "to": "7a20dc11-ce45-4c13-a1a2-a10b92ce1a6d", "width": 1}, {"from": "eeb00c3b-7094-4aaa-97fa-84575f839496", "to": 13679, "width": 1}, {"from": "eeb00c3b-7094-4aaa-97fa-84575f839496", "to": "a21faec3-d32a-4c71-91f4-aefc4c598939", "width": 1}, {"from": "eeb00c3b-7094-4aaa-97fa-84575f839496", "to": "4de058a8-3e3f-4ded-ace0-e2803ffcd4a2", "width": 1}, {"from": "4de058a8-3e3f-4ded-ace0-e2803ffcd4a2", "to": 13679, "width": 1}, {"from": "4de058a8-3e3f-4ded-ace0-e2803ffcd4a2", "to": "a21faec3-d32a-4c71-91f4-aefc4c598939", "width": 1}, {"from": "90da4202-90b8-4ca5-8958-1e7d343da9ff", "to": 13679, "width": 1}, {"from": "90da4202-90b8-4ca5-8958-1e7d343da9ff", "to": "c3fa5716-aedd-4faf-a2f9-b805c8102d83", "width": 1}, {"from": "fe737afc-c2ea-4900-962f-90007a8f24dd", "to": "db341085-611c-4716-98cd-c2bf4c26b09d", "width": 1}, {"from": "cd9588ea-7f16-4451-b3a6-0f32db06aefb", "to": 13679, "width": 1}, {"from": "bfd3b88d-6a3f-4ce1-a53e-4970949c52f6", "to": "4752ada0-b3bc-480a-b0d2-15bee717abf1", "width": 1}, {"from": "bfd3b88d-6a3f-4ce1-a53e-4970949c52f6", "to": "6c1bd4de-74eb-4f44-8cba-ab1b994939a8", "width": 1}, {"from": "bfd3b88d-6a3f-4ce1-a53e-4970949c52f6", "to": "296f12ab-03eb-495e-a89c-a642b60fb59f", "width": 1}, {"from": "c3fa5716-aedd-4faf-a2f9-b805c8102d83", "to": 13679, "width": 1}, {"from": "5de70e87-5ec8-41e0-bed3-9c9a885ac069", "to": "bf9dcd29-03f3-4cd8-a076-8331895e019d", "width": 1}, {"from": "0e2b76bd-fa95-4a2e-9aa6-621ca5664d4c", "to": "a4211a89a66041cea75d9f65c5dd02c6", "width": 1}, {"from": "0e2b76bd-fa95-4a2e-9aa6-621ca5664d4c", "to": "d26ff603d732470c83c52a9b3dec2af2", "width": 1}, {"from": "4752ada0-b3bc-480a-b0d2-15bee717abf1", "to": "6c1bd4de-74eb-4f44-8cba-ab1b994939a8", "width": 1}, {"from": "4752ada0-b3bc-480a-b0d2-15bee717abf1", "to": "296f12ab-03eb-495e-a89c-a642b60fb59f", "width": 1}, {"from": "2414d865-830b-4ca5-a094-d8217f6b09f0", "to": "296f12ab-03eb-495e-a89c-a642b60fb59f", "width": 1}, {"from": "a8a00071-1e94-47d4-ae1f-c4d1d56d0f25", "to": "e7135db8-6662-4cf1-a1eb-f53f50d8cb30", "width": 1}, {"from": "f1ab6b4e-ff62-4372-988c-6d4c7f225258", "to": "19751c74-c86a-4d3f-b10b-e970f96c7839", "width": 1}, {"from": "f1ab6b4e-ff62-4372-988c-6d4c7f225258", "to": "9f541978-2e43-4f46-95cb-bd682ce56c82", "width": 1}, {"from": "9f541978-2e43-4f46-95cb-bd682ce56c82", "to": "19751c74-c86a-4d3f-b10b-e970f96c7839", "width": 1}, {"from": "7a20dc11-ce45-4c13-a1a2-a10b92ce1a6d", "to": 13679, "width": 1}, {"from": "7a20dc11-ce45-4c13-a1a2-a10b92ce1a6d", "to": "296f12ab-03eb-495e-a89c-a642b60fb59f", "width": 1}, {"from": "a21faec3-d32a-4c71-91f4-aefc4c598939", "to": 13679, "width": 1}, {"from": "6c1bd4de-74eb-4f44-8cba-ab1b994939a8", "to": "296f12ab-03eb-495e-a89c-a642b60fb59f", "width": 1}, {"from": "296f12ab-03eb-495e-a89c-a642b60fb59f", "to": 13679, "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": true,
+        "filter": [
+            "physics"
+        ]
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "repulsion": {
+            "centralGravity": 0.33,
+            "damping": 0.95,
+            "nodeDistance": 420,
+            "springConstant": 0.1,
+            "springLength": 110
+        },
+        "solver": "repulsion",
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+                  // if this network requires displaying the configure window,
+                  // put it in its div
+                  options.configure["container"] = document.getElementById("config");
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>

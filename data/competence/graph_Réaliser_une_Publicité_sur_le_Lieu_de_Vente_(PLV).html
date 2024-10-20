@@ -1,0 +1,178 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 800px;
+                 background-color: #222222;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+             #config {
+                 float: left;
+                 width: 400px;
+                 height: 600px;
+             }
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+            <div id="config"></div>
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"font": {"color": "white"}, "group": 1, "id": "e208c124-c2d4-43aa-b374-5e9653b2aad4", "label": "Taux de conversion", "shape": "dot", "size": 5, "title": "Le taux de conversion est le pourcentage d\u0027utilisateurs qui r\u00e9alisent une action souhait\u00e9e, comme un achat ou une inscription, apr\u00e8s avoir \u00e9t\u00e9 expos\u00e9s \u00e0 une campagne marketing sur un site web ou via des canaux mobiles. Cet indicateur cl\u00e9 de performance commerciale mesure l\u0027efficacit\u00e9 d\u0027une interface et peut \u00eatre influenc\u00e9 par divers facteurs, tels que l\u0027utilisation strat\u00e9gique des couleurs et d\u0027autres \u00e9l\u00e9ments de design UX. Il repr\u00e9sente donc la proportion de prospects qui deviennent clients suite \u00e0 leur interaction avec une offre."}, {"font": {"color": "white"}, "group": 2, "id": 13609, "label": "Mathilde Vigneron : Designer Produit et Sp\u00e9cialiste en Marketing Mobile", "shape": "dot", "size": 8, "title": "_YNOV CONNECT_Mobil Marketing, user acquisition \u0026 mode\u0300les e\u0301conomique_B3 \u2013Commun Marcom"}, {"font": {"color": "white"}, "group": 1, "id": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "label": "Exp\u00e9rience Utilisateur et Client", "shape": "dot", "size": 21, "title": "L\u0027exp\u00e9rience utilisateur (UX) et l\u0027exp\u00e9rience client englobent toutes les \u00e9motions, attitudes et r\u00e9actions d\u0027un utilisateur lors de son interaction avec un produit ou service. L\u0027UX vise \u00e0 optimiser la satisfaction en am\u00e9liorant la perception globale influenc\u00e9e par le design, les fonctionnalit\u00e9s, l\u0027interface, l\u0027utilisabilit\u00e9 et le plaisir d\u0027utilisation. L\u0027interface utilisateur (UI), qui constitue le point de contact visuel et interactif entre l\u0027utilisateur et le syst\u00e8me, joue un r\u00f4le crucial dans la convivialit\u00e9 et l\u0027esth\u00e9tique du produit num\u00e9rique. De plus, l\u0027UX mobile se concentre sur la cr\u00e9ation d\u0027interfaces conviviales pour maximiser l\u0027engagement des utilisateurs sur appareils mobiles. Ensemble, ces concepts visent \u00e0 r\u00e9duire les frictions durant le processus d\u0027achat et \u00e0 influencer la fid\u00e9lit\u00e9 des utilisateurs dans un environnement num\u00e9rique."}, {"font": {"color": "white"}, "group": 1, "id": "baebe016-d0cc-4e32-9346-f7e1124193a3", "label": "Conception d\u0027Exp\u00e9rience Utilisateur (UX)", "shape": "dot", "size": 9, "title": "La conception d\u0027exp\u00e9rience utilisateur (UX) est une discipline centr\u00e9e sur l\u0027optimisation des interactions entre les utilisateurs et les produits ou services num\u00e9riques. Elle vise \u00e0 am\u00e9liorer la satisfaction et l\u0027efficacit\u00e9 de l\u0027utilisation en cr\u00e9ant des interfaces utilisateur intuitives et attrayantes, tout en tenant compte des comportements, besoins cognitifs et pr\u00e9f\u00e9rences des utilisateurs finaux. Ce processus englobe \u00e0 la fois l\u0027esth\u00e9tique et la fonctionnalit\u00e9, influen\u00e7ant ainsi l\u0027exp\u00e9rience globale par des choix visuels et structurels. Les professionnels tels que les designers UX et UI travaillent \u00e0 \u00e9tablir des interactions significatives, simplifiant l\u0027interaction utilisateur tout en g\u00e9rant la complexit\u00e9 sous-jacente du syst\u00e8me."}, {"font": {"color": "white"}, "group": 1, "id": "bbec4b6c-ecb2-4980-a828-4ea2e6a15f47", "label": "Coh\u00e9rence", "shape": "dot", "size": 5, "title": "Uniformit\u00e9 dans le design et les interactions au sein d\u0027une interface ou d\u0027une application, favorisant une meilleure compr\u00e9hension et garantissant une exp\u00e9rience fluide pour l\u0027utilisateur."}, {"font": {"color": "white"}, "group": 1, "id": "824ed510-a8b6-49e8-b6a1-03338f5078d0", "label": "Simplicit\u00e9", "shape": "dot", "size": 5, "title": "Simplicit\u00e9 d\u00e9signe une approche de design qui privil\u00e9gie la r\u00e9duction des \u00e9l\u00e9ments superflus pour cr\u00e9er des interfaces claires, intuitives et esth\u00e9tiquement plaisantes. Ce principe vise \u00e0 rendre les interfaces faciles \u00e0 comprendre et \u00e0 utiliser, favorisant ainsi une exp\u00e9rience utilisateur optimale en mettant l\u0027accent sur le minimalisme, la fonctionnalit\u00e9 et la r\u00e9duction de la courbe d\u0027apprentissage."}, {"font": {"color": "white"}, "group": 4, "id": "e90463e2623e45b7aa7f996dfc2579bc", "label": "fill_in", "shape": "dot", "size": 5, "title": "Les campagnes peuvent \u00eatre optimis\u00e9es en surveillant les performances via des outils \u003cblank\u003e qui analysent la navigation des utilisateurs mobiles et les taux de conversion."}, {"font": {"color": "white"}, "group": 5, "id": "486167e179c1429eacc12bb2005ff2e4", "label": "true_false", "shape": "dot", "size": 5, "title": "Les tests A/B permettent de tester diff\u00e9rentes approches marketing dans le but de comprendre ce qui fonctionne le mieux aupr\u00e8s des utilisateurs mobiles."}, {"font": {"color": "white"}, "group": 1, "id": "97773262-3ef9-493f-8aea-44b4ef91a06d", "label": "Marketing", "shape": "dot", "size": 5, "title": "Discipline visant \u00e0 promouvoir et vendre des produits ou services, incluant des strat\u00e9gies comme le mass mailing, le suivi de campagnes sponsoris\u00e9es, ainsi que des techniques pour attirer et fid\u00e9liser les clients dans un environnement concurrentiel."}, {"font": {"color": "white"}, "group": 1, "id": "218f57e5-3fb5-4ee0-9b45-85b91529a437", "label": "Banni\u00e8res publicitaires", "shape": "dot", "size": 5, "title": "Annonces visuelles plac\u00e9es sur une page web, dont la gestion doit respecter des crit\u00e8res d\u0027intrusivit\u00e9 et de dur\u00e9e d\u0027affichage."}, {"font": {"color": "white"}, "group": 1, "id": "b4687a9d-661c-4a4e-aa80-837bdf471bbe", "label": "Pop-up / Pop-in", "shape": "dot", "size": 5, "title": "Fen\u00eatres publicitaires surgissantes souvent per\u00e7ues comme intrusives; leur utilisation est g\u00e9n\u00e9ralement d\u00e9conseill\u00e9e dans le design web moderne."}, {"font": {"color": "white"}, "group": 1, "id": "9afb0643-e273-456d-8fd2-4ab13b0d8236", "label": "Contraste visuel", "shape": "dot", "size": 5, "title": "Le contraste visuel, ou ratio de contraste, d\u00e9signe la mesure de l\u0027opposition entre la luminosit\u00e9 ou la couleur d\u0027un \u00e9l\u00e9ment de premier plan et celle d\u0027un arri\u00e8re-plan. Ce contraste est essentiel pour garantir la lisibilit\u00e9 et l\u0027accessibilit\u00e9 des contenus num\u00e9riques sur les pages web et les interfaces visuelles, en particulier pour les utilisateurs ayant des d\u00e9ficiences visuelles. Il joue un r\u00f4le crucial dans l\u0027exp\u00e9rience utilisateur en assurant que le contenu soit facilement discernable par tous."}, {"font": {"color": "white"}, "group": 1, "id": "287ef751-850a-45f8-8aea-12aa5b7582a2", "label": "Webmarketing", "shape": "dot", "size": 5, "title": "Le webmarketing d\u00e9signe l\u0027ensemble des techniques marketing appliqu\u00e9es sur Internet, incluant le mobile marketing, pour promouvoir efficacement des produits ou services et atteindre les utilisateurs mobiles."}, {"font": {"color": "white"}, "group": 1, "id": "9639a3d5-c874-4c14-9acd-54637974eae7", "label": "Contenus", "shape": "dot", "size": 5, "title": "Les contenus d\u00e9signent la qualit\u00e9 et la pertinence des informations et m\u00e9dias pr\u00e9sent\u00e9s sur un site web, qui sont essentiels pour r\u00e9pondre aux besoins des utilisateurs, attirer et retenir leur attention."}, {"font": {"color": "white"}, "group": 1, "id": "a298f2fb-381c-404f-91a5-0c40e082808b", "label": "\u00c9l\u00e9ments graphiques", "shape": "dot", "size": 5, "title": "Les \u00e9l\u00e9ments graphiques, ou \u00e9l\u00e9ment graphique au singulier, sont des composants visuels utilis\u00e9s dans le design num\u00e9rique, comprenant des images, boutons, ic\u00f4nes, illustrations, motifs et typographie. Ils sont essentiels pour la communication visuelle et aident \u00e0 la compr\u00e9hension d\u0027informations complexes tout en influen\u00e7ant l\u0027interaction utilisateur au sein d\u0027une interface."}, {"font": {"color": "white"}, "group": 1, "id": "6023dfd6-ea81-45fa-aefa-6d1c4958f59a", "label": "Confiance du consommateur", "shape": "dot", "size": 5, "title": "Niveau de s\u00e9curit\u00e9 et de certitude ressenti par un consommateur envers une marque, un produit ou un service, influenc\u00e9 par la clart\u00e9 des informations et la simplicit\u00e9 des choix offerts, crucial pour encourager l\u0027achat et fid\u00e9liser."}, {"font": {"color": "white"}, "group": 1, "id": "68fa2d67-f897-4e62-8392-2bdbe88e0df2", "label": "Choix limit\u00e9", "shape": "dot", "size": 5, "title": "Strat\u00e9gie visant \u00e0 r\u00e9duire le nombre d\u0027options pr\u00e9sent\u00e9es aux utilisateurs pour acc\u00e9l\u00e9rer leur processus d\u00e9cisionnel."}, {"font": {"color": "white"}, "group": 1, "id": "93243cf1-1c62-40e6-b2ac-c4f1322cfadb", "label": "Utilisabilit\u00e9", "shape": "dot", "size": 5, "title": "Mesure de l\u0027efficacit\u00e9 et de la satisfaction d\u0027une interface utilisateur, essentielle pour garantir une interaction fluide et intuitive."}, {"font": {"color": "white"}, "group": 5, "id": "bfadd69830f842acbfe37e3154657004", "label": "true_false", "shape": "dot", "size": 5, "title": "La loi de Hick-Hyman permet d\u0027\u00e9valuer l\u0027efficacit\u00e9 des interfaces en analysant le nombre de choix disponibles."}, {"font": {"color": "white"}, "group": 3, "id": "8a0090c63f2543fb9a56f60fd2dc163c", "label": "mcq", "shape": "dot", "size": 5, "title": "Comment est d\u00e9fini le terme design dans ce contexte sp\u00e9cifique ?"}, {"font": {"color": "white"}, "group": 3, "id": "a4bf5ac2a00a43fead862ca4ecbd2405", "label": "mcq", "shape": "dot", "size": 5, "title": "Que doit prendre en compte le design pour \u00eatre efficace dans ce contexte ?"}, {"font": {"color": "white"}, "group": 5, "id": "c7bfc2ca1b974d1681e04e56abcb83d3", "label": "true_false", "shape": "dot", "size": 5, "title": "Les fonctions les plus importantes d\u0027une interface doivent \u00eatre repr\u00e9sent\u00e9es de mani\u00e8re plus visible pour prioriser leur usage."}, {"font": {"color": "white"}, "group": 5, "id": "995e290cda554dceb9314682933f7829", "label": "true_false", "shape": "dot", "size": 5, "title": "L\u0027espace blanc, ou espace n\u00e9gatif, est utilis\u00e9 pour repr\u00e9senter les parties textuelles du design."}, {"font": {"color": "white"}, "group": 5, "id": "2e8282503d8d465cb75918606843cf30", "label": "true_false", "shape": "dot", "size": 5, "title": "Un bouton d\u0027appel \u00e0 l\u0027action trop grand peut nuire \u00e0 la hi\u00e9rarchie visuelle d\u0027une mise en page."}, {"font": {"color": "white"}, "group": 5, "id": "5af9805f30b344e6988f400813071094", "label": "true_false", "shape": "dot", "size": 5, "title": "Pour \u00e9viter de perdre l\u0027utilisateur, il est essentiel de suivre des normes de clart\u00e9 et de coh\u00e9rence dans l\u0027interface."}, {"font": {"color": "white"}, "group": 5, "id": "c76032a02e6a4f45976fee77342cf113", "label": "true_false", "shape": "dot", "size": 5, "title": "Le design doit inclure l\u0027exp\u00e9rience utilisateur pour \u00eatre efficace."}, {"font": {"color": "white"}, "group": 5, "id": "237d060ac8a04e529f583f5e1347fc67", "label": "true_false", "shape": "dot", "size": 5, "title": "Le terme \u0027design\u0027 dans ce contexte signifie principalement \u0027cr\u00e9ation visuelle\u0027."}, {"font": {"color": "white"}, "group": 1, "id": "d5978979-95eb-4c2f-bbf0-34d3ca920f47", "label": "Objectifs strat\u00e9giques", "shape": "dot", "size": 5, "title": "Buts d\u00e9finis par un site web ou une application qui guident le design et l\u0027ergonomie en fonction des besoins des usagers."}, {"font": {"color": "white"}, "group": 1, "id": "d90c15d6-a890-40ff-9021-d9e24563d56a", "label": "Contexte d\u0027utilisation", "shape": "dot", "size": 5, "title": "Ensemble des conditions dans lesquelles un produit est utilis\u00e9, influen\u00e7ant son ergonomie et son efficacit\u00e9."}, {"font": {"color": "white"}, "group": 3, "id": "f5a6854fe21c4a3b911766901e40e5f9", "label": "mcq", "shape": "dot", "size": 5, "title": "Que doit-on permettre \u00e0 l\u0027utilisateur lorsqu\u0027une publicit\u00e9 en plein \u00e9cran est affich\u00e9e ?"}, {"font": {"color": "white"}, "group": 3, "id": "e846ef0159d94e02a46b826e22c81e6b", "label": "mcq", "shape": "dot", "size": 5, "title": "Pour am\u00e9liorer la compr\u00e9hension d\u0027une interface, que faut-il respecter principalement ?"}, {"font": {"color": "white"}, "group": 3, "id": "2705159caa874a24a6e4d33a3f98e348", "label": "mcq", "shape": "dot", "size": 5, "title": "Qu\u0027est-ce que les clients recherchent avant tout lors d\u0027une exp\u00e9rience d\u0027achat?"}, {"font": {"color": "white"}, "group": 3, "id": "f73b609c41224a5eb611f366c35d9a2a", "label": "mcq", "shape": "dot", "size": 5, "title": "Quel crit\u00e8re doit \u00eatre respect\u00e9 pour rendre une application intuitive ?"}, {"font": {"color": "white"}, "group": 3, "id": "916215f011f14f91a35952bc1992d123", "label": "mcq", "shape": "dot", "size": 5, "title": "Quel aspect devrait \u00eatre \u00e9vit\u00e9 pour ne pas perdre l\u0027utilisateur ?"}, {"font": {"color": "white"}, "group": 4, "id": "15aaf95744024038ac5c23a58c47e7ff", "label": "fill_in", "shape": "dot", "size": 5, "title": "Ne pas adapter correctement le contenu aux appareils mobiles peut entra\u00eener \u003cblank\u003e pour les utilisateurs."}, {"font": {"color": "white"}, "group": 5, "id": "8575c3f03e7d4498b1eba5d752c95f42", "label": "true_false", "shape": "dot", "size": 5, "title": "Les \u00e9l\u00e9ments ergonomiques doivent \u00eatre s\u00e9lectionn\u00e9s en fonction de l\u0027\u00e9tude des usagers."}, {"font": {"color": "white"}, "group": 5, "id": "2f9b8c77092542f7b1b9ff425a63a1c1", "label": "true_false", "shape": "dot", "size": 5, "title": "La hi\u00e9rarchie entre les \u00e9l\u00e9ments d\u0027une interface aide \u00e0 mieux comprendre les actions \u00e0 r\u00e9aliser."}, {"font": {"color": "white"}, "group": 5, "id": "5c99b0872ad447488fc21208ec035890", "label": "true_false", "shape": "dot", "size": 5, "title": "La constance dans l\u0027utilisation d\u0027ic\u00f4nes universelles permet d\u0027am\u00e9liorer l\u0027intuitivit\u00e9 d\u0027une interface."}, {"font": {"color": "white"}, "group": 5, "id": "f7db6816b25d40e7b88284be2d31d0ac", "label": "true_false", "shape": "dot", "size": 5, "title": "Les utilisateurs pr\u00e9f\u00e8rent des ic\u00f4nes nouvelles et originales plut\u00f4t que celles \u00e9tablies pour mieux comprendre leur fonction."}, {"font": {"color": "white"}, "group": 5, "id": "ac21d3af71de42c1aa674a62e7c21ec4", "label": "true_false", "shape": "dot", "size": 5, "title": "La loi de Hick-Hyman n\u0027a aucun lien avec le temps de r\u00e9action de l\u0027utilisateur lors de l\u0027utilisation d\u0027une interface."}, {"font": {"color": "white"}, "group": 1, "id": "7f68a084-10a3-4266-90e0-653c0f007cfd", "label": "Design-first", "shape": "dot", "size": 5, "title": "Approche de conception priorisant l\u0027esth\u00e9tique et l\u0027exp\u00e9rience utilisateur d\u00e8s le d\u00e9but du processus de d\u00e9veloppement."}, {"font": {"color": "white"}, "group": 1, "id": "14c0dfc4-ae59-4351-b9d4-991278432fb8", "label": "Contenu alternatif", "shape": "dot", "size": 5, "title": "Information pr\u00e9sent\u00e9e diff\u00e9remment mais \u00e9quivalente \u00e0 un autre contenu, respectant les crit\u00e8res d\u0027accessibilit\u00e9 du RGAA."}, {"font": {"color": "white"}, "group": 1, "id": "b73644a0-a450-4aa4-9e3b-96cc1c0da4c7", "label": "Image", "shape": "dot", "size": 5, "title": "Repr\u00e9sentations visuelles d\u0027un sujet, essentielles pour la communication et l\u0027interpr\u00e9tation dans le design graphique et le contenu num\u00e9rique, influen\u00e7ant la perception et l\u0027\u00e9motion du spectateur tout en n\u00e9cessitant des alternatives textuelles pour l\u0027accessibilit\u00e9."}]);
+                  edges = new vis.DataSet([{"from": "e208c124-c2d4-43aa-b374-5e9653b2aad4", "to": 13609, "width": 1}, {"from": "e208c124-c2d4-43aa-b374-5e9653b2aad4", "to": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "width": 1}, {"from": "e208c124-c2d4-43aa-b374-5e9653b2aad4", "to": "baebe016-d0cc-4e32-9346-f7e1124193a3", "width": 1}, {"from": "e208c124-c2d4-43aa-b374-5e9653b2aad4", "to": "bbec4b6c-ecb2-4980-a828-4ea2e6a15f47", "width": 1}, {"from": "e208c124-c2d4-43aa-b374-5e9653b2aad4", "to": "824ed510-a8b6-49e8-b6a1-03338f5078d0", "width": 1}, {"from": "e208c124-c2d4-43aa-b374-5e9653b2aad4", "to": "e90463e2623e45b7aa7f996dfc2579bc", "width": 1}, {"from": "e208c124-c2d4-43aa-b374-5e9653b2aad4", "to": "486167e179c1429eacc12bb2005ff2e4", "width": 1}, {"from": "97773262-3ef9-493f-8aea-44b4ef91a06d", "to": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "width": 1}, {"from": "218f57e5-3fb5-4ee0-9b45-85b91529a437", "to": "b4687a9d-661c-4a4e-aa80-837bdf471bbe", "width": 1}, {"from": "218f57e5-3fb5-4ee0-9b45-85b91529a437", "to": "9afb0643-e273-456d-8fd2-4ab13b0d8236", "width": 1}, {"from": "287ef751-850a-45f8-8aea-12aa5b7582a2", "to": 13609, "width": 1}, {"from": "287ef751-850a-45f8-8aea-12aa5b7582a2", "to": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "width": 1}, {"from": "287ef751-850a-45f8-8aea-12aa5b7582a2", "to": "9639a3d5-c874-4c14-9acd-54637974eae7", "width": 1}, {"from": "9afb0643-e273-456d-8fd2-4ab13b0d8236", "to": "a298f2fb-381c-404f-91a5-0c40e082808b", "width": 1}, {"from": "9afb0643-e273-456d-8fd2-4ab13b0d8236", "to": "b4687a9d-661c-4a4e-aa80-837bdf471bbe", "width": 1}, {"from": "6023dfd6-ea81-45fa-aefa-6d1c4958f59a", "to": 13609, "width": 1}, {"from": "6023dfd6-ea81-45fa-aefa-6d1c4958f59a", "to": "baebe016-d0cc-4e32-9346-f7e1124193a3", "width": 1}, {"from": "6023dfd6-ea81-45fa-aefa-6d1c4958f59a", "to": "68fa2d67-f897-4e62-8392-2bdbe88e0df2", "width": 1}, {"from": "6023dfd6-ea81-45fa-aefa-6d1c4958f59a", "to": "93243cf1-1c62-40e6-b2ac-c4f1322cfadb", "width": 1}, {"from": "a298f2fb-381c-404f-91a5-0c40e082808b", "to": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "width": 1}, {"from": "93243cf1-1c62-40e6-b2ac-c4f1322cfadb", "to": "baebe016-d0cc-4e32-9346-f7e1124193a3", "width": 1}, {"from": "93243cf1-1c62-40e6-b2ac-c4f1322cfadb", "to": "68fa2d67-f897-4e62-8392-2bdbe88e0df2", "width": 1}, {"from": "93243cf1-1c62-40e6-b2ac-c4f1322cfadb", "to": "bfadd69830f842acbfe37e3154657004", "width": 1}, {"from": "baebe016-d0cc-4e32-9346-f7e1124193a3", "to": 13609, "width": 1}, {"from": "baebe016-d0cc-4e32-9346-f7e1124193a3", "to": "68fa2d67-f897-4e62-8392-2bdbe88e0df2", "width": 1}, {"from": "baebe016-d0cc-4e32-9346-f7e1124193a3", "to": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "width": 1}, {"from": "baebe016-d0cc-4e32-9346-f7e1124193a3", "to": "bbec4b6c-ecb2-4980-a828-4ea2e6a15f47", "width": 1}, {"from": "baebe016-d0cc-4e32-9346-f7e1124193a3", "to": "8a0090c63f2543fb9a56f60fd2dc163c", "width": 1}, {"from": "baebe016-d0cc-4e32-9346-f7e1124193a3", "to": "a4bf5ac2a00a43fead862ca4ecbd2405", "width": 1}, {"from": "baebe016-d0cc-4e32-9346-f7e1124193a3", "to": "c7bfc2ca1b974d1681e04e56abcb83d3", "width": 1}, {"from": "baebe016-d0cc-4e32-9346-f7e1124193a3", "to": "995e290cda554dceb9314682933f7829", "width": 1}, {"from": "baebe016-d0cc-4e32-9346-f7e1124193a3", "to": "2e8282503d8d465cb75918606843cf30", "width": 1}, {"from": "baebe016-d0cc-4e32-9346-f7e1124193a3", "to": "5af9805f30b344e6988f400813071094", "width": 1}, {"from": "baebe016-d0cc-4e32-9346-f7e1124193a3", "to": "c76032a02e6a4f45976fee77342cf113", "width": 1}, {"from": "baebe016-d0cc-4e32-9346-f7e1124193a3", "to": "237d060ac8a04e529f583f5e1347fc67", "width": 1}, {"from": "824ed510-a8b6-49e8-b6a1-03338f5078d0", "to": 13609, "width": 1}, {"from": "824ed510-a8b6-49e8-b6a1-03338f5078d0", "to": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "width": 1}, {"from": "824ed510-a8b6-49e8-b6a1-03338f5078d0", "to": "bbec4b6c-ecb2-4980-a828-4ea2e6a15f47", "width": 1}, {"from": "9639a3d5-c874-4c14-9acd-54637974eae7", "to": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "width": 1}, {"from": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "to": 13609, "width": 1}, {"from": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "to": "d5978979-95eb-4c2f-bbf0-34d3ca920f47", "width": 1}, {"from": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "to": "d90c15d6-a890-40ff-9021-d9e24563d56a", "width": 1}, {"from": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "to": "bbec4b6c-ecb2-4980-a828-4ea2e6a15f47", "width": 1}, {"from": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "to": "f5a6854fe21c4a3b911766901e40e5f9", "width": 1}, {"from": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "to": "e846ef0159d94e02a46b826e22c81e6b", "width": 1}, {"from": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "to": "2705159caa874a24a6e4d33a3f98e348", "width": 1}, {"from": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "to": "f73b609c41224a5eb611f366c35d9a2a", "width": 1}, {"from": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "to": "916215f011f14f91a35952bc1992d123", "width": 1}, {"from": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "to": "8a0090c63f2543fb9a56f60fd2dc163c", "width": 1}, {"from": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "to": "a4bf5ac2a00a43fead862ca4ecbd2405", "width": 1}, {"from": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "to": "15aaf95744024038ac5c23a58c47e7ff", "width": 1}, {"from": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "to": "8575c3f03e7d4498b1eba5d752c95f42", "width": 1}, {"from": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "to": "2f9b8c77092542f7b1b9ff425a63a1c1", "width": 1}, {"from": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "to": "5c99b0872ad447488fc21208ec035890", "width": 1}, {"from": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "to": "f7db6816b25d40e7b88284be2d31d0ac", "width": 1}, {"from": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "to": "5af9805f30b344e6988f400813071094", "width": 1}, {"from": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "to": "c76032a02e6a4f45976fee77342cf113", "width": 1}, {"from": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "to": "237d060ac8a04e529f583f5e1347fc67", "width": 1}, {"from": "68fa2d67-f897-4e62-8392-2bdbe88e0df2", "to": "ac21d3af71de42c1aa674a62e7c21ec4", "width": 1}, {"from": "68fa2d67-f897-4e62-8392-2bdbe88e0df2", "to": "bfadd69830f842acbfe37e3154657004", "width": 1}, {"from": "d90c15d6-a890-40ff-9021-d9e24563d56a", "to": "d5978979-95eb-4c2f-bbf0-34d3ca920f47", "width": 1}, {"from": "d90c15d6-a890-40ff-9021-d9e24563d56a", "to": "8575c3f03e7d4498b1eba5d752c95f42", "width": 1}, {"from": "bbec4b6c-ecb2-4980-a828-4ea2e6a15f47", "to": 13609, "width": 1}, {"from": "bbec4b6c-ecb2-4980-a828-4ea2e6a15f47", "to": "916215f011f14f91a35952bc1992d123", "width": 1}, {"from": "bbec4b6c-ecb2-4980-a828-4ea2e6a15f47", "to": "5af9805f30b344e6988f400813071094", "width": 1}, {"from": "a4bf5ac2a00a43fead862ca4ecbd2405", "to": 13609, "width": 1}, {"from": "5af9805f30b344e6988f400813071094", "to": 13609, "width": 1}, {"from": "c76032a02e6a4f45976fee77342cf113", "to": 13609, "width": 1}, {"from": "237d060ac8a04e529f583f5e1347fc67", "to": 13609, "width": 1}, {"from": "e846ef0159d94e02a46b826e22c81e6b", "to": 13609, "width": 1}, {"from": "916215f011f14f91a35952bc1992d123", "to": 13609, "width": 1}, {"from": "2f9b8c77092542f7b1b9ff425a63a1c1", "to": 13609, "width": 1}, {"from": "2e8282503d8d465cb75918606843cf30", "to": 13609, "width": 1}, {"from": "8a0090c63f2543fb9a56f60fd2dc163c", "to": 13609, "width": 1}, {"from": "995e290cda554dceb9314682933f7829", "to": 13609, "width": 1}, {"from": "f5a6854fe21c4a3b911766901e40e5f9", "to": 13609, "width": 1}, {"from": "2705159caa874a24a6e4d33a3f98e348", "to": 13609, "width": 1}, {"from": "f73b609c41224a5eb611f366c35d9a2a", "to": 13609, "width": 1}, {"from": "5c99b0872ad447488fc21208ec035890", "to": 13609, "width": 1}, {"from": "f7db6816b25d40e7b88284be2d31d0ac", "to": 13609, "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": true,
+        "filter": [
+            "physics"
+        ]
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "repulsion": {
+            "centralGravity": 0.33,
+            "damping": 0.95,
+            "nodeDistance": 420,
+            "springConstant": 0.1,
+            "springLength": 110
+        },
+        "solver": "repulsion",
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+                  // if this network requires displaying the configure window,
+                  // put it in its div
+                  options.configure["container"] = document.getElementById("config");
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>

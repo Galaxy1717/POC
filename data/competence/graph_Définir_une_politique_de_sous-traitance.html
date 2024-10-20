@@ -1,0 +1,178 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 800px;
+                 background-color: #222222;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+             #config {
+                 float: left;
+                 width: 400px;
+                 height: 600px;
+             }
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+            <div id="config"></div>
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"font": {"color": "white"}, "group": 1, "id": "fc042f14-b979-4769-b475-11f6e6d65c88", "label": "Devis", "shape": "dot", "size": 5, "title": "Document formel d\u00e9taillant les co\u00fbts estim\u00e9s et les conditions d\u0027un projet ou service propos\u00e9, essentiel pour \u00e9tablir un accord entre le fournisseur et le client tout en assurant la transparence financi\u00e8re."}, {"font": {"color": "white"}, "group": 2, "id": 13682, "label": "Gestion de Projet et Calcul du Taux Horaire", "shape": "dot", "size": 8, "title": "Sequence 6_importance gestion de projet"}, {"font": {"color": "white"}, "group": 1, "id": "c046e017-bd93-494e-935f-03880b12ef92", "label": "Sp\u00e9cifications du produit", "shape": "dot", "size": 5, "title": "D\u00e9tails techniques et exigences pr\u00e9cises concernant un produit ou service demand\u00e9 par le client."}, {"font": {"color": "white"}, "group": 1, "id": "758aa60e-ecf7-4b6f-9fd8-335eeb21852e", "label": "Confirmation \u00e9crite", "shape": "dot", "size": 5, "title": "Validation formelle par \u00e9crit de l\u0027acceptation d\u0027un devis ou d\u0027une proposition, cr\u00e9ant ainsi un engagement l\u00e9gal."}, {"font": {"color": "white"}, "group": 1, "id": "e7135db8-6662-4cf1-a1eb-f53f50d8cb30", "label": "\u00c9valuation des co\u00fbts", "shape": "dot", "size": 5, "title": "Analyse des d\u00e9penses li\u00e9es \u00e0 un projet, incluant mat\u00e9riaux et main-d\u0027\u0153uvre, pour assurer la viabilit\u00e9 financi\u00e8re."}, {"font": {"color": "white"}, "group": 1, "id": "c77c2db1-d307-4596-8d2e-24693659b65d", "label": "Accord", "shape": "dot", "size": 5, "title": "Consentement mutuel entre deux parties, souvent formalis\u00e9 par une signature, \u00e9tablissant des obligations l\u00e9gales."}, {"font": {"color": "white"}, "group": 1, "id": "2fe97287-86bb-4845-9a01-5de801abded6", "label": "Charges salariales", "shape": "dot", "size": 5, "title": "Les co\u00fbts li\u00e9s aux salaires, incluant les charges sociales et fiscales, qui augmentent le co\u00fbt total du personnel pour l\u0027entreprise."}, {"font": {"color": "white"}, "group": 1, "id": "ae467590-b74a-463a-8b8f-0d480a17c50a", "label": "Gestion de projet", "shape": "dot", "size": 5, "title": "La gestion de projet est une discipline qui consiste \u00e0 appliquer des connaissances, comp\u00e9tences et techniques pour planifier, ex\u00e9cuter et superviser des projets afin d\u0027atteindre des objectifs sp\u00e9cifiques dans un cadre temporel d\u00e9fini. Elle implique l\u0027organisation et la planification des ressources tout en respectant les contraintes budg\u00e9taires, et elle est particuli\u00e8rement cruciale dans divers domaines, y compris le domaine cr\u00e9atif."}, {"font": {"color": "white"}, "group": 1, "id": "3a2fe8a9-978a-4604-92c0-04a0a0bd599a", "label": "Analyse de march\u00e9", "shape": "dot", "size": 5, "title": "\u00c9tude approfondie du march\u00e9, y compris les tendances et la concurrence, essentielle pour \u00e9laborer une strat\u00e9gie marketing efficace."}, {"font": {"color": "white"}, "group": 1, "id": "e3db3cdb-5474-48f7-833c-0bdae33ed61a", "label": "Dossier d\u0027Ex\u00e9cution", "shape": "dot", "size": 5, "title": "Document technique d\u00e9taillant les sp\u00e9cifications et les \u00e9l\u00e9ments n\u00e9cessaires \u00e0 la r\u00e9alisation d\u0027un projet, crucial pour assurer sa bonne mise en \u0153uvre."}, {"font": {"color": "white"}, "group": 1, "id": "3898834d-4869-40af-9c13-784f85193239", "label": "Diagnostic", "shape": "dot", "size": 5, "title": "Un diagnostic dans le contexte commercial fait r\u00e9f\u00e9rence \u00e0 l\u0027analyse approfondie des besoins d\u0027un client, permettant de formuler des recommandations adapt\u00e9es pour atteindre ses objectifs."}, {"font": {"color": "white"}, "group": 1, "id": "9c7cbcbd-6820-4fcd-bd00-88a36b11fe80", "label": "Analyse des Besoins du Client", "shape": "dot", "size": 5, "title": "Processus d\u0027\u00e9valuation des exigences explicites et implicites d\u0027un client afin de fournir des solutions adapt\u00e9es \u00e0 ses attentes."}, {"font": {"color": "white"}, "group": 1, "id": "02ad06b9-5b33-4a60-b142-c8c37eb3a4f3", "label": "Performance \u00e9conomique", "shape": "dot", "size": 5, "title": "Aspect du design \u00e9co-brand\u00e9 qui cherche \u00e0 optimiser les co\u00fbts tout au long du processus de cr\u00e9ation et de diffusion."}, {"font": {"color": "white"}, "group": 1, "id": "0e2b76bd-fa95-4a2e-9aa6-621ca5664d4c", "label": "\u00c9valuation", "shape": "dot", "size": 5, "title": "Processus d\u0027analyse des id\u00e9es d\u00e9velopp\u00e9es selon des crit\u00e8res sp\u00e9cifiques pour affiner et am\u00e9liorer les propositions."}, {"font": {"color": "white"}, "group": 1, "id": "5a492283-28dd-4d14-8919-becc43892c23", "label": "Retour Client", "shape": "dot", "size": 5, "title": "Les retours clients, ou retour client, d\u00e9signent les commentaires et \u00e9valuations fournis par les clients sur leur exp\u00e9rience avec un produit ou service. Ces retours sont cruciaux pour ajuster et am\u00e9liorer l\u0027offre d\u0027une entreprise afin de mieux satisfaire la demande et r\u00e9pondre aux attentes des consommateurs."}, {"font": {"color": "white"}, "group": 1, "id": "90da4202-90b8-4ca5-8958-1e7d343da9ff", "label": "Veille", "shape": "dot", "size": 5, "title": "Phase d\u0027observation et d\u0027analyse des tendances et facteurs externes influen\u00e7ant un projet, essentielle pour une compr\u00e9hension approfondie du brief."}, {"font": {"color": "white"}, "group": 1, "id": "5d7d25af-0d81-4a1a-9fc1-c3d8e20c5b55", "label": "Synth\u00e8se de projet", "shape": "dot", "size": 5, "title": "R\u00e9sum\u00e9 des \u00e9tapes cl\u00e9s et des r\u00e9sultats d\u0027un projet, permettant une \u00e9valuation rapide de son d\u00e9roulement et de ses conclusions."}]);
+                  edges = new vis.DataSet([{"from": "fc042f14-b979-4769-b475-11f6e6d65c88", "to": 13682, "width": 1}, {"from": "fc042f14-b979-4769-b475-11f6e6d65c88", "to": "c046e017-bd93-494e-935f-03880b12ef92", "width": 1}, {"from": "fc042f14-b979-4769-b475-11f6e6d65c88", "to": "758aa60e-ecf7-4b6f-9fd8-335eeb21852e", "width": 1}, {"from": "fc042f14-b979-4769-b475-11f6e6d65c88", "to": "e7135db8-6662-4cf1-a1eb-f53f50d8cb30", "width": 1}, {"from": "fc042f14-b979-4769-b475-11f6e6d65c88", "to": "c77c2db1-d307-4596-8d2e-24693659b65d", "width": 1}, {"from": "c77c2db1-d307-4596-8d2e-24693659b65d", "to": 13682, "width": 1}, {"from": "c77c2db1-d307-4596-8d2e-24693659b65d", "to": "c046e017-bd93-494e-935f-03880b12ef92", "width": 1}, {"from": "c77c2db1-d307-4596-8d2e-24693659b65d", "to": "758aa60e-ecf7-4b6f-9fd8-335eeb21852e", "width": 1}, {"from": "c77c2db1-d307-4596-8d2e-24693659b65d", "to": "e7135db8-6662-4cf1-a1eb-f53f50d8cb30", "width": 1}, {"from": "e7135db8-6662-4cf1-a1eb-f53f50d8cb30", "to": 13682, "width": 1}, {"from": "e7135db8-6662-4cf1-a1eb-f53f50d8cb30", "to": "c046e017-bd93-494e-935f-03880b12ef92", "width": 1}, {"from": "e7135db8-6662-4cf1-a1eb-f53f50d8cb30", "to": "758aa60e-ecf7-4b6f-9fd8-335eeb21852e", "width": 1}, {"from": "c046e017-bd93-494e-935f-03880b12ef92", "to": 13682, "width": 1}, {"from": "c046e017-bd93-494e-935f-03880b12ef92", "to": "758aa60e-ecf7-4b6f-9fd8-335eeb21852e", "width": 1}, {"from": "2fe97287-86bb-4845-9a01-5de801abded6", "to": 13682, "width": 1}, {"from": "ae467590-b74a-463a-8b8f-0d480a17c50a", "to": 13682, "width": 1}, {"from": "758aa60e-ecf7-4b6f-9fd8-335eeb21852e", "to": 13682, "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": true,
+        "filter": [
+            "physics"
+        ]
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "repulsion": {
+            "centralGravity": 0.33,
+            "damping": 0.95,
+            "nodeDistance": 420,
+            "springConstant": 0.1,
+            "springLength": 110
+        },
+        "solver": "repulsion",
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+                  // if this network requires displaying the configure window,
+                  // put it in its div
+                  options.configure["container"] = document.getElementById("config");
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>

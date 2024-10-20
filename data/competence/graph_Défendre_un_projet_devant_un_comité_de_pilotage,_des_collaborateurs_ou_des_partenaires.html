@@ -1,0 +1,178 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 800px;
+                 background-color: #222222;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+             #config {
+                 float: left;
+                 width: 400px;
+                 height: 600px;
+             }
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+            <div id="config"></div>
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"font": {"color": "white"}, "group": 1, "id": "0fbe4a93-bbc1-40bb-863b-fc9a2392042a", "label": "Contributions personnelles", "shape": "dot", "size": 5, "title": "Modifications individuelles apport\u00e9es par chaque membre d\u0027une \u00e9quipe dans un projet collaboratif, cruciales pour le d\u00e9veloppement collectif et l\u0027apprentissage partag\u00e9."}, {"font": {"color": "white"}, "group": 2, "id": 13635, "label": "M\u00e9thode Git pour la Collaboration", "shape": "dot", "size": 8, "title": "A11 - Me\u0301thode de travail"}, {"font": {"color": "white"}, "group": 1, "id": "a3e4a324-8a40-4d42-90c1-995c08e2c180", "label": "Suivi de l\u0027avancement", "shape": "dot", "size": 5, "title": "Pratique consistant \u00e0 monitorer r\u00e9guli\u00e8rement les progr\u00e8s r\u00e9alis\u00e9s dans un projet afin d\u0027assurer une bonne gestion du temps et des ressources."}, {"font": {"color": "white"}, "group": 1, "id": "6950796e-29f2-4064-93d6-b57b697a2787", "label": "Am\u00e9lioration continue", "shape": "dot", "size": 5, "title": "Processus et philosophie d\u0027optimisation r\u00e9guli\u00e8re et continue des processus et produits, fond\u00e9e sur les retours d\u0027exp\u00e9rience et les contributions, visant \u00e0 am\u00e9liorer la qualit\u00e9 du contenu ou du produit final, particuli\u00e8rement cruciale dans des environnements tels que DevOps pour s\u0027adapter aux changements rapides du march\u00e9."}, {"font": {"color": "white"}, "group": 1, "id": "3eb6f31c-efcb-4922-99ad-9ffeab89a32f", "label": "Pull Requests (PR)", "shape": "dot", "size": 5, "title": "Les demandes de fusion (pull requests) sont des m\u00e9canismes dans les syst\u00e8mes de contr\u00f4le de version, comme Git, permettant aux contributeurs de proposer des modifications au code. Elles repr\u00e9sentent une demande formelle pour fusionner des modifications d\u0027une branche dans une autre, favorisant la r\u00e9vision collaborative et l\u0027int\u00e9gration des changements. Ce processus facilite ainsi l\u0027am\u00e9lioration continue du code par le biais d\u0027une \u00e9valuation collective et permet des discussions avant int\u00e9gration."}, {"font": {"color": "white"}, "group": 1, "id": "a99118f8-3d0e-4517-88a1-b6e4a98947bc", "label": "Collaboration dans le d\u00e9veloppement logiciel", "shape": "dot", "size": 5, "title": "La collaboration dans le d\u00e9veloppement logiciel d\u00e9signe le processus par lequel plusieurs individus ou \u00e9quipes, y compris les \u00e9quipes de d\u00e9veloppement et d\u0027exploitation, interagissent \u00e9troitement pour atteindre des objectifs communs. Ce partenariat actif favorise une responsabilit\u00e9 partag\u00e9e pour les livraisons logicielles et am\u00e9liore la compr\u00e9hension mutuelle, permettant ainsi de r\u00e9soudre rapidement les probl\u00e8mes. La collaboration implique un \u00e9change d\u0027id\u00e9es enrichissant, facilit\u00e9e par des outils num\u00e9riques, qui transforme les relations traditionnelles en un environnement d\u0027innovation et de partage. Elle se caract\u00e9rise \u00e9galement par une interaction continue entre membres d\u0027une \u00e9quipe, favorisant le partage de code et la r\u00e9solution rapide des conflits."}, {"font": {"color": "white"}, "group": 1, "id": "fdd30b48-ff85-4d12-8f41-23ad3ccda770", "label": "Comp\u00e9titivit\u00e9 sur le march\u00e9", "shape": "dot", "size": 5, "title": "Capacit\u00e9 d\u0027une entreprise \u00e0 se d\u00e9marquer face \u00e0 ses concurrents; renforc\u00e9e par l\u0027adoption efficace de pratiques DevOps."}, {"font": {"color": "white"}, "group": 3, "id": "0795d63dad7948209328243c6629257d", "label": "mcq", "shape": "dot", "size": 5, "title": "Quel aspect encourage DevOps entre les diff\u00e9rentes \u00e9quipes ?"}, {"font": {"color": "white"}, "group": 5, "id": "a8b47afa392b4c59a213f3ce7cc367e9", "label": "true_false", "shape": "dot", "size": 5, "title": "La CI favorise la collaboration au sein de l\u0027\u00e9quipe gr\u00e2ce au partage fr\u00e9quent du code et \u00e0 la r\u00e9solution rapide des conflits."}, {"font": {"color": "white"}, "group": 1, "id": "5b7b4dd7-8934-4844-b72c-ab548c3cebf9", "label": "Communication continue", "shape": "dot", "size": 5, "title": "\u00c9change r\u00e9gulier d\u0027informations entre membres d\u0027une \u00e9quipe pour assurer coh\u00e9rence et \u00e9viter conflits lors du d\u00e9veloppement collaboratif."}, {"font": {"color": "white"}, "group": 5, "id": "d6bd0764ccf246428af8c8b2ede99275", "label": "true_false", "shape": "dot", "size": 5, "title": "La communication continue entre les membres de l\u0027\u00e9quipe joue un r\u00f4le cl\u00e9 pour \u00e9viter les conflits de code."}, {"font": {"color": "white"}, "group": 1, "id": "9639a3d5-c874-4c14-9acd-54637974eae7", "label": "Contenus", "shape": "dot", "size": 5, "title": "Les contenus d\u00e9signent la qualit\u00e9 et la pertinence des informations et m\u00e9dias pr\u00e9sent\u00e9s sur un site web, qui sont essentiels pour r\u00e9pondre aux besoins des utilisateurs, attirer et retenir leur attention."}, {"font": {"color": "white"}, "group": 1, "id": "287ef751-850a-45f8-8aea-12aa5b7582a2", "label": "Webmarketing", "shape": "dot", "size": 5, "title": "Le webmarketing d\u00e9signe l\u0027ensemble des techniques marketing appliqu\u00e9es sur Internet, incluant le mobile marketing, pour promouvoir efficacement des produits ou services et atteindre les utilisateurs mobiles."}, {"font": {"color": "white"}, "group": 1, "id": "7c15d1a8-6a39-4bb9-b353-1112c86b8900", "label": "Communication digitale", "shape": "dot", "size": 5, "title": "\u00c9change d\u0027informations via des plateformes num\u00e9riques, n\u00e9cessitant une ergonomie adapt\u00e9e pour optimiser l\u0027interaction."}, {"font": {"color": "white"}, "group": 1, "id": "d5978979-95eb-4c2f-bbf0-34d3ca920f47", "label": "Objectifs strat\u00e9giques", "shape": "dot", "size": 5, "title": "Buts d\u00e9finis par un site web ou une application qui guident le design et l\u0027ergonomie en fonction des besoins des usagers."}, {"font": {"color": "white"}, "group": 1, "id": "97773262-3ef9-493f-8aea-44b4ef91a06d", "label": "Marketing", "shape": "dot", "size": 5, "title": "Discipline visant \u00e0 promouvoir et vendre des produits ou services, incluant des strat\u00e9gies comme le mass mailing, le suivi de campagnes sponsoris\u00e9es, ainsi que des techniques pour attirer et fid\u00e9liser les clients dans un environnement concurrentiel."}, {"font": {"color": "white"}, "group": 1, "id": "991e534d-656c-4e1f-b591-407211354ea5", "label": "Coordination entre \u00e9quipes", "shape": "dot", "size": 5, "title": "La collaboration n\u00e9cessaire entre les \u00e9quipes de d\u00e9veloppement, test et exploitation pour assurer une transition fluide entre les diff\u00e9rents environnements."}, {"font": {"color": "white"}, "group": 1, "id": "25d8b085-b1a7-41fe-a903-4ee8101bb8c2", "label": "projets critiques", "shape": "dot", "size": 5, "title": "Initiatives essentielles au succ\u00e8s op\u00e9rationnel d\u0027une entreprise, n\u00e9cessitant une attention particuli\u00e8re en raison de leur impact potentiel sur les r\u00e9sultats financiers."}, {"font": {"color": "white"}, "group": 1, "id": "0baa3fa1-7830-4a96-9cd3-c9633aee2a88", "label": "Pertinence", "shape": "dot", "size": 5, "title": "Qualit\u00e9 d\u0027une r\u00e9ponse ou solution par rapport aux exigences pos\u00e9es par une question ou un probl\u00e8me donn\u00e9."}, {"font": {"color": "white"}, "group": 1, "id": "e837607e-4abc-4f45-ae81-0c67c7e70108", "label": "Rendu", "shape": "dot", "size": 5, "title": "Le rendu d\u00e9signe la pr\u00e9sentation finale d\u0027un projet ou d\u0027un document, souvent sous forme num\u00e9rique, qui est remis \u00e0 une autorit\u00e9, un enseignant ou dans le cadre d\u0027une t\u00e2che. Ce fichier rendu contient les r\u00e9sultats d\u0027un travail ou d\u0027un projet et est destin\u00e9 \u00e0 \u00eatre soumis pour \u00e9valuation ou publication. Il peut inclure des documents acad\u00e9miques ou professionnels et est g\u00e9n\u00e9ralement soumis \u00e0 une \u00e9valuation par des pairs ou des examinateurs."}, {"font": {"color": "white"}, "group": 1, "id": "9d54c769-32af-4dfb-bf56-1878ed64d5e5", "label": "Perception des informations", "shape": "dot", "size": 5, "title": "Capacit\u00e9 \u00e0 interpr\u00e9ter et comprendre les donn\u00e9es pr\u00e9sent\u00e9es dans une interface; cruciale pour une navigation efficace."}, {"font": {"color": "white"}, "group": 1, "id": "9f3e6779-e99a-4220-aae2-e935850a4f20", "label": "Commentaire utilisateur", "shape": "dot", "size": 5, "title": "Retour d\u0027exp\u00e9rience et commentaires fournis par les utilisateurs concernant un produit ou service, incluant des retours sur les nouvelles fonctionnalit\u00e9s, essentiels pour l\u0027am\u00e9lioration continue du d\u00e9veloppement et de l\u0027exp\u00e9rience utilisateur."}, {"font": {"color": "white"}, "group": 1, "id": "0e0c9414-b714-40d6-acd4-11233f541835", "label": "Questions", "shape": "dot", "size": 5, "title": "Les questions sont des demandes d\u0027information qui visent \u00e0 obtenir des clarifications ou des d\u00e9tails suppl\u00e9mentaires sur un sujet donn\u00e9."}, {"font": {"color": "white"}, "group": 1, "id": "bf2e32cb-e846-41c1-a9c3-26d5c2c4bd57", "label": "Contenu compr\u00e9hensible", "shape": "dot", "size": 5, "title": "Un contenu lisible et coh\u00e9rent, o\u00f9 l\u0027ordre des \u00e9l\u00e9ments et l\u0027encha\u00eenement de la lecture facilitent la compr\u00e9hension."}, {"font": {"color": "white"}, "group": 1, "id": "c831db58-2467-452e-bd65-4f0daffeb55a", "label": "Consultation publique", "shape": "dot", "size": 5, "title": "Une consultation publique est un processus permettant aux citoyens de donner leur avis sur des projets ou politiques publiques via un service en ligne."}, {"font": {"color": "white"}, "group": 1, "id": "98fbde75-debc-42c3-9335-fdef362eedf8", "label": "description d\u00e9taill\u00e9e", "shape": "dot", "size": 5, "title": "Texte explicatif qui fournit des informations suppl\u00e9mentaires sur le contenu visuel, associ\u00e9 \u00e0 une image ou un graphique, essentiel pour l\u0027accessibilit\u00e9 et crucial pour fournir du contexte aux utilisateurs ayant des d\u00e9ficiences visuelles. Cela inclut \u00e9galement des informations compl\u00e9mentaires fournies avec une image pour enrichir sa compr\u00e9hension au-del\u00e0 de l\u0027alternative textuelle."}, {"font": {"color": "white"}, "group": 1, "id": "b2ff72ca-d781-4a8e-853e-30af461e524b", "label": "Points importants", "shape": "dot", "size": 5, "title": "\u00c9l\u00e9ments cl\u00e9s \u00e0 retenir ou \u00e0 consid\u00e9rer lors de l\u0027\u00e9valuation ou de l\u0027analyse d\u0027un sujet particulier."}, {"font": {"color": "white"}, "group": 1, "id": "11723149-c36a-4793-bec4-052fc856d45b", "label": "Focus visible", "shape": "dot", "size": 5, "title": "Le focus visible est un indicateur visuel qui montre quel \u00e9l\u00e9ment d\u0027une interface utilisateur ou d\u0027une page web est actuellement s\u00e9lectionn\u00e9 ou actif. Il repr\u00e9sente l\u0027\u00e9tat d\u0027un \u00e9l\u00e9ment qui re\u00e7oit l\u0027attention de l\u0027utilisateur, permettant ainsi l\u0027interaction via dispositifs de pointage ou raccourcis clavier. Ce m\u00e9canisme est crucial pour les interactions clavier et l\u0027accessibilit\u00e9, car il aide les utilisateurs \u00e0 comprendre facilement o\u00f9 se trouve leur attention dans l\u0027interface, facilitant la navigation et l\u0027interaction avec les \u00e9l\u00e9ments interactifs."}, {"font": {"color": "white"}, "group": 1, "id": "2a63a687-7848-4167-9417-76df9f1a5632", "label": "Principe de Pareto", "shape": "dot", "size": 5, "title": "\u00c9tabli par Vilfredo Pareto, le Principe de Pareto, \u00e9galement connu sous le nom de R\u00e8gle de Pareto (80/20), stipule que 80 % des effets proviennent de 20 % des causes. Ce concept statistique est largement appliqu\u00e9 dans divers domaines, y compris la priorisation des fonctionnalit\u00e9s et l\u0027optimisation du contenu web, pour identifier et se concentrer sur les \u00e9l\u00e9ments essentiels qui g\u00e9n\u00e8rent le plus d\u0027impact."}]);
+                  edges = new vis.DataSet([{"from": "0fbe4a93-bbc1-40bb-863b-fc9a2392042a", "to": 13635, "width": 1}, {"from": "0fbe4a93-bbc1-40bb-863b-fc9a2392042a", "to": "a3e4a324-8a40-4d42-90c1-995c08e2c180", "width": 1}, {"from": "0fbe4a93-bbc1-40bb-863b-fc9a2392042a", "to": "6950796e-29f2-4064-93d6-b57b697a2787", "width": 1}, {"from": "0fbe4a93-bbc1-40bb-863b-fc9a2392042a", "to": "3eb6f31c-efcb-4922-99ad-9ffeab89a32f", "width": 1}, {"from": "a99118f8-3d0e-4517-88a1-b6e4a98947bc", "to": "6950796e-29f2-4064-93d6-b57b697a2787", "width": 1}, {"from": "a99118f8-3d0e-4517-88a1-b6e4a98947bc", "to": "fdd30b48-ff85-4d12-8f41-23ad3ccda770", "width": 1}, {"from": "a99118f8-3d0e-4517-88a1-b6e4a98947bc", "to": "0795d63dad7948209328243c6629257d", "width": 1}, {"from": "a99118f8-3d0e-4517-88a1-b6e4a98947bc", "to": "a8b47afa392b4c59a213f3ce7cc367e9", "width": 1}, {"from": "6950796e-29f2-4064-93d6-b57b697a2787", "to": 13635, "width": 1}, {"from": "6950796e-29f2-4064-93d6-b57b697a2787", "to": "fdd30b48-ff85-4d12-8f41-23ad3ccda770", "width": 1}, {"from": "6950796e-29f2-4064-93d6-b57b697a2787", "to": "a3e4a324-8a40-4d42-90c1-995c08e2c180", "width": 1}, {"from": "6950796e-29f2-4064-93d6-b57b697a2787", "to": "3eb6f31c-efcb-4922-99ad-9ffeab89a32f", "width": 1}, {"from": "5b7b4dd7-8934-4844-b72c-ab548c3cebf9", "to": "d6bd0764ccf246428af8c8b2ede99275", "width": 1}, {"from": "9639a3d5-c874-4c14-9acd-54637974eae7", "to": "287ef751-850a-45f8-8aea-12aa5b7582a2", "width": 1}, {"from": "a3e4a324-8a40-4d42-90c1-995c08e2c180", "to": 13635, "width": 1}, {"from": "a3e4a324-8a40-4d42-90c1-995c08e2c180", "to": "3eb6f31c-efcb-4922-99ad-9ffeab89a32f", "width": 1}, {"from": "7c15d1a8-6a39-4bb9-b353-1112c86b8900", "to": "d5978979-95eb-4c2f-bbf0-34d3ca920f47", "width": 1}, {"from": "3eb6f31c-efcb-4922-99ad-9ffeab89a32f", "to": 13635, "width": 1}, {"from": "3eb6f31c-efcb-4922-99ad-9ffeab89a32f", "to": "d6bd0764ccf246428af8c8b2ede99275", "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": true,
+        "filter": [
+            "physics"
+        ]
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "repulsion": {
+            "centralGravity": 0.33,
+            "damping": 0.95,
+            "nodeDistance": 420,
+            "springConstant": 0.1,
+            "springLength": 110
+        },
+        "solver": "repulsion",
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+                  // if this network requires displaying the configure window,
+                  // put it in its div
+                  options.configure["container"] = document.getElementById("config");
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>

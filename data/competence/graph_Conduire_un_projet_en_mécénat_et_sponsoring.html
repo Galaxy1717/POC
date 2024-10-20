@@ -1,0 +1,178 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 800px;
+                 background-color: #222222;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+             #config {
+                 float: left;
+                 width: 400px;
+                 height: 600px;
+             }
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+            <div id="config"></div>
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"font": {"color": "white"}, "group": 1, "id": "136bdefc-7ff5-4e01-9734-ce1972323299", "label": "Ressources de l\u0027organisme", "shape": "dot", "size": 5, "title": "Ensemble des moyens financiers et mat\u00e9riels disponibles pour une entit\u00e9, incluant budget, subventions et revenus divers."}, {"font": {"color": "white"}, "group": 2, "id": 13708, "label": "Accessibilit\u00e9 Num\u00e9rique : R\u00e9f\u00e9rentiel G\u00e9n\u00e9ral d\u0027Am\u00e9lioration", "shape": "dot", "size": 8, "title": "RGAA - Re\u0301fe\u0301rentiel v4.1"}, {"font": {"color": "white"}, "group": 1, "id": "90b4729d-efda-4da6-b320-d6888f6aa71a", "label": "Norme de r\u00e9f\u00e9rence", "shape": "dot", "size": 5, "title": "Cadre l\u00e9gal et technique d\u00e9finissant les exigences minimales que doivent respecter les services publics en mati\u00e8re d\u0027accessibilit\u00e9."}, {"font": {"color": "white"}, "group": 1, "id": "25d8b085-b1a7-41fe-a903-4ee8101bb8c2", "label": "projets critiques", "shape": "dot", "size": 5, "title": "Initiatives essentielles au succ\u00e8s op\u00e9rationnel d\u0027une entreprise, n\u00e9cessitant une attention particuli\u00e8re en raison de leur impact potentiel sur les r\u00e9sultats financiers."}, {"font": {"color": "white"}, "group": 1, "id": "ff0398d0-94e8-40d9-bfe8-71f05ac0a1c9", "label": "r\u00e8gles m\u00e9tier", "shape": "dot", "size": 5, "title": "Directives et crit\u00e8res d\u00e9finissant les processus op\u00e9rationnels d\u0027une entreprise, essentielles pour assurer la coh\u00e9rence et l\u0027efficacit\u00e9 du syst\u00e8me de tarification."}, {"font": {"color": "white"}, "group": 1, "id": "ec7a9773-d5da-4b5f-8ea4-be75a3e4eb3b", "label": "Gestion d\u0027\u00c9v\u00e9nements", "shape": "dot", "size": 5, "title": "La gestion d\u0027\u00e9v\u00e9nements d\u00e9signe le processus par lequel les applications web interagissent avec les utilisateurs \u00e0 travers des \u00e9v\u00e9nements tels que des clics, des soumissions de formulaires ou des frappes au clavier. Cela inclut l\u0027utilisation de fonctions JavaScript qui r\u00e9agissent \u00e0 ces actions et \u00e0 d\u0027autres \u00e9v\u00e9nements comme mouseup ou touchend, permettant ainsi une interactivit\u00e9 dynamique et essentielle pour am\u00e9liorer l\u0027exp\u00e9rience utilisateur dans les applications web."}, {"font": {"color": "white"}, "group": 1, "id": "30934c30-b6d3-4037-90e6-eb71fe6e7a50", "label": "\u00c9v\u00e9nements Universitaires", "shape": "dot", "size": 5, "title": "Activit\u00e9s organis\u00e9es au sein d\u0027institutions acad\u00e9miques, souvent g\u00e9r\u00e9es via des applications d\u00e9di\u00e9es pour faciliter l\u0027acc\u00e8s et la participation."}, {"font": {"color": "white"}, "group": 1, "id": "7c15d1a8-6a39-4bb9-b353-1112c86b8900", "label": "Communication digitale", "shape": "dot", "size": 5, "title": "\u00c9change d\u0027informations via des plateformes num\u00e9riques, n\u00e9cessitant une ergonomie adapt\u00e9e pour optimiser l\u0027interaction."}, {"font": {"color": "white"}, "group": 1, "id": "5a5e31ab-5348-4c9c-a5d1-e53a2cecf269", "label": "Usagers", "shape": "dot", "size": 5, "title": "Individus qui interagissent avec une interface ou un produit, dont les besoins doivent \u00eatre au centre du processus de conception."}, {"font": {"color": "white"}, "group": 1, "id": "a3e4a324-8a40-4d42-90c1-995c08e2c180", "label": "Suivi de l\u0027avancement", "shape": "dot", "size": 5, "title": "Pratique consistant \u00e0 monitorer r\u00e9guli\u00e8rement les progr\u00e8s r\u00e9alis\u00e9s dans un projet afin d\u0027assurer une bonne gestion du temps et des ressources."}, {"font": {"color": "white"}, "group": 1, "id": "5b7b4dd7-8934-4844-b72c-ab548c3cebf9", "label": "Communication continue", "shape": "dot", "size": 5, "title": "\u00c9change r\u00e9gulier d\u0027informations entre membres d\u0027une \u00e9quipe pour assurer coh\u00e9rence et \u00e9viter conflits lors du d\u00e9veloppement collaboratif."}, {"font": {"color": "white"}, "group": 1, "id": "290a7561-1e35-48ee-af31-7c444586dc44", "label": "ROI positif", "shape": "dot", "size": 5, "title": "Un retour sur investissement (ROI) positif indique que les b\u00e9n\u00e9fices d\u0027un projet surpassent ses co\u00fbts, justifiant ainsi l\u0027investissement initial."}, {"font": {"color": "white"}, "group": 1, "id": "295d4059-ab79-4496-94b9-ee26862fda8d", "label": "Agilit\u00e9", "shape": "dot", "size": 5, "title": "L\u0027agilit\u00e9 est une approche de gestion de projet qui privil\u00e9gie la flexibilit\u00e9 et l\u0027adaptation rapide aux changements, tout en impliquant continuellement les utilisateurs dans le d\u00e9veloppement. Elle se manifeste par la capacit\u00e9 d\u0027une entreprise \u00e0 r\u00e9agir rapidement aux \u00e9volutions du march\u00e9, facilit\u00e9e par des pratiques telles que DevOps et des cycles de d\u00e9veloppement courts, favorisant ainsi une meilleure collaboration et une livraison continue de valeur."}, {"font": {"color": "white"}, "group": 1, "id": "991e534d-656c-4e1f-b591-407211354ea5", "label": "Coordination entre \u00e9quipes", "shape": "dot", "size": 5, "title": "La collaboration n\u00e9cessaire entre les \u00e9quipes de d\u00e9veloppement, test et exploitation pour assurer une transition fluide entre les diff\u00e9rents environnements."}, {"font": {"color": "white"}, "group": 1, "id": "0ffe2f05-6237-4364-be36-69daf847bc77", "label": "D\u00e9brief", "shape": "dot", "size": 5, "title": "Un d\u00e9brief est une analyse ou un retour d\u0027exp\u00e9rience apr\u00e8s un \u00e9v\u00e9nement, permettant d\u0027\u00e9valuer les r\u00e9sultats et d\u0027identifier des am\u00e9liorations."}, {"font": {"color": "white"}, "group": 1, "id": "5792c744-4854-454e-8f87-ec4f5ccf2582", "label": "\u00c9co-conception", "shape": "dot", "size": 5, "title": "L\u0027\u00e9co-conception est une approche de design qui int\u00e8gre des consid\u00e9rations \u00e9cologiques et les enjeux environnementaux dans la conception de produits ou services, y compris le d\u00e9veloppement durable dans la cr\u00e9ation de sites web. Elle vise \u00e0 minimiser l\u0027impact environnemental tout au long du cycle de vie des produits ou services, en \u00e9quilibrant durabilit\u00e9, faisabilit\u00e9 technique et performance visuelle et \u00e9conomique, tout en cherchant sp\u00e9cifiquement \u00e0 r\u00e9duire l\u0027empreinte \u00e9cologique des plateformes num\u00e9riques."}]);
+                  edges = new vis.DataSet([{"from": "136bdefc-7ff5-4e01-9734-ce1972323299", "to": 13708, "width": 1}, {"from": "136bdefc-7ff5-4e01-9734-ce1972323299", "to": "90b4729d-efda-4da6-b320-d6888f6aa71a", "width": 1}, {"from": "25d8b085-b1a7-41fe-a903-4ee8101bb8c2", "to": "ff0398d0-94e8-40d9-bfe8-71f05ac0a1c9", "width": 1}, {"from": "ec7a9773-d5da-4b5f-8ea4-be75a3e4eb3b", "to": 13708, "width": 1}, {"from": "ec7a9773-d5da-4b5f-8ea4-be75a3e4eb3b", "to": "30934c30-b6d3-4037-90e6-eb71fe6e7a50", "width": 1}, {"from": "7c15d1a8-6a39-4bb9-b353-1112c86b8900", "to": "5a5e31ab-5348-4c9c-a5d1-e53a2cecf269", "width": 1}, {"from": "90b4729d-efda-4da6-b320-d6888f6aa71a", "to": 13708, "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": true,
+        "filter": [
+            "physics"
+        ]
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "repulsion": {
+            "centralGravity": 0.33,
+            "damping": 0.95,
+            "nodeDistance": 420,
+            "springConstant": 0.1,
+            "springLength": 110
+        },
+        "solver": "repulsion",
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+                  // if this network requires displaying the configure window,
+                  // put it in its div
+                  options.configure["container"] = document.getElementById("config");
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>

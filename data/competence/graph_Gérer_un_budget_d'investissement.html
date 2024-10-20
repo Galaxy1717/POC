@@ -1,0 +1,178 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 800px;
+                 background-color: #222222;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+             #config {
+                 float: left;
+                 width: 400px;
+                 height: 600px;
+             }
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+            <div id="config"></div>
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"font": {"color": "white"}, "group": 1, "id": "2b2d9d10-a8c9-43df-a621-9c163bb73ac2", "label": "Budget", "shape": "dot", "size": 5, "title": "Allocation strat\u00e9gique des ressources financi\u00e8res pour optimiser l\u0027efficacit\u00e9 des campagnes marketing et atteindre les objectifs fix\u00e9s."}, {"font": {"color": "white"}, "group": 1, "id": "bf9dcd29-03f3-4cd8-a076-8331895e019d", "label": "KPI (Indicateurs Cl\u00e9s de Performance)", "shape": "dot", "size": 5, "title": "Les KPI, ou Indicateurs Cl\u00e9s de Performance, sont des mesures quantifiables utilis\u00e9es pour \u00e9valuer le succ\u00e8s et l\u0027efficacit\u00e9 d\u0027un produit, service ou strat\u00e9gie marketing. Ils jouent un r\u00f4le essentiel dans le suivi des performances des \u00e9quipes, notamment dans les objectifs DevOps, en facilitant la prise de d\u00e9cisions \u00e9clair\u00e9es et en permettant d\u0027ajuster les actions si n\u00e9cessaire."}, {"font": {"color": "white"}, "group": 1, "id": "3549c01f-442e-4906-b0dd-196d669d6543", "label": "R\u00e9troplanning", "shape": "dot", "size": 5, "title": "Le r\u00e9troplanning, ou retroplanning, est une m\u00e9thode de gestion de projet qui consiste \u00e0 planifier les \u00e9tapes cl\u00e9s en travaillant \u00e0 rebours depuis la date d\u0027\u00e9ch\u00e9ance. Cette approche permet non seulement d\u0027organiser efficacement les t\u00e2ches n\u00e9cessaires pour atteindre un objectif ou r\u00e9aliser un projet, mais aussi d\u0027estimer la dur\u00e9e des t\u00e2ches et de g\u00e9rer le temps et les ressources de mani\u00e8re optimale. Elle est particuli\u00e8rement utile pour \u00e9tablir des d\u00e9lais r\u00e9alistes et des tarifs bas\u00e9s sur le taux horaire."}, {"font": {"color": "white"}, "group": 2, "id": 13682, "label": "Gestion de Projet et Calcul du Taux Horaire", "shape": "dot", "size": 8, "title": "Sequence 6_importance gestion de projet"}, {"font": {"color": "white"}, "group": 1, "id": "ae467590-b74a-463a-8b8f-0d480a17c50a", "label": "Gestion de projet", "shape": "dot", "size": 5, "title": "La gestion de projet est une discipline qui consiste \u00e0 appliquer des connaissances, comp\u00e9tences et techniques pour planifier, ex\u00e9cuter et superviser des projets afin d\u0027atteindre des objectifs sp\u00e9cifiques dans un cadre temporel d\u00e9fini. Elle implique l\u0027organisation et la planification des ressources tout en respectant les contraintes budg\u00e9taires, et elle est particuli\u00e8rement cruciale dans divers domaines, y compris le domaine cr\u00e9atif."}, {"font": {"color": "white"}, "group": 1, "id": "c83fda3f-b946-456b-8e65-2181318355e1", "label": "\u00c9tapes principales", "shape": "dot", "size": 5, "title": "Les \u00e9tapes principales sont les jalons cl\u00e9s identifi\u00e9s dans un projet qui permettent de structurer le travail et suivre les progr\u00e8s vers l\u0027objectif final."}, {"font": {"color": "white"}, "group": 1, "id": "e4515c79-13fd-4349-a049-bb81e6878488", "label": "Ressources n\u00e9cessaires", "shape": "dot", "size": 5, "title": "Les ressources n\u00e9cessaires incluent tout ce qui est requis pour r\u00e9aliser un projet, comme le personnel, le mat\u00e9riel et le budget."}, {"font": {"color": "white"}, "group": 1, "id": "44ac33ba-9d4f-4b84-b241-38468732b7e0", "label": "Suivi et mise \u00e0 jour", "shape": "dot", "size": 5, "title": "Le suivi et la mise \u00e0 jour consistent \u00e0 surveiller r\u00e9guli\u00e8rement l\u0027avancement du projet et ajuster le plan en fonction des impr\u00e9vus."}, {"font": {"color": "white"}, "group": 1, "id": "fc042f14-b979-4769-b475-11f6e6d65c88", "label": "Devis", "shape": "dot", "size": 5, "title": "Document formel d\u00e9taillant les co\u00fbts estim\u00e9s et les conditions d\u0027un projet ou service propos\u00e9, essentiel pour \u00e9tablir un accord entre le fournisseur et le client tout en assurant la transparence financi\u00e8re."}, {"font": {"color": "white"}, "group": 1, "id": "a8a00071-1e94-47d4-ae1f-c4d1d56d0f25", "label": "Suivi de projet", "shape": "dot", "size": 5, "title": "Processus de gestion permettant de surveiller l\u0027avancement des t\u00e2ches et d\u0027ajuster les d\u00e9lais en fonction des besoins."}, {"font": {"color": "white"}, "group": 1, "id": "e7135db8-6662-4cf1-a1eb-f53f50d8cb30", "label": "\u00c9valuation des co\u00fbts", "shape": "dot", "size": 5, "title": "Analyse des d\u00e9penses li\u00e9es \u00e0 un projet, incluant mat\u00e9riaux et main-d\u0027\u0153uvre, pour assurer la viabilit\u00e9 financi\u00e8re."}, {"font": {"color": "white"}, "group": 1, "id": "afe08612-370f-46cc-97df-bba29fe4f822", "label": "Transparence", "shape": "dot", "size": 5, "title": "La transparence d\u00e9signe l\u0027obligation d\u0027informer clairement les individus sur l\u0027utilisation de leurs donn\u00e9es personnelles, qu\u0027elles soient financi\u00e8res, contractuelles ou relatives \u00e0 la protection des donn\u00e9es. Elle implique que les organismes doivent garantir aux individus un contr\u00f4le et une compr\u00e9hension totale de l\u0027utilisation de leurs informations afin d\u0027\u00e9viter les malentendus avec le client et de renforcer la confiance des administr\u00e9s d\u00e8s leur collecte."}, {"font": {"color": "white"}, "group": 1, "id": "11ed0ddb-d12a-4f8d-abcd-2f70929e459d", "label": "Taux horaire", "shape": "dot", "size": 5, "title": "Le montant factur\u00e9 par heure de travail, calcul\u00e9 en tenant compte des charges salariales et des frais d\u0027entreprise pour assurer la rentabilit\u00e9."}, {"font": {"color": "white"}, "group": 1, "id": "2fe97287-86bb-4845-9a01-5de801abded6", "label": "Charges salariales", "shape": "dot", "size": 5, "title": "Les co\u00fbts li\u00e9s aux salaires, incluant les charges sociales et fiscales, qui augmentent le co\u00fbt total du personnel pour l\u0027entreprise."}, {"font": {"color": "white"}, "group": 1, "id": "45be5519-0f2c-4e9d-b48c-de0c53e6758f", "label": "Savoir-faire", "shape": "dot", "size": 5, "title": "L\u0027expertise et les comp\u00e9tences sp\u00e9cifiques que l\u0027entreprise offre en plus des services fournis, ajoutant une valeur \u00e0 ses prestations."}, {"font": {"color": "white"}, "group": 3, "id": "5282f2de4cb246439580c5e135a77033", "label": "mcq", "shape": "dot", "size": 5, "title": "Que permet d\u0027\u00e9tablir le r\u00e9troplanning sur la dur\u00e9e de production ?"}, {"font": {"color": "white"}, "group": 1, "id": "296f12ab-03eb-495e-a89c-a642b60fb59f", "label": "Stylescape", "shape": "dot", "size": 5, "title": "Un stylescape est un outil de conception visuelle \u00e9labor\u00e9 qui repr\u00e9sente l\u0027identit\u00e9 d\u0027une marque en regroupant typographie, couleurs, images et \u00e9l\u00e9ments graphiques. Il d\u00e9finit une direction esth\u00e9tique et communique l\u0027essence d\u0027un projet ou d\u0027une marque en illustrant une vision cr\u00e9ative. Enrichissant la pr\u00e9sentation des propositions, il transmet \u00e9galement l\u0027identit\u00e9 ainsi que l\u0027exp\u00e9rience globale souhait\u00e9es."}, {"font": {"color": "white"}, "group": 1, "id": "4752ada0-b3bc-480a-b0d2-15bee717abf1", "label": "Am\u00e9liorations de produit", "shape": "dot", "size": 5, "title": "Modifications apport\u00e9es \u00e0 un produit existant pour mieux r\u00e9pondre aux besoins des clients ou se d\u00e9marquer sur le march\u00e9."}, {"font": {"color": "white"}, "group": 1, "id": "ad750065-352f-471a-b1fc-a896a99991b2", "label": "Actionable Insights", "shape": "dot", "size": 5, "title": "Informations d\u00e9riv\u00e9es de donn\u00e9es qui peuvent \u00eatre directement appliqu\u00e9es pour prendre des d\u00e9cisions strat\u00e9giques dans une entreprise."}, {"font": {"color": "white"}, "group": 5, "id": "dc3a6dfc15ca475496a486da3bde2aa8", "label": "true_false", "shape": "dot", "size": 5, "title": "Les outils mentionn\u00e9s servent uniquement \u00e0 cr\u00e9er des documents internes pour l\u0027\u00e9quipe de projet."}, {"font": {"color": "white"}, "group": 5, "id": "ce9ed20a961d4927b885265d6bbe3230", "label": "true_false", "shape": "dot", "size": 5, "title": "Un Stylescape aide \u00e0 d\u00e9finir les objectifs financiers d\u0027un projet de design."}, {"font": {"color": "white"}, "group": 1, "id": "e3db3cdb-5474-48f7-833c-0bdae33ed61a", "label": "Dossier d\u0027Ex\u00e9cution", "shape": "dot", "size": 5, "title": "Document technique d\u00e9taillant les sp\u00e9cifications et les \u00e9l\u00e9ments n\u00e9cessaires \u00e0 la r\u00e9alisation d\u0027un projet, crucial pour assurer sa bonne mise en \u0153uvre."}, {"font": {"color": "white"}, "group": 1, "id": "5d7d25af-0d81-4a1a-9fc1-c3d8e20c5b55", "label": "Synth\u00e8se de projet", "shape": "dot", "size": 5, "title": "R\u00e9sum\u00e9 des \u00e9tapes cl\u00e9s et des r\u00e9sultats d\u0027un projet, permettant une \u00e9valuation rapide de son d\u00e9roulement et de ses conclusions."}, {"font": {"color": "white"}, "group": 1, "id": "02ad06b9-5b33-4a60-b142-c8c37eb3a4f3", "label": "Performance \u00e9conomique", "shape": "dot", "size": 5, "title": "Aspect du design \u00e9co-brand\u00e9 qui cherche \u00e0 optimiser les co\u00fbts tout au long du processus de cr\u00e9ation et de diffusion."}]);
+                  edges = new vis.DataSet([{"from": "2b2d9d10-a8c9-43df-a621-9c163bb73ac2", "to": "bf9dcd29-03f3-4cd8-a076-8331895e019d", "width": 1}, {"from": "3549c01f-442e-4906-b0dd-196d669d6543", "to": 13682, "width": 1}, {"from": "3549c01f-442e-4906-b0dd-196d669d6543", "to": "ae467590-b74a-463a-8b8f-0d480a17c50a", "width": 1}, {"from": "3549c01f-442e-4906-b0dd-196d669d6543", "to": "c83fda3f-b946-456b-8e65-2181318355e1", "width": 1}, {"from": "3549c01f-442e-4906-b0dd-196d669d6543", "to": "e4515c79-13fd-4349-a049-bb81e6878488", "width": 1}, {"from": "3549c01f-442e-4906-b0dd-196d669d6543", "to": "44ac33ba-9d4f-4b84-b241-38468732b7e0", "width": 1}, {"from": "3549c01f-442e-4906-b0dd-196d669d6543", "to": "fc042f14-b979-4769-b475-11f6e6d65c88", "width": 1}, {"from": "3549c01f-442e-4906-b0dd-196d669d6543", "to": "a8a00071-1e94-47d4-ae1f-c4d1d56d0f25", "width": 1}, {"from": "3549c01f-442e-4906-b0dd-196d669d6543", "to": "e7135db8-6662-4cf1-a1eb-f53f50d8cb30", "width": 1}, {"from": "3549c01f-442e-4906-b0dd-196d669d6543", "to": "afe08612-370f-46cc-97df-bba29fe4f822", "width": 1}, {"from": "3549c01f-442e-4906-b0dd-196d669d6543", "to": "11ed0ddb-d12a-4f8d-abcd-2f70929e459d", "width": 1}, {"from": "3549c01f-442e-4906-b0dd-196d669d6543", "to": "2fe97287-86bb-4845-9a01-5de801abded6", "width": 1}, {"from": "3549c01f-442e-4906-b0dd-196d669d6543", "to": "45be5519-0f2c-4e9d-b48c-de0c53e6758f", "width": 1}, {"from": "3549c01f-442e-4906-b0dd-196d669d6543", "to": "5282f2de4cb246439580c5e135a77033", "width": 1}, {"from": "e7135db8-6662-4cf1-a1eb-f53f50d8cb30", "to": 13682, "width": 1}, {"from": "e7135db8-6662-4cf1-a1eb-f53f50d8cb30", "to": "afe08612-370f-46cc-97df-bba29fe4f822", "width": 1}, {"from": "e7135db8-6662-4cf1-a1eb-f53f50d8cb30", "to": "a8a00071-1e94-47d4-ae1f-c4d1d56d0f25", "width": 1}, {"from": "e7135db8-6662-4cf1-a1eb-f53f50d8cb30", "to": "fc042f14-b979-4769-b475-11f6e6d65c88", "width": 1}, {"from": "ae467590-b74a-463a-8b8f-0d480a17c50a", "to": 13682, "width": 1}, {"from": "ae467590-b74a-463a-8b8f-0d480a17c50a", "to": "c83fda3f-b946-456b-8e65-2181318355e1", "width": 1}, {"from": "ae467590-b74a-463a-8b8f-0d480a17c50a", "to": "e4515c79-13fd-4349-a049-bb81e6878488", "width": 1}, {"from": "ae467590-b74a-463a-8b8f-0d480a17c50a", "to": "44ac33ba-9d4f-4b84-b241-38468732b7e0", "width": 1}, {"from": "ae467590-b74a-463a-8b8f-0d480a17c50a", "to": "296f12ab-03eb-495e-a89c-a642b60fb59f", "width": 1}, {"from": "e4515c79-13fd-4349-a049-bb81e6878488", "to": 13682, "width": 1}, {"from": "e4515c79-13fd-4349-a049-bb81e6878488", "to": "44ac33ba-9d4f-4b84-b241-38468732b7e0", "width": 1}, {"from": "e4515c79-13fd-4349-a049-bb81e6878488", "to": "c83fda3f-b946-456b-8e65-2181318355e1", "width": 1}, {"from": "fc042f14-b979-4769-b475-11f6e6d65c88", "to": 13682, "width": 1}, {"from": "fc042f14-b979-4769-b475-11f6e6d65c88", "to": "afe08612-370f-46cc-97df-bba29fe4f822", "width": 1}, {"from": "fc042f14-b979-4769-b475-11f6e6d65c88", "to": "a8a00071-1e94-47d4-ae1f-c4d1d56d0f25", "width": 1}, {"from": "44ac33ba-9d4f-4b84-b241-38468732b7e0", "to": 13682, "width": 1}, {"from": "44ac33ba-9d4f-4b84-b241-38468732b7e0", "to": "c83fda3f-b946-456b-8e65-2181318355e1", "width": 1}, {"from": "a8a00071-1e94-47d4-ae1f-c4d1d56d0f25", "to": 13682, "width": 1}, {"from": "a8a00071-1e94-47d4-ae1f-c4d1d56d0f25", "to": "afe08612-370f-46cc-97df-bba29fe4f822", "width": 1}, {"from": "2fe97287-86bb-4845-9a01-5de801abded6", "to": 13682, "width": 1}, {"from": "2fe97287-86bb-4845-9a01-5de801abded6", "to": "45be5519-0f2c-4e9d-b48c-de0c53e6758f", "width": 1}, {"from": "2fe97287-86bb-4845-9a01-5de801abded6", "to": "11ed0ddb-d12a-4f8d-abcd-2f70929e459d", "width": 1}, {"from": "11ed0ddb-d12a-4f8d-abcd-2f70929e459d", "to": 13682, "width": 1}, {"from": "11ed0ddb-d12a-4f8d-abcd-2f70929e459d", "to": "45be5519-0f2c-4e9d-b48c-de0c53e6758f", "width": 1}, {"from": "11ed0ddb-d12a-4f8d-abcd-2f70929e459d", "to": "5282f2de4cb246439580c5e135a77033", "width": 1}, {"from": "4752ada0-b3bc-480a-b0d2-15bee717abf1", "to": "296f12ab-03eb-495e-a89c-a642b60fb59f", "width": 1}, {"from": "ad750065-352f-471a-b1fc-a896a99991b2", "to": "296f12ab-03eb-495e-a89c-a642b60fb59f", "width": 1}, {"from": "ad750065-352f-471a-b1fc-a896a99991b2", "to": "dc3a6dfc15ca475496a486da3bde2aa8", "width": 1}, {"from": "afe08612-370f-46cc-97df-bba29fe4f822", "to": 13682, "width": 1}, {"from": "c83fda3f-b946-456b-8e65-2181318355e1", "to": 13682, "width": 1}, {"from": "296f12ab-03eb-495e-a89c-a642b60fb59f", "to": "ce9ed20a961d4927b885265d6bbe3230", "width": 1}, {"from": "45be5519-0f2c-4e9d-b48c-de0c53e6758f", "to": 13682, "width": 1}, {"from": "5282f2de4cb246439580c5e135a77033", "to": 13682, "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": true,
+        "filter": [
+            "physics"
+        ]
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "repulsion": {
+            "centralGravity": 0.33,
+            "damping": 0.95,
+            "nodeDistance": 420,
+            "springConstant": 0.1,
+            "springLength": 110
+        },
+        "solver": "repulsion",
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+                  // if this network requires displaying the configure window,
+                  // put it in its div
+                  options.configure["container"] = document.getElementById("config");
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>

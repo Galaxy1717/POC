@@ -1,0 +1,178 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 800px;
+                 background-color: #222222;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+             #config {
+                 float: left;
+                 width: 400px;
+                 height: 600px;
+             }
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+            <div id="config"></div>
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"font": {"color": "white"}, "group": 1, "id": "9f4fb59a-37d6-45c8-83e2-ad307e1842f6", "label": "Page de destination", "shape": "dot", "size": 5, "title": "La page vers laquelle renvoie une annonce doit \u00eatre optimis\u00e9e pour garantir un bon temps de chargement et une pertinence \u00e9lev\u00e9e pour l\u0027utilisateur."}, {"font": {"color": "white"}, "group": 2, "id": 13609, "label": "Mathilde Vigneron : Designer Produit et Sp\u00e9cialiste en Marketing Mobile", "shape": "dot", "size": 8, "title": "_YNOV CONNECT_Mobil Marketing, user acquisition \u0026 mode\u0300les e\u0301conomique_B3 \u2013Commun Marcom"}, {"font": {"color": "white"}, "group": 1, "id": "53e06a2d-caf6-4629-a658-09ac86bdbd5a", "label": "Lisibilit\u00e9", "shape": "dot", "size": 5, "title": "La lisibilit\u00e9, ou lisibilit\u00e9 du contenu, est la facilit\u00e9 avec laquelle un texte peut \u00eatre lu et compris. Elle est essentielle pour une communication efficace sur diff\u00e9rents dispositifs, notamment en design graphique. La lisibilit\u00e9 est influenc\u00e9e par divers facteurs tels que la taille de la police, le contraste des couleurs, l\u0027espacement entre les \u00e9l\u00e9ments graphiques, l\u0027alignement et l\u0027utilisation d\u0027espaces blancs. Elle joue un r\u00f4le cl\u00e9 dans la cr\u00e9ation de documents clairs et attrayants, facilitant ainsi l\u0027engagement du lecteur."}, {"font": {"color": "white"}, "group": 1, "id": "b98cc38b-e8fc-4a81-9b12-cd74415bfe33", "label": "Typographie", "shape": "dot", "size": 5, "title": "La typographie et les typographies d\u00e9signent l\u0027art et la technique de conception, disposition et arrangement des caract\u00e8res \u00e9crits, englobant les styles de caract\u00e8res utilis\u00e9s dans le design graphique. Elles influencent non seulement l\u0027esth\u00e9tique et la lisibilit\u00e9 d\u0027un projet visuel, mais jouent \u00e9galement un r\u00f4le crucial dans la communication visuelle, l\u0027identit\u00e9 de marque ainsi que sur les interfaces num\u00e9riques, les sites web et le design graphique. La typographie est essentielle dans la cr\u00e9ation d\u0027une charte graphique pour assurer une coh\u00e9rence visuelle et une exp\u00e9rience utilisateur optimale."}, {"font": {"color": "white"}, "group": 1, "id": "c231e437-254e-457e-95c6-a99c3ae0c5b2", "label": "Wording", "shape": "dot", "size": 5, "title": "Choix des mots utilis\u00e9s dans un message ou un bouton, crucial pour attirer l\u0027attention et inciter \u00e0 l\u0027action."}, {"font": {"color": "white"}, "group": 1, "id": "a0d67a03-3904-4f22-8ed0-74b5d9781af9", "label": "Premi\u00e8re personne", "shape": "dot", "size": 5, "title": "Utilisation du pronom \u0027je\u0027 ou \u0027nous\u0027 qui augmente l\u0027engagement utilisateur en rendant le message plus personnel."}, {"font": {"color": "white"}, "group": 1, "id": "ce263010-cd1c-40ee-b69c-26b68f9c921c", "label": "Taille de police", "shape": "dot", "size": 5, "title": "Dimension des caract\u00e8res typographiques, d\u00e9terminante pour la lisibilit\u00e9 sur diff\u00e9rents \u00e9crans, notamment mobile et desktop."}, {"font": {"color": "white"}, "group": 1, "id": "c632565e-0fdc-41f7-9cbd-5a8f1938cb36", "label": "Imp\u00e9ratif", "shape": "dot", "size": 5, "title": "Mode verbal utilis\u00e9 pour donner des ordres ou des conseils directs, souvent plus engageant dans les CTA."}, {"font": {"color": "white"}, "group": 1, "id": "c96b9650-4c42-42c7-96af-a67b0a0e1c17", "label": "Espace blanc micro", "shape": "dot", "size": 5, "title": "Espaces et tampons r\u00e9duits autour du contenu, am\u00e9liorant la lisibilit\u00e9 entre lettres, mots et paragraphes."}, {"font": {"color": "white"}, "group": 1, "id": "e4ae9c09-4ec8-4a59-9314-2e4c0c931e9b", "label": "Mise en page", "shape": "dot", "size": 5, "title": "La mise en page (ou MEP) d\u00e9signe le processus d\u0027arrangement visuel des \u00e9l\u00e9ments graphiques et textuels sur une page, qu\u0027elle soit imprim\u00e9e ou num\u00e9rique. Elle est essentielle pour l\u0027exp\u00e9rience utilisateur sur un site web et dans d\u0027autres supports visuels, car elle influence la lisibilit\u00e9, l\u0027esth\u00e9tique, l\u0027impact visuel et la clart\u00e9 du message transmis ainsi que l\u0027interaction avec le contenu. La MEP assure \u00e9galement une pr\u00e9sentation coh\u00e9rente et esth\u00e9tique des documents."}, {"font": {"color": "white"}, "group": 3, "id": "2f7d688d2dfe42259fea3dd5882400bd", "label": "mcq", "shape": "dot", "size": 5, "title": "Quelle caract\u00e9ristique principale rend la police Arial particuli\u00e8rement adapt\u00e9e \u00e0 une utilisation num\u00e9rique ?"}, {"font": {"color": "white"}, "group": 4, "id": "f4b28520ee1f4e42b907e9f23a587b75", "label": "fill_in", "shape": "dot", "size": 5, "title": "Les espaces blancs passifs sont des lacunes qui apparaissent naturellement dans la conception ou la typographie, tandis que les espaces blancs actifs sont ajout\u00e9s intentionnellement pour \u003cblank\u003e."}, {"font": {"color": "white"}, "group": 4, "id": "9705a7226b494b009033c21cabddf20d", "label": "fill_in", "shape": "dot", "size": 5, "title": "La police Helvetica est r\u00e9put\u00e9e pour \u003cblank\u003e, ce qui la rend populaire notamment pour retranscrire des textes longs et denses."}, {"font": {"color": "white"}, "group": 5, "id": "a445f4b4019a4cff837aa3d8e9bba2c5", "label": "true_false", "shape": "dot", "size": 5, "title": "Il n\u0027est pas n\u00e9cessaire de prendre en compte la personnalit\u00e9 du service lors de la cr\u00e9ation de CTA."}, {"font": {"color": "white"}, "group": 3, "id": "4dcd98681d734b2aa739660c42531602", "label": "mcq", "shape": "dot", "size": 5, "title": "Quel est l\u0027impact des polices de caract\u00e8res sur une marque ?"}, {"font": {"color": "white"}, "group": 3, "id": "8e5ba8bc76134ef29a61602830eb71f2", "label": "mcq", "shape": "dot", "size": 5, "title": "Quelles polices sont g\u00e9n\u00e9ralement plus adapt\u00e9es \u00e0 de longs blocs de texte ?"}, {"font": {"color": "white"}, "group": 4, "id": "6620cbe296234756b29fd2315f6194e7", "label": "fill_in", "shape": "dot", "size": 5, "title": "Certaines polices sont plus adapt\u00e9es \u00e0 de longs blocs de texte, tandis que d\u0027autres seront plus utiles pour cr\u00e9er \u003cblank\u003e."}, {"font": {"color": "white"}, "group": 5, "id": "746a31176f214847a7dd209acb387b9c", "label": "true_false", "shape": "dot", "size": 5, "title": "Les polices de caract\u00e8res que vous choisissez influencent la mani\u00e8re dont votre marque est per\u00e7ue par le public."}, {"font": {"color": "white"}, "group": 5, "id": "ac1cc2bb1d374062b5773487c1d9353b", "label": "true_false", "shape": "dot", "size": 5, "title": "Toutes les polices de caract\u00e8res sont principalement adapt\u00e9es pour les longs blocs de texte."}, {"font": {"color": "white"}, "group": 1, "id": "14a7c3b0-165d-4a3c-87e1-070360341462", "label": "Clart\u00e9", "shape": "dot", "size": 5, "title": "Qualit\u00e9 d\u0027une interface qui permet aux utilisateurs de comprendre facilement son fonctionnement, essentielle pour \u00e9viter la confusion."}, {"font": {"color": "white"}, "group": 1, "id": "9ef5d004-3d27-440e-9373-d381c7adf196", "label": "Normes de r\u00e9f\u00e9rence", "shape": "dot", "size": 5, "title": "Les normes de r\u00e9f\u00e9rence et les conventions de design sont des standards \u00e9tablis dans le design d\u0027interface qui guident les choix esth\u00e9tiques et fonctionnels, en utilisant des \u00e9l\u00e9ments familiers pour assurer la clart\u00e9, l\u0027intuitivit\u00e9 et la facilit\u00e9 d\u0027utilisation pour les utilisateurs."}, {"font": {"color": "white"}, "group": 1, "id": "7adda1c3-151f-487e-b8e4-5c72c5b16153", "label": "Contenu digital", "shape": "dot", "size": 5, "title": "Informations sous forme \u00e9crite ou visuelle diffus\u00e9es en ligne, jouant un r\u00f4le cl\u00e9 dans l\u0027attraction et l\u0027engagement des clients potentiels."}, {"font": {"color": "white"}, "group": 1, "id": "a1944013-01a5-459d-9bd0-a14620e118cc", "label": "S\u00e9mantique", "shape": "dot", "size": 5, "title": "\u00c9tude du sens des mots et expressions utilis\u00e9s dans le contenu digital, essentielle pour optimiser le r\u00e9f\u00e9rencement naturel."}, {"font": {"color": "white"}, "group": 1, "id": "fd683f12-a578-42c9-907d-87830c9294a7", "label": "Objectif", "shape": "dot", "size": 5, "title": "Un objectif est un r\u00e9sultat souhait\u00e9 ou un but pr\u00e9cis que le persona cherche \u00e0 atteindre, influen\u00e7ant ses d\u00e9cisions d\u0027achat et ses interactions avec les marques. Il peut \u00e9galement repr\u00e9senter un probl\u00e8me clairement d\u00e9fini \u00e0 r\u00e9soudre lors de s\u00e9ances cr\u00e9atives, comme la cr\u00e9ation d\u0027un logo ou d\u0027une campagne publicitaire. Cet objectif oriente les id\u00e9es g\u00e9n\u00e9r\u00e9es et les r\u00e9flexions des participants, \u00e9tant essentiel pour le travail cr\u00e9atif."}, {"font": {"color": "white"}, "group": 1, "id": "a2b8f5cf-f178-4fb2-8e06-9894547e7652", "label": "M\u00e9dias en ligne", "shape": "dot", "size": 5, "title": "Plateformes num\u00e9riques comme les r\u00e9seaux sociaux (Facebook, Instagram) permettant une interaction directe avec l\u0027audience."}, {"font": {"color": "white"}, "group": 1, "id": "f8f563ff-6ec9-4520-b03e-da9a48ab1773", "label": "Canaux de communication", "shape": "dot", "size": 5, "title": "M\u00e9dias et moyens par lesquels une entreprise atteint son audience cible et transmet des messages marketing, incluant \u00e0 la fois les m\u00e9dias traditionnels (tels que la t\u00e9l\u00e9vision, la radio, et les journaux) et num\u00e9riques (comme les sites web, les emails, et les r\u00e9seaux sociaux)."}, {"font": {"color": "white"}, "group": 1, "id": "b0450210-90e1-47cb-bc4c-a3c296f5b97e", "label": "Message marketing", "shape": "dot", "size": 5, "title": "Communication cibl\u00e9e qui d\u00e9crit un produit ou service, mettant en avant ses b\u00e9n\u00e9fices pratiques, \u00e9conomiques ou \u00e9motionnels pour un persona sp\u00e9cifique."}, {"font": {"color": "white"}, "group": 1, "id": "c572bfb7-b14c-4d5f-ad88-be95e991622f", "label": "Objectifs de conception", "shape": "dot", "size": 5, "title": "Les buts sp\u00e9cifiques que doit atteindre une interface, d\u00e9terminant son efficacit\u00e9 et sa pertinence par rapport aux besoins utilisateurs."}, {"font": {"color": "white"}, "group": 1, "id": "39bb6e10-6ac5-4c6d-a612-0407857b51ed", "label": "Pratique", "shape": "dot", "size": 5, "title": "Application concr\u00e8te d\u0027une th\u00e9orie ou d\u0027un savoir-faire, essentielle pour acqu\u00e9rir une ma\u00eetrise dans un domaine donn\u00e9."}, {"font": {"color": "white"}, "group": 1, "id": "9d3bf277-d6b4-4acf-8a4a-ac899ae17903", "label": "Cible de la marque", "shape": "dot", "size": 5, "title": "La cible de la marque, \u00e9galement connue sous le nom de public cible, repr\u00e9sente les groupes sp\u00e9cifiques d\u0027utilisateurs ou de consommateurs que la marque souhaite atteindre avec ses produits ou services. Ce groupe est d\u00e9fini en fonction de caract\u00e9ristiques d\u00e9mographiques, comportementales et psychographiques, influen\u00e7ant ainsi les choix strat\u00e9giques en mati\u00e8re de design, de communication et de marketing. Le public cible d\u00e9termine \u00e9galement les strat\u00e9gies marketing appropri\u00e9es pour une campagne ou un produit."}, {"font": {"color": "white"}, "group": 1, "id": "37aa146b-acca-4308-aa6d-7d259963de0e", "label": "Ciblage", "shape": "dot", "size": 5, "title": "Ciblage et Cible marketing d\u00e9signent le processus de s\u00e9lection et de d\u00e9finition d\u0027un segment sp\u00e9cifique du public auquel s\u0027adresse une campagne marketing. Ce processus est essentiel pour adapter le message et maximiser l\u0027efficacit\u00e9 des campagnes, en ciblant des audiences sp\u00e9cifiques qui sont les plus susceptibles d\u0027\u00eatre r\u00e9ceptives aux offres propos\u00e9es."}, {"font": {"color": "white"}, "group": 1, "id": "b5a1c1cb-d691-4f90-92ca-c78b26d6502b", "label": "\u00c9l\u00e9ments de conception", "shape": "dot", "size": 5, "title": "Les \u00e9l\u00e9ments de conception incluent tous les composants visuels comme les images, textes et boutons qui composent une interface utilisateur."}, {"font": {"color": "white"}, "group": 1, "id": "fede3a96-f073-484e-8b37-7c9abb196f1f", "label": "The New Yorker", "shape": "dot", "size": 5, "title": "The New Yorker est un magazine am\u00e9ricain r\u00e9put\u00e9 pour son journalisme approfondi, ses critiques culturelles et ses essais litt\u00e9raires."}, {"font": {"color": "white"}, "group": 1, "id": "e0a5ec4c-2f3a-4918-a391-8eee7ad7d825", "label": "Recommandation de produit", "shape": "dot", "size": 5, "title": "Strat\u00e9gie marketing consistant \u00e0 afficher le nombre de clients qui recommandent un produit pour augmenter la confiance et l\u0027achat."}, {"font": {"color": "white"}, "group": 1, "id": "cede9af2-fb16-4a81-8017-84e1819bd378", "label": "Conception", "shape": "dot", "size": 5, "title": "Acte de planifier et de cr\u00e9er des solutions fonctionnelles, souvent en int\u00e9grant des \u00e9l\u00e9ments esth\u00e9tiques et pratiques."}, {"font": {"color": "white"}, "group": 1, "id": "f928926d-db4d-4fa2-bc95-68a3717fd0fd", "label": "Marketing de contenu", "shape": "dot", "size": 5, "title": "Strat\u00e9gie consistant \u00e0 cr\u00e9er et diffuser des contenus pertinents pour attirer, engager et fid\u00e9liser une audience cible, renfor\u00e7ant ainsi la confiance et l\u0027identit\u00e9 de marque."}, {"font": {"color": "white"}, "group": 1, "id": "b7f3ab09-f46e-45d8-9b95-901dffa38b32", "label": "Typographie minimaliste", "shape": "dot", "size": 5, "title": "Utilisation restreinte de styles typographiques pour assurer la lisibilit\u00e9 et l\u0027harmonie visuelle dans le design web."}, {"font": {"color": "white"}, "group": 1, "id": "ff356c21-a6a9-4643-9b85-5ea63c1962d7", "label": "Composants d\u0027Interface Utilisateur", "shape": "dot", "size": 5, "title": "Les composants d\u0027interface utilisateur sont des unit\u00e9s graphiques ind\u00e9pendantes et r\u00e9utilisables, telles que des boutons, des liens ou des cartes, qui encapsulent la logique et le rendu d\u0027une partie de l\u0027interface. Ils permettent aux utilisateurs d\u0027interagir avec le contenu et les fonctionnalit\u00e9s sur une page web. Dans des outils comme Figma, ces \u00e9l\u00e9ments aident les designers \u00e0 maintenir une coh\u00e9rence visuelle tout en facilitant les mises \u00e0 jour, s\u0027assemblant pour former des structures plus complexes."}, {"font": {"color": "white"}, "group": 1, "id": "9a202d06-ce05-47f7-b49f-2f3e76a253ed", "label": "Affordance", "shape": "dot", "size": 5, "title": "Capacit\u00e9 d\u0027un \u00e9l\u00e9ment graphique \u00e0 sugg\u00e9rer son utilisation, facilitant ainsi la compr\u00e9hension et l\u0027interaction avec un objet ou une interface."}, {"font": {"color": "white"}, "group": 1, "id": "04f1e923-3a80-492f-abdb-88cb768976e2", "label": "Persuasion", "shape": "dot", "size": 5, "title": "Technique utilis\u00e9e pour influencer les comportements ou d\u00e9cisions des consommateurs, essentielle dans le marketing et l\u0027e-commerce."}, {"font": {"color": "white"}, "group": 1, "id": "7c2b90ae-3824-4686-9d1d-e3b0ede25873", "label": "Conversion", "shape": "dot", "size": 5, "title": "Transformation d\u0027un prospect en client payant, mesur\u00e9e par l\u0027efficacit\u00e9 des strat\u00e9gies marketing d\u00e9ploy\u00e9es."}, {"font": {"color": "white"}, "group": 1, "id": "f7adfb23-c92d-4d73-a465-c1802fb25c6a", "label": "T\u00e9moignages et Avis d\u0027Experts", "shape": "dot", "size": 5, "title": "Les t\u00e9moignages et avis d\u0027experts sont des retours d\u0027exp\u00e9rience et opinions fournis par des sp\u00e9cialistes reconnus ainsi que par des clients, souvent accompagn\u00e9s de leur identit\u00e9. Ces t\u00e9moignages sont consid\u00e9r\u00e9s comme plus cr\u00e9dibles et influents pour guider les choix des consommateurs, renfor\u00e7ant la confiance dans un produit tout en inspirant positivement les futurs acheteurs."}, {"font": {"color": "white"}, "group": 1, "id": "ca6353ed-e504-408c-b929-3e77cf3a352a", "label": "Identification du persona", "shape": "dot", "size": 5, "title": "Processus de d\u00e9finition pr\u00e9cise des caract\u00e9ristiques d\u00e9mographiques et psychographiques d\u0027un client cible pour optimiser le ciblage marketing."}, {"font": {"color": "white"}, "group": 3, "id": "eb16c09edf4948668d1d7b7c09f6550e", "label": "mcq", "shape": "dot", "size": 5, "title": "Quel est l\u0027un des avantages de nommer un persona dans une entreprise ?"}, {"font": {"color": "white"}, "group": 5, "id": "59bd00447ae049dcaa8fb3a65f79ec9b", "label": "true_false", "shape": "dot", "size": 5, "title": "Le fait de nommer un persona est seulement utile pour les personnes ext\u00e9rieures \u00e0 l\u0027entreprise."}, {"font": {"color": "white"}, "group": 1, "id": "77350b13-bd3a-4bd7-82be-f846e2761d60", "label": "Comportements des utilisateurs", "shape": "dot", "size": 5, "title": "Mod\u00e8les de navigation et attentes des utilisateurs en ligne, essentiels pour concevoir des interfaces intuitives et efficaces."}, {"font": {"color": "white"}, "group": 1, "id": "6699fd73-1b89-48ad-8f26-25a2ac0bd1fd", "label": "Confiance", "shape": "dot", "size": 5, "title": "\u00c9tat d\u0027esprit essentiel dans les relations commerciales, influenc\u00e9 par des \u00e9l\u00e9ments comme la couleur, qui renforce la fid\u00e9lit\u00e9 des clients."}]);
+                  edges = new vis.DataSet([{"from": "9f4fb59a-37d6-45c8-83e2-ad307e1842f6", "to": 13609, "width": 1}, {"from": "53e06a2d-caf6-4629-a658-09ac86bdbd5a", "to": 13609, "width": 1}, {"from": "53e06a2d-caf6-4629-a658-09ac86bdbd5a", "to": "b98cc38b-e8fc-4a81-9b12-cd74415bfe33", "width": 1}, {"from": "53e06a2d-caf6-4629-a658-09ac86bdbd5a", "to": "c231e437-254e-457e-95c6-a99c3ae0c5b2", "width": 1}, {"from": "53e06a2d-caf6-4629-a658-09ac86bdbd5a", "to": "a0d67a03-3904-4f22-8ed0-74b5d9781af9", "width": 1}, {"from": "53e06a2d-caf6-4629-a658-09ac86bdbd5a", "to": "ce263010-cd1c-40ee-b69c-26b68f9c921c", "width": 1}, {"from": "53e06a2d-caf6-4629-a658-09ac86bdbd5a", "to": "c632565e-0fdc-41f7-9cbd-5a8f1938cb36", "width": 1}, {"from": "53e06a2d-caf6-4629-a658-09ac86bdbd5a", "to": "c96b9650-4c42-42c7-96af-a67b0a0e1c17", "width": 1}, {"from": "53e06a2d-caf6-4629-a658-09ac86bdbd5a", "to": "e4ae9c09-4ec8-4a59-9314-2e4c0c931e9b", "width": 1}, {"from": "53e06a2d-caf6-4629-a658-09ac86bdbd5a", "to": "2f7d688d2dfe42259fea3dd5882400bd", "width": 1}, {"from": "53e06a2d-caf6-4629-a658-09ac86bdbd5a", "to": "f4b28520ee1f4e42b907e9f23a587b75", "width": 1}, {"from": "53e06a2d-caf6-4629-a658-09ac86bdbd5a", "to": "9705a7226b494b009033c21cabddf20d", "width": 1}, {"from": "53e06a2d-caf6-4629-a658-09ac86bdbd5a", "to": "a445f4b4019a4cff837aa3d8e9bba2c5", "width": 1}, {"from": "b98cc38b-e8fc-4a81-9b12-cd74415bfe33", "to": 13609, "width": 1}, {"from": "b98cc38b-e8fc-4a81-9b12-cd74415bfe33", "to": "c231e437-254e-457e-95c6-a99c3ae0c5b2", "width": 1}, {"from": "b98cc38b-e8fc-4a81-9b12-cd74415bfe33", "to": "a0d67a03-3904-4f22-8ed0-74b5d9781af9", "width": 1}, {"from": "b98cc38b-e8fc-4a81-9b12-cd74415bfe33", "to": "ce263010-cd1c-40ee-b69c-26b68f9c921c", "width": 1}, {"from": "b98cc38b-e8fc-4a81-9b12-cd74415bfe33", "to": "c632565e-0fdc-41f7-9cbd-5a8f1938cb36", "width": 1}, {"from": "b98cc38b-e8fc-4a81-9b12-cd74415bfe33", "to": "4dcd98681d734b2aa739660c42531602", "width": 1}, {"from": "b98cc38b-e8fc-4a81-9b12-cd74415bfe33", "to": "8e5ba8bc76134ef29a61602830eb71f2", "width": 1}, {"from": "b98cc38b-e8fc-4a81-9b12-cd74415bfe33", "to": "2f7d688d2dfe42259fea3dd5882400bd", "width": 1}, {"from": "b98cc38b-e8fc-4a81-9b12-cd74415bfe33", "to": "9705a7226b494b009033c21cabddf20d", "width": 1}, {"from": "b98cc38b-e8fc-4a81-9b12-cd74415bfe33", "to": "6620cbe296234756b29fd2315f6194e7", "width": 1}, {"from": "b98cc38b-e8fc-4a81-9b12-cd74415bfe33", "to": "746a31176f214847a7dd209acb387b9c", "width": 1}, {"from": "b98cc38b-e8fc-4a81-9b12-cd74415bfe33", "to": "ac1cc2bb1d374062b5773487c1d9353b", "width": 1}, {"from": "14a7c3b0-165d-4a3c-87e1-070360341462", "to": 13609, "width": 1}, {"from": "14a7c3b0-165d-4a3c-87e1-070360341462", "to": "9ef5d004-3d27-440e-9373-d381c7adf196", "width": 1}, {"from": "7adda1c3-151f-487e-b8e4-5c72c5b16153", "to": 13609, "width": 1}, {"from": "7adda1c3-151f-487e-b8e4-5c72c5b16153", "to": "a1944013-01a5-459d-9bd0-a14620e118cc", "width": 1}, {"from": "e4ae9c09-4ec8-4a59-9314-2e4c0c931e9b", "to": 13609, "width": 1}, {"from": "e4ae9c09-4ec8-4a59-9314-2e4c0c931e9b", "to": "c96b9650-4c42-42c7-96af-a67b0a0e1c17", "width": 1}, {"from": "fd683f12-a578-42c9-907d-87830c9294a7", "to": 13609, "width": 1}, {"from": "a2b8f5cf-f178-4fb2-8e06-9894547e7652", "to": 13609, "width": 1}, {"from": "a2b8f5cf-f178-4fb2-8e06-9894547e7652", "to": "f8f563ff-6ec9-4520-b03e-da9a48ab1773", "width": 1}, {"from": "a2b8f5cf-f178-4fb2-8e06-9894547e7652", "to": "b0450210-90e1-47cb-bc4c-a3c296f5b97e", "width": 1}, {"from": "c572bfb7-b14c-4d5f-ad88-be95e991622f", "to": 13609, "width": 1}, {"from": "39bb6e10-6ac5-4c6d-a612-0407857b51ed", "to": 13609, "width": 1}, {"from": "c231e437-254e-457e-95c6-a99c3ae0c5b2", "to": 13609, "width": 1}, {"from": "c231e437-254e-457e-95c6-a99c3ae0c5b2", "to": "c632565e-0fdc-41f7-9cbd-5a8f1938cb36", "width": 1}, {"from": "c231e437-254e-457e-95c6-a99c3ae0c5b2", "to": "ce263010-cd1c-40ee-b69c-26b68f9c921c", "width": 1}, {"from": "c231e437-254e-457e-95c6-a99c3ae0c5b2", "to": "a0d67a03-3904-4f22-8ed0-74b5d9781af9", "width": 1}, {"from": "c231e437-254e-457e-95c6-a99c3ae0c5b2", "to": "a445f4b4019a4cff837aa3d8e9bba2c5", "width": 1}, {"from": "a0d67a03-3904-4f22-8ed0-74b5d9781af9", "to": 13609, "width": 1}, {"from": "a0d67a03-3904-4f22-8ed0-74b5d9781af9", "to": "c632565e-0fdc-41f7-9cbd-5a8f1938cb36", "width": 1}, {"from": "a0d67a03-3904-4f22-8ed0-74b5d9781af9", "to": "ce263010-cd1c-40ee-b69c-26b68f9c921c", "width": 1}, {"from": "c632565e-0fdc-41f7-9cbd-5a8f1938cb36", "to": 13609, "width": 1}, {"from": "c632565e-0fdc-41f7-9cbd-5a8f1938cb36", "to": "ce263010-cd1c-40ee-b69c-26b68f9c921c", "width": 1}, {"from": "9d3bf277-d6b4-4acf-8a4a-ac899ae17903", "to": 13609, "width": 1}, {"from": "37aa146b-acca-4308-aa6d-7d259963de0e", "to": 13609, "width": 1}, {"from": "b5a1c1cb-d691-4f90-92ca-c78b26d6502b", "to": 13609, "width": 1}, {"from": "b5a1c1cb-d691-4f90-92ca-c78b26d6502b", "to": "fede3a96-f073-484e-8b37-7c9abb196f1f", "width": 1}, {"from": "e0a5ec4c-2f3a-4918-a391-8eee7ad7d825", "to": 13609, "width": 1}, {"from": "cede9af2-fb16-4a81-8017-84e1819bd378", "to": 13609, "width": 1}, {"from": "f928926d-db4d-4fa2-bc95-68a3717fd0fd", "to": 13609, "width": 1}, {"from": "b7f3ab09-f46e-45d8-9b95-901dffa38b32", "to": 13609, "width": 1}, {"from": "ff356c21-a6a9-4643-9b85-5ea63c1962d7", "to": 13609, "width": 1}, {"from": "9a202d06-ce05-47f7-b49f-2f3e76a253ed", "to": 13609, "width": 1}, {"from": "b0450210-90e1-47cb-bc4c-a3c296f5b97e", "to": 13609, "width": 1}, {"from": "b0450210-90e1-47cb-bc4c-a3c296f5b97e", "to": "f8f563ff-6ec9-4520-b03e-da9a48ab1773", "width": 1}, {"from": "04f1e923-3a80-492f-abdb-88cb768976e2", "to": 13609, "width": 1}, {"from": "c96b9650-4c42-42c7-96af-a67b0a0e1c17", "to": 13609, "width": 1}, {"from": "a1944013-01a5-459d-9bd0-a14620e118cc", "to": 13609, "width": 1}, {"from": "7c2b90ae-3824-4686-9d1d-e3b0ede25873", "to": 13609, "width": 1}, {"from": "f8f563ff-6ec9-4520-b03e-da9a48ab1773", "to": 13609, "width": 1}, {"from": "9ef5d004-3d27-440e-9373-d381c7adf196", "to": 13609, "width": 1}, {"from": "f7adfb23-c92d-4d73-a465-c1802fb25c6a", "to": 13609, "width": 1}, {"from": "ca6353ed-e504-408c-b929-3e77cf3a352a", "to": 13609, "width": 1}, {"from": "ca6353ed-e504-408c-b929-3e77cf3a352a", "to": "eb16c09edf4948668d1d7b7c09f6550e", "width": 1}, {"from": "ca6353ed-e504-408c-b929-3e77cf3a352a", "to": "59bd00447ae049dcaa8fb3a65f79ec9b", "width": 1}, {"from": "ce263010-cd1c-40ee-b69c-26b68f9c921c", "to": 13609, "width": 1}, {"from": "77350b13-bd3a-4bd7-82be-f846e2761d60", "to": 13609, "width": 1}, {"from": "fede3a96-f073-484e-8b37-7c9abb196f1f", "to": 13609, "width": 1}, {"from": "6699fd73-1b89-48ad-8f26-25a2ac0bd1fd", "to": 13609, "width": 1}, {"from": "9705a7226b494b009033c21cabddf20d", "to": 13609, "width": 1}, {"from": "a445f4b4019a4cff837aa3d8e9bba2c5", "to": 13609, "width": 1}, {"from": "4dcd98681d734b2aa739660c42531602", "to": 13609, "width": 1}, {"from": "8e5ba8bc76134ef29a61602830eb71f2", "to": 13609, "width": 1}, {"from": "6620cbe296234756b29fd2315f6194e7", "to": 13609, "width": 1}, {"from": "746a31176f214847a7dd209acb387b9c", "to": 13609, "width": 1}, {"from": "ac1cc2bb1d374062b5773487c1d9353b", "to": 13609, "width": 1}, {"from": "59bd00447ae049dcaa8fb3a65f79ec9b", "to": 13609, "width": 1}, {"from": "2f7d688d2dfe42259fea3dd5882400bd", "to": 13609, "width": 1}, {"from": "f4b28520ee1f4e42b907e9f23a587b75", "to": 13609, "width": 1}, {"from": "eb16c09edf4948668d1d7b7c09f6550e", "to": 13609, "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": true,
+        "filter": [
+            "physics"
+        ]
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "repulsion": {
+            "centralGravity": 0.33,
+            "damping": 0.95,
+            "nodeDistance": 420,
+            "springConstant": 0.1,
+            "springLength": 110
+        },
+        "solver": "repulsion",
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+                  // if this network requires displaying the configure window,
+                  // put it in its div
+                  options.configure["container"] = document.getElementById("config");
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>

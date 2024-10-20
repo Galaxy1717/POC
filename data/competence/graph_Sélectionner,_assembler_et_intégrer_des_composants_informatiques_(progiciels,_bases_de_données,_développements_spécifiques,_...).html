@@ -1,0 +1,178 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 800px;
+                 background-color: #222222;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+             #config {
+                 float: left;
+                 width: 400px;
+                 height: 600px;
+             }
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+            <div id="config"></div>
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"font": {"color": "white"}, "group": 1, "id": "4c7bd337-41a5-4fa5-be76-8ba4d625aba3", "label": "D\u00e9pendances", "shape": "dot", "size": 5, "title": "Les d\u00e9pendances d\u00e9signent les relations entre diff\u00e9rentes t\u00e2ches dans un projet, o\u00f9 certaines doivent \u00eatre compl\u00e9t\u00e9es avant que d\u0027autres puissent commencer. Elles incluent \u00e9galement les biblioth\u00e8ques, modules ou packages externes n\u00e9cessaires au bon fonctionnement d\u0027un logiciel, g\u00e9r\u00e9es par des outils comme Composer ou d\u0027autres gestionnaires de paquets pour \u00e9viter les conflits et assurer une int\u00e9gration harmonieuse. La gestion des d\u00e9pendances est cruciale lors de la construction d\u0027images Docker, garantissant que toutes les ressources n\u00e9cessaires sont disponibles et correctement configur\u00e9es."}, {"font": {"color": "white"}, "group": 2, "id": 13682, "label": "Gestion de Projet et Calcul du Taux Horaire", "shape": "dot", "size": 8, "title": "Sequence 6_importance gestion de projet"}, {"font": {"color": "white"}, "group": 1, "id": "ae467590-b74a-463a-8b8f-0d480a17c50a", "label": "Gestion de projet", "shape": "dot", "size": 5, "title": "La gestion de projet est une discipline qui consiste \u00e0 appliquer des connaissances, comp\u00e9tences et techniques pour planifier, ex\u00e9cuter et superviser des projets afin d\u0027atteindre des objectifs sp\u00e9cifiques dans un cadre temporel d\u00e9fini. Elle implique l\u0027organisation et la planification des ressources tout en respectant les contraintes budg\u00e9taires, et elle est particuli\u00e8rement cruciale dans divers domaines, y compris le domaine cr\u00e9atif."}, {"font": {"color": "white"}, "group": 1, "id": "44ac33ba-9d4f-4b84-b241-38468732b7e0", "label": "Suivi et mise \u00e0 jour", "shape": "dot", "size": 5, "title": "Le suivi et la mise \u00e0 jour consistent \u00e0 surveiller r\u00e9guli\u00e8rement l\u0027avancement du projet et ajuster le plan en fonction des impr\u00e9vus."}, {"font": {"color": "white"}, "group": 1, "id": "a99118f8-3d0e-4517-88a1-b6e4a98947bc", "label": "Collaboration dans le d\u00e9veloppement logiciel", "shape": "dot", "size": 5, "title": "La collaboration dans le d\u00e9veloppement logiciel d\u00e9signe le processus par lequel plusieurs individus ou \u00e9quipes, y compris les \u00e9quipes de d\u00e9veloppement et d\u0027exploitation, interagissent \u00e9troitement pour atteindre des objectifs communs. Ce partenariat actif favorise une responsabilit\u00e9 partag\u00e9e pour les livraisons logicielles et am\u00e9liore la compr\u00e9hension mutuelle, permettant ainsi de r\u00e9soudre rapidement les probl\u00e8mes. La collaboration implique un \u00e9change d\u0027id\u00e9es enrichissant, facilit\u00e9e par des outils num\u00e9riques, qui transforme les relations traditionnelles en un environnement d\u0027innovation et de partage. Elle se caract\u00e9rise \u00e9galement par une interaction continue entre membres d\u0027une \u00e9quipe, favorisant le partage de code et la r\u00e9solution rapide des conflits."}, {"font": {"color": "white"}, "group": 1, "id": "46418a35-4388-41fc-a035-551226221ba5", "label": "D\u00e9veloppement des id\u00e9es", "shape": "dot", "size": 5, "title": "Le d\u00e9veloppement des id\u00e9es est la phase o\u00f9 les concepts s\u00e9lectionn\u00e9s sont approfondis et affin\u00e9s gr\u00e2ce \u00e0 la recherche, aux croquis et aux prototypes. Cette \u00e9tape implique une exploration d\u00e9taill\u00e9e des meilleures id\u00e9es en collaboration avec l\u0027\u00e9quipe pour assurer leur concr\u00e9tisation effective."}, {"font": {"color": "white"}, "group": 1, "id": "a8a00071-1e94-47d4-ae1f-c4d1d56d0f25", "label": "Suivi de projet", "shape": "dot", "size": 5, "title": "Processus de gestion permettant de surveiller l\u0027avancement des t\u00e2ches et d\u0027ajuster les d\u00e9lais en fonction des besoins."}, {"font": {"color": "white"}, "group": 1, "id": "c046e017-bd93-494e-935f-03880b12ef92", "label": "Sp\u00e9cifications du produit", "shape": "dot", "size": 5, "title": "D\u00e9tails techniques et exigences pr\u00e9cises concernant un produit ou service demand\u00e9 par le client."}, {"font": {"color": "white"}, "group": 1, "id": "e7135db8-6662-4cf1-a1eb-f53f50d8cb30", "label": "\u00c9valuation des co\u00fbts", "shape": "dot", "size": 5, "title": "Analyse des d\u00e9penses li\u00e9es \u00e0 un projet, incluant mat\u00e9riaux et main-d\u0027\u0153uvre, pour assurer la viabilit\u00e9 financi\u00e8re."}, {"font": {"color": "white"}, "group": 1, "id": "784d7e55-3719-435a-86eb-e3028d2e8919", "label": "Wireframing", "shape": "dot", "size": 5, "title": "Le wireframing est une technique de conception pr\u00e9liminaire qui consiste \u00e0 cr\u00e9er des maquettes sch\u00e9matiques d\u00e9taill\u00e9es, appel\u00e9es wireframes, pour visualiser et clarifier la structure d\u0027une interface utilisateur. Ces repr\u00e9sentations simplifi\u00e9es illustrent l\u0027organisation des \u00e9l\u00e9ments fonctionnels sans se concentrer sur le design graphique final, mettant en \u00e9vidence les composants visuels et fonctionnels essentiels. Le wireframing facilite ainsi la communication entre les acteurs d\u0027un projet et sert de base pour le d\u00e9veloppement ult\u00e9rieur de l\u0027interface."}, {"font": {"color": "white"}, "group": 3, "id": "cf5d22df526b473d886b2f9185bbbade", "label": "mcq", "shape": "dot", "size": 5, "title": "Quel est l\u0027objectif principal du wireframe par rapport aux \u00e9l\u00e9ments pr\u00e9sents ?"}, {"font": {"color": "white"}, "group": 3, "id": "cfb5a24978ac4fb2bf3fa2db59ed0ebe", "label": "mcq", "shape": "dot", "size": 5, "title": "Quelle est l\u0027utilit\u00e9 des wireframes dans le processus de cr\u00e9ation web?"}, {"font": {"color": "white"}, "group": 4, "id": "d98bc70a159f4f99ada0181438d991b5", "label": "fill_in", "shape": "dot", "size": 5, "title": "Le wireframe se concentre principalement sur \u003cblank\u003e, sans s\u0027occuper de l\u0027aspect visuel ou du graphisme."}, {"font": {"color": "white"}, "group": 5, "id": "df6d8e1ef0c24891972ea92c71fd1f92", "label": "true_false", "shape": "dot", "size": 5, "title": "Le contenu utilis\u00e9 dans le wireframe peut \u00eatre fictif si les informations finales ne sont pas encore disponibles."}, {"font": {"color": "white"}, "group": 5, "id": "a286d7d9d1844bed865e42b39a918f65", "label": "true_false", "shape": "dot", "size": 5, "title": "Les wireframes valides sont immuables et ne peuvent en aucun cas \u00eatre modifi\u00e9s par les cr\u00e9atifs."}, {"font": {"color": "white"}, "group": 1, "id": "ad750065-352f-471a-b1fc-a896a99991b2", "label": "Actionable Insights", "shape": "dot", "size": 5, "title": "Informations d\u00e9riv\u00e9es de donn\u00e9es qui peuvent \u00eatre directement appliqu\u00e9es pour prendre des d\u00e9cisions strat\u00e9giques dans une entreprise."}, {"font": {"color": "white"}, "group": 1, "id": "2414d865-830b-4ca5-a094-d8217f6b09f0", "label": "Human Problems", "shape": "dot", "size": 5, "title": "D\u00e9fis ou besoins rencontr\u00e9s par les individus que les entreprises cherchent \u00e0 r\u00e9soudre gr\u00e2ce \u00e0 des solutions technologiques innovantes."}, {"font": {"color": "white"}, "group": 1, "id": "9d810e58-40a4-40c3-9db4-16ad82dcf8b6", "label": "Business Technology", "shape": "dot", "size": 5, "title": "Technologies utilis\u00e9es pour am\u00e9liorer les op\u00e9rations commerciales, incluant l\u0027automatisation, l\u0027analyse de donn\u00e9es et la gestion des ressources."}, {"font": {"color": "white"}, "group": 1, "id": "9a6e952a-418f-49f9-ac29-d7441bb7c0d7", "label": "Big Data", "shape": "dot", "size": 5, "title": "Ensemble de donn\u00e9es massives et complexes, n\u00e9cessitant des outils avanc\u00e9s pour l\u0027analyse, permettant aux entreprises d\u0027obtenir des informations exploitables en temps r\u00e9el."}, {"font": {"color": "white"}, "group": 5, "id": "dc3a6dfc15ca475496a486da3bde2aa8", "label": "true_false", "shape": "dot", "size": 5, "title": "Les outils mentionn\u00e9s servent uniquement \u00e0 cr\u00e9er des documents internes pour l\u0027\u00e9quipe de projet."}, {"font": {"color": "white"}, "group": 1, "id": "1ef72a7e-5e74-4275-8671-d3b08e7e6482", "label": "Design System", "shape": "dot", "size": 5, "title": "Un design system est une biblioth\u00e8que standardis\u00e9e d\u0027\u00e9l\u00e9ments graphiques, de composants r\u00e9utilisables et de r\u00e8gles de branding unifi\u00e9es, qui assurent la coh\u00e9rence visuelle et fonctionnelle dans le d\u00e9veloppement de produits, sites ou applications. Il vise \u00e0 standardiser le d\u00e9veloppement et \u00e0 garantir une exp\u00e9rience utilisateur homog\u00e8ne \u00e0 travers plusieurs produits."}, {"font": {"color": "white"}, "group": 1, "id": "428549b4-6b1b-49f2-afdf-65890ef5cd30", "label": "Atomic Design", "shape": "dot", "size": 5, "title": "L\u0027atomic design est une m\u00e9thode syst\u00e9matique de conception d\u0027interface qui d\u00e9compose les interfaces en composants plus petits et r\u00e9utilisables, permettant ainsi une construction modulaire, \u00e9volutive et favorisant une meilleure coh\u00e9rence visuelle."}, {"font": {"color": "white"}, "group": 1, "id": "94ceb899-3421-42f7-a5b0-f97af5b3441a", "label": "UI KIT", "shape": "dot", "size": 5, "title": "Un ensemble d\u0027\u00e9l\u00e9ments graphiques standardis\u00e9s pour assurer la coh\u00e9rence visuelle d\u0027un site web, facilitant l\u0027\u00e9volution de l\u0027identit\u00e9 visuelle existante."}, {"font": {"color": "white"}, "group": 3, "id": "b17e37191d8e4ee096cbcba422cbd719", "label": "mcq", "shape": "dot", "size": 5, "title": "Quelle est la m\u00e9thode qui d\u00e9coupe le design d\u0027une interface en composants ?"}, {"font": {"color": "white"}, "group": 3, "id": "7a9bfae2718c4ec894908d42d69a0337", "label": "mcq", "shape": "dot", "size": 5, "title": "Quel est l\u0027objectif principal d\u0027un design system ?"}, {"font": {"color": "white"}, "group": 3, "id": "74d6ad304c8c4756803e679f5c81c5ba", "label": "mcq", "shape": "dot", "size": 5, "title": "\u00c0 quoi sert principalement un design system dans une organisation ?"}, {"font": {"color": "white"}, "group": 5, "id": "c403d64ca6434b3dafa2d9505f75f7a4", "label": "true_false", "shape": "dot", "size": 5, "title": "L\u0027atomic design est une m\u00e9thode qui consiste \u00e0 diviser le design d\u0027une interface en \u00e9l\u00e9ments individuels."}, {"font": {"color": "white"}, "group": 5, "id": "e11c2ad84ac74e07a8f72c3b516e8280", "label": "true_false", "shape": "dot", "size": 5, "title": "Un design system ne concerne que les \u00e9l\u00e9ments graphiques d\u0027un produit."}, {"font": {"color": "white"}, "group": 5, "id": "8f28a9f88d34427b97ac8306108b18b3", "label": "true_false", "shape": "dot", "size": 5, "title": "Le but principal d\u0027un design system est de standardiser les \u00e9l\u00e9ments li\u00e9s au d\u00e9veloppement d\u0027un produit pour garantir la coh\u00e9rence."}, {"font": {"color": "white"}, "group": 1, "id": "dfa4d6bf-809a-47df-9cc9-6aa99fb516b2", "label": "Cloud computing", "shape": "dot", "size": 5, "title": "Un service permettant le stockage et l\u0027acc\u00e8s \u00e0 des donn\u00e9es via Internet, facilitant la collaboration et la sauvegarde des fichiers entre \u00e9quipes."}, {"font": {"color": "white"}, "group": 4, "id": "48ef62b02b0148eeb79dd1d5e0017254", "label": "fill_in", "shape": "dot", "size": 5, "title": "L\u0027atomic design est une m\u00e9thode qui consiste \u00e0 \u003cblank\u003e en diff\u00e9rents composants le design d\u0027une interface."}, {"font": {"color": "white"}, "group": 1, "id": "376d95b1-05d3-4b9f-900a-5d6b1ab40030", "label": "R\u00e9alisation", "shape": "dot", "size": 5, "title": "Mise en \u0153uvre concr\u00e8te des id\u00e9es s\u00e9lectionn\u00e9es, impliquant comp\u00e9tences techniques pour cr\u00e9er un produit ou une \u0153uvre."}, {"font": {"color": "white"}, "group": 3, "id": "e272bed138e8447394ad8396b46b85da", "label": "mcq", "shape": "dot", "size": 5, "title": "Quels \u00e9l\u00e9ments sont pris en compte lors de l\u0027\u00e9valuation des id\u00e9es d\u00e9velopp\u00e9es?"}, {"font": {"color": "white"}, "group": 3, "id": "9787e4cf33a44e10828060c871cbdbdc", "label": "mcq", "shape": "dot", "size": 5, "title": "Que peut inclure le d\u00e9veloppement des id\u00e9es apr\u00e8s leur s\u00e9lection?"}, {"font": {"color": "white"}, "group": 4, "id": "a4211a89a66041cea75d9f65c5dd02c6", "label": "fill_in", "shape": "dot", "size": 5, "title": "Lors du d\u00e9veloppement d\u0027une id\u00e9e, des ajustements et r\u00e9visions sont effectu\u00e9s en fonction des \u003cblank\u003e pour l\u0027am\u00e9liorer."}, {"font": {"color": "white"}, "group": 5, "id": "d26ff603d732470c83c52a9b3dec2af2", "label": "true_false", "shape": "dot", "size": 5, "title": "Les id\u00e9es d\u00e9velopp\u00e9es peuvent faire l\u0027objet de plusieurs it\u00e9rations pour s\u0027assurer qu\u0027elles remplissent les crit\u00e8res du projet."}, {"font": {"color": "white"}, "group": 5, "id": "24806f82dc0549589c867864cdf1dead", "label": "true_false", "shape": "dot", "size": 5, "title": "Une fois les id\u00e9es s\u00e9lectionn\u00e9es, elles sont imm\u00e9diatement mises en \u0153uvre sans \u00eatre test\u00e9es ou ajust\u00e9es."}, {"font": {"color": "white"}, "group": 1, "id": "e3db3cdb-5474-48f7-833c-0bdae33ed61a", "label": "Dossier d\u0027Ex\u00e9cution", "shape": "dot", "size": 5, "title": "Document technique d\u00e9taillant les sp\u00e9cifications et les \u00e9l\u00e9ments n\u00e9cessaires \u00e0 la r\u00e9alisation d\u0027un projet, crucial pour assurer sa bonne mise en \u0153uvre."}, {"font": {"color": "white"}, "group": 1, "id": "9c7cbcbd-6820-4fcd-bd00-88a36b11fe80", "label": "Analyse des Besoins du Client", "shape": "dot", "size": 5, "title": "Processus d\u0027\u00e9valuation des exigences explicites et implicites d\u0027un client afin de fournir des solutions adapt\u00e9es \u00e0 ses attentes."}, {"font": {"color": "white"}, "group": 1, "id": "b7526477-65bb-452f-a068-5d83bd100ed1", "label": "Projet web", "shape": "dot", "size": 5, "title": "Ensemble des activit\u00e9s li\u00e9es \u00e0 la cr\u00e9ation et au d\u00e9veloppement d\u0027un site internet ou d\u0027une application en ligne."}, {"font": {"color": "white"}, "group": 1, "id": "1622b043-0bc0-4650-8d08-21766878aae6", "label": "Projet", "shape": "dot", "size": 5, "title": "Ensemble d\u0027activit\u00e9s coordonn\u00e9es visant \u00e0 atteindre un objectif sp\u00e9cifique dans un d\u00e9lai d\u00e9fini, souvent utilis\u00e9 dans le contexte professionnel."}, {"font": {"color": "white"}, "group": 1, "id": "0edf2749-c81c-43eb-9df3-80cccb6cce55", "label": "Organiser", "shape": "dot", "size": 5, "title": "Disposer des \u00e9l\u00e9ments de mani\u00e8re structur\u00e9e pour am\u00e9liorer la clart\u00e9 et la lisibilit\u00e9 des informations pr\u00e9sent\u00e9es."}, {"font": {"color": "white"}, "group": 1, "id": "53e06a2d-caf6-4629-a658-09ac86bdbd5a", "label": "Lisibilit\u00e9", "shape": "dot", "size": 5, "title": "La lisibilit\u00e9, ou lisibilit\u00e9 du contenu, est la facilit\u00e9 avec laquelle un texte peut \u00eatre lu et compris. Elle est essentielle pour une communication efficace sur diff\u00e9rents dispositifs, notamment en design graphique. La lisibilit\u00e9 est influenc\u00e9e par divers facteurs tels que la taille de la police, le contraste des couleurs, l\u0027espacement entre les \u00e9l\u00e9ments graphiques, l\u0027alignement et l\u0027utilisation d\u0027espaces blancs. Elle joue un r\u00f4le cl\u00e9 dans la cr\u00e9ation de documents clairs et attrayants, facilitant ainsi l\u0027engagement du lecteur."}, {"font": {"color": "white"}, "group": 1, "id": "37aa146b-acca-4308-aa6d-7d259963de0e", "label": "Ciblage", "shape": "dot", "size": 5, "title": "Ciblage et Cible marketing d\u00e9signent le processus de s\u00e9lection et de d\u00e9finition d\u0027un segment sp\u00e9cifique du public auquel s\u0027adresse une campagne marketing. Ce processus est essentiel pour adapter le message et maximiser l\u0027efficacit\u00e9 des campagnes, en ciblant des audiences sp\u00e9cifiques qui sont les plus susceptibles d\u0027\u00eatre r\u00e9ceptives aux offres propos\u00e9es."}, {"font": {"color": "white"}, "group": 1, "id": "00522abb-60ff-48e1-b79b-47f8a1110004", "label": "Validation client", "shape": "dot", "size": 5, "title": "La validation client est le processus par lequel un client approuve une proposition ou un projet avant sa finalisation, garantissant que ses attentes sont satisfaites."}]);
+                  edges = new vis.DataSet([{"from": "4c7bd337-41a5-4fa5-be76-8ba4d625aba3", "to": 13682, "width": 1}, {"from": "4c7bd337-41a5-4fa5-be76-8ba4d625aba3", "to": "ae467590-b74a-463a-8b8f-0d480a17c50a", "width": 1}, {"from": "4c7bd337-41a5-4fa5-be76-8ba4d625aba3", "to": "44ac33ba-9d4f-4b84-b241-38468732b7e0", "width": 1}, {"from": "a99118f8-3d0e-4517-88a1-b6e4a98947bc", "to": "ae467590-b74a-463a-8b8f-0d480a17c50a", "width": 1}, {"from": "a99118f8-3d0e-4517-88a1-b6e4a98947bc", "to": "46418a35-4388-41fc-a035-551226221ba5", "width": 1}, {"from": "a8a00071-1e94-47d4-ae1f-c4d1d56d0f25", "to": 13682, "width": 1}, {"from": "a8a00071-1e94-47d4-ae1f-c4d1d56d0f25", "to": "c046e017-bd93-494e-935f-03880b12ef92", "width": 1}, {"from": "a8a00071-1e94-47d4-ae1f-c4d1d56d0f25", "to": "e7135db8-6662-4cf1-a1eb-f53f50d8cb30", "width": 1}, {"from": "784d7e55-3719-435a-86eb-e3028d2e8919", "to": "ae467590-b74a-463a-8b8f-0d480a17c50a", "width": 1}, {"from": "784d7e55-3719-435a-86eb-e3028d2e8919", "to": "cf5d22df526b473d886b2f9185bbbade", "width": 1}, {"from": "784d7e55-3719-435a-86eb-e3028d2e8919", "to": "cfb5a24978ac4fb2bf3fa2db59ed0ebe", "width": 1}, {"from": "784d7e55-3719-435a-86eb-e3028d2e8919", "to": "d98bc70a159f4f99ada0181438d991b5", "width": 1}, {"from": "784d7e55-3719-435a-86eb-e3028d2e8919", "to": "df6d8e1ef0c24891972ea92c71fd1f92", "width": 1}, {"from": "784d7e55-3719-435a-86eb-e3028d2e8919", "to": "a286d7d9d1844bed865e42b39a918f65", "width": 1}, {"from": "ae467590-b74a-463a-8b8f-0d480a17c50a", "to": 13682, "width": 1}, {"from": "ae467590-b74a-463a-8b8f-0d480a17c50a", "to": "44ac33ba-9d4f-4b84-b241-38468732b7e0", "width": 1}, {"from": "ad750065-352f-471a-b1fc-a896a99991b2", "to": "2414d865-830b-4ca5-a094-d8217f6b09f0", "width": 1}, {"from": "ad750065-352f-471a-b1fc-a896a99991b2", "to": "9d810e58-40a4-40c3-9db4-16ad82dcf8b6", "width": 1}, {"from": "ad750065-352f-471a-b1fc-a896a99991b2", "to": "9a6e952a-418f-49f9-ac29-d7441bb7c0d7", "width": 1}, {"from": "ad750065-352f-471a-b1fc-a896a99991b2", "to": "dc3a6dfc15ca475496a486da3bde2aa8", "width": 1}, {"from": "1ef72a7e-5e74-4275-8671-d3b08e7e6482", "to": "428549b4-6b1b-49f2-afdf-65890ef5cd30", "width": 1}, {"from": "1ef72a7e-5e74-4275-8671-d3b08e7e6482", "to": "94ceb899-3421-42f7-a5b0-f97af5b3441a", "width": 1}, {"from": "1ef72a7e-5e74-4275-8671-d3b08e7e6482", "to": "b17e37191d8e4ee096cbcba422cbd719", "width": 1}, {"from": "1ef72a7e-5e74-4275-8671-d3b08e7e6482", "to": "7a9bfae2718c4ec894908d42d69a0337", "width": 1}, {"from": "1ef72a7e-5e74-4275-8671-d3b08e7e6482", "to": "74d6ad304c8c4756803e679f5c81c5ba", "width": 1}, {"from": "1ef72a7e-5e74-4275-8671-d3b08e7e6482", "to": "c403d64ca6434b3dafa2d9505f75f7a4", "width": 1}, {"from": "1ef72a7e-5e74-4275-8671-d3b08e7e6482", "to": "e11c2ad84ac74e07a8f72c3b516e8280", "width": 1}, {"from": "1ef72a7e-5e74-4275-8671-d3b08e7e6482", "to": "8f28a9f88d34427b97ac8306108b18b3", "width": 1}, {"from": "44ac33ba-9d4f-4b84-b241-38468732b7e0", "to": 13682, "width": 1}, {"from": "dfa4d6bf-809a-47df-9cc9-6aa99fb516b2", "to": 13682, "width": 1}, {"from": "428549b4-6b1b-49f2-afdf-65890ef5cd30", "to": "b17e37191d8e4ee096cbcba422cbd719", "width": 1}, {"from": "428549b4-6b1b-49f2-afdf-65890ef5cd30", "to": "48ef62b02b0148eeb79dd1d5e0017254", "width": 1}, {"from": "428549b4-6b1b-49f2-afdf-65890ef5cd30", "to": "c403d64ca6434b3dafa2d9505f75f7a4", "width": 1}, {"from": "9d810e58-40a4-40c3-9db4-16ad82dcf8b6", "to": "2414d865-830b-4ca5-a094-d8217f6b09f0", "width": 1}, {"from": "9d810e58-40a4-40c3-9db4-16ad82dcf8b6", "to": "9a6e952a-418f-49f9-ac29-d7441bb7c0d7", "width": 1}, {"from": "9d810e58-40a4-40c3-9db4-16ad82dcf8b6", "to": "dc3a6dfc15ca475496a486da3bde2aa8", "width": 1}, {"from": "c046e017-bd93-494e-935f-03880b12ef92", "to": 13682, "width": 1}, {"from": "c046e017-bd93-494e-935f-03880b12ef92", "to": "e7135db8-6662-4cf1-a1eb-f53f50d8cb30", "width": 1}, {"from": "46418a35-4388-41fc-a035-551226221ba5", "to": "376d95b1-05d3-4b9f-900a-5d6b1ab40030", "width": 1}, {"from": "46418a35-4388-41fc-a035-551226221ba5", "to": "e272bed138e8447394ad8396b46b85da", "width": 1}, {"from": "46418a35-4388-41fc-a035-551226221ba5", "to": "9787e4cf33a44e10828060c871cbdbdc", "width": 1}, {"from": "46418a35-4388-41fc-a035-551226221ba5", "to": "a4211a89a66041cea75d9f65c5dd02c6", "width": 1}, {"from": "46418a35-4388-41fc-a035-551226221ba5", "to": "d26ff603d732470c83c52a9b3dec2af2", "width": 1}, {"from": "46418a35-4388-41fc-a035-551226221ba5", "to": "24806f82dc0549589c867864cdf1dead", "width": 1}, {"from": "e7135db8-6662-4cf1-a1eb-f53f50d8cb30", "to": 13682, "width": 1}, {"from": "9a6e952a-418f-49f9-ac29-d7441bb7c0d7", "to": "2414d865-830b-4ca5-a094-d8217f6b09f0", "width": 1}, {"from": "376d95b1-05d3-4b9f-900a-5d6b1ab40030", "to": "9787e4cf33a44e10828060c871cbdbdc", "width": 1}, {"from": "376d95b1-05d3-4b9f-900a-5d6b1ab40030", "to": "24806f82dc0549589c867864cdf1dead", "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": true,
+        "filter": [
+            "physics"
+        ]
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "repulsion": {
+            "centralGravity": 0.33,
+            "damping": 0.95,
+            "nodeDistance": 420,
+            "springConstant": 0.1,
+            "springLength": 110
+        },
+        "solver": "repulsion",
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+                  // if this network requires displaying the configure window,
+                  // put it in its div
+                  options.configure["container"] = document.getElementById("config");
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>

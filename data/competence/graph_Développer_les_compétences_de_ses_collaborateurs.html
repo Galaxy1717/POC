@@ -1,0 +1,178 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 800px;
+                 background-color: #222222;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+             #config {
+                 float: left;
+                 width: 400px;
+                 height: 600px;
+             }
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+            <div id="config"></div>
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"font": {"color": "white"}, "group": 1, "id": "88a0e912-4ade-45dc-9da8-93a3bb83b44e", "label": "Comp\u00e9tences", "shape": "dot", "size": 5, "title": "Aptitudes acquises par l\u0027exp\u00e9rience ou l\u0027\u00e9ducation, essentielles pour exceller dans un domaine sp\u00e9cifique."}, {"font": {"color": "white"}, "group": 2, "id": 13678, "label": "ynoy CR\u00c9ATION \u0026 DIGITAL DESIGN : La Voie du Cr\u00e9atif", "shape": "dot", "size": 8, "title": "MAT1_MAT2_VOIE_DU_CREATIF"}, {"font": {"color": "white"}, "group": 1, "id": "0fe1e1b3-7bf0-456a-aec3-5f8bb3ebc68f", "label": "Concentration totale", "shape": "dot", "size": 5, "title": "Capacit\u00e9 \u00e0 se focaliser pleinement sur une t\u00e2che sans distraction, cruciale pour atteindre l\u0027excellence professionnelle."}, {"font": {"color": "white"}, "group": 1, "id": "f31ba3a3-cda2-4baa-892b-5832140f79e9", "label": "Engagement professionnel", "shape": "dot", "size": 5, "title": "D\u00e9marche proactive visant \u00e0 aligner ses actions avec ses ambitions professionnelles, essentielle pour r\u00e9ussir dans un domaine choisi."}, {"font": {"color": "white"}, "group": 1, "id": "25a51e98-82af-43d7-ae07-46db69065aba", "label": "Journal des h\u00e9ros", "shape": "dot", "size": 5, "title": "Outil de r\u00e9flexion permettant de documenter les influences positives dans sa vie, facilitant l\u0027int\u00e9gration des le\u00e7ons apprises."}, {"font": {"color": "white"}, "group": 1, "id": "61cc1ba4-99f3-45b6-b765-a268641aa9ef", "label": "Mentors", "shape": "dot", "size": 5, "title": "Figures inspirantes qui influencent le d\u00e9veloppement personnel et professionnel, offrant guidance et soutien dans la qu\u00eate de comp\u00e9tences."}, {"font": {"color": "white"}, "group": 1, "id": "a6dfa776-3e29-499b-8d83-a25b25a5d3f2", "label": "\u00c9l\u00e9ment unique", "shape": "dot", "size": 5, "title": "Concept de Ken Robinson d\u00e9signant les talents et passions individuels qui d\u00e9finissent une personne, favorisant l\u0027authenticit\u00e9 et la cr\u00e9ativit\u00e9."}, {"font": {"color": "white"}, "group": 5, "id": "6dfdedfa5f3f4a6ba33be9ad06f29dd6", "label": "true_false", "shape": "dot", "size": 5, "title": "Michael Bierut s\u0027est \u00e9loign\u00e9 de ses mentors pour d\u00e9velopper son propre style."}, {"font": {"color": "white"}, "group": 1, "id": "46418a35-4388-41fc-a035-551226221ba5", "label": "D\u00e9veloppement des id\u00e9es", "shape": "dot", "size": 5, "title": "Le d\u00e9veloppement des id\u00e9es est la phase o\u00f9 les concepts s\u00e9lectionn\u00e9s sont approfondis et affin\u00e9s gr\u00e2ce \u00e0 la recherche, aux croquis et aux prototypes. Cette \u00e9tape implique une exploration d\u00e9taill\u00e9e des meilleures id\u00e9es en collaboration avec l\u0027\u00e9quipe pour assurer leur concr\u00e9tisation effective."}, {"font": {"color": "white"}, "group": 1, "id": "a99118f8-3d0e-4517-88a1-b6e4a98947bc", "label": "Collaboration dans le d\u00e9veloppement logiciel", "shape": "dot", "size": 5, "title": "La collaboration dans le d\u00e9veloppement logiciel d\u00e9signe le processus par lequel plusieurs individus ou \u00e9quipes, y compris les \u00e9quipes de d\u00e9veloppement et d\u0027exploitation, interagissent \u00e9troitement pour atteindre des objectifs communs. Ce partenariat actif favorise une responsabilit\u00e9 partag\u00e9e pour les livraisons logicielles et am\u00e9liore la compr\u00e9hension mutuelle, permettant ainsi de r\u00e9soudre rapidement les probl\u00e8mes. La collaboration implique un \u00e9change d\u0027id\u00e9es enrichissant, facilit\u00e9e par des outils num\u00e9riques, qui transforme les relations traditionnelles en un environnement d\u0027innovation et de partage. Elle se caract\u00e9rise \u00e9galement par une interaction continue entre membres d\u0027une \u00e9quipe, favorisant le partage de code et la r\u00e9solution rapide des conflits."}, {"font": {"color": "white"}, "group": 1, "id": "c10701e7-7756-40f8-841c-155987f1eacf", "label": "Brainwriting", "shape": "dot", "size": 5, "title": "M\u00e9thode de g\u00e9n\u00e9ration d\u0027id\u00e9es qui permet aux participants de r\u00e9fl\u00e9chir ind\u00e9pendamment en \u00e9crivant leurs id\u00e9es, ce qui favorise la r\u00e9flexion personnelle et minimise les biais de groupe avant le partage des id\u00e9es."}, {"font": {"color": "white"}, "group": 1, "id": "376d95b1-05d3-4b9f-900a-5d6b1ab40030", "label": "R\u00e9alisation", "shape": "dot", "size": 5, "title": "Mise en \u0153uvre concr\u00e8te des id\u00e9es s\u00e9lectionn\u00e9es, impliquant comp\u00e9tences techniques pour cr\u00e9er un produit ou une \u0153uvre."}, {"font": {"color": "white"}, "group": 1, "id": "0e2b76bd-fa95-4a2e-9aa6-621ca5664d4c", "label": "\u00c9valuation", "shape": "dot", "size": 5, "title": "Processus d\u0027analyse des id\u00e9es d\u00e9velopp\u00e9es selon des crit\u00e8res sp\u00e9cifiques pour affiner et am\u00e9liorer les propositions."}, {"font": {"color": "white"}, "group": 3, "id": "811f06d84107490db9c0fdfb81dc4224", "label": "mcq", "shape": "dot", "size": 5, "title": "Quelles comp\u00e9tences sont essentielles pour concr\u00e9tiser une id\u00e9e cr\u00e9ative ?"}, {"font": {"color": "white"}, "group": 5, "id": "d26ff603d732470c83c52a9b3dec2af2", "label": "true_false", "shape": "dot", "size": 5, "title": "Les id\u00e9es d\u00e9velopp\u00e9es peuvent faire l\u0027objet de plusieurs it\u00e9rations pour s\u0027assurer qu\u0027elles remplissent les crit\u00e8res du projet."}, {"font": {"color": "white"}, "group": 5, "id": "24806f82dc0549589c867864cdf1dead", "label": "true_false", "shape": "dot", "size": 5, "title": "Une fois les id\u00e9es s\u00e9lectionn\u00e9es, elles sont imm\u00e9diatement mises en \u0153uvre sans \u00eatre test\u00e9es ou ajust\u00e9es."}, {"font": {"color": "white"}, "group": 1, "id": "c756fea1-1076-48dd-b9c6-490fedd179ea", "label": "\u00c9volution personnelle", "shape": "dot", "size": 5, "title": "Processus de changement et de d\u00e9veloppement individuel, souvent catalys\u00e9 par des exp\u00e9riences cr\u00e9atives ou des d\u00e9fis."}, {"font": {"color": "white"}, "group": 1, "id": "939a7d0b-ff19-49ed-b689-adaf0c93b54a", "label": "Braintrust", "shape": "dot", "size": 5, "title": "Technique collaborative de Pixar favorisant les retours constructifs sur les projets, \u00e9loignant le risque du syndrome de l\u0027imposteur."}, {"font": {"color": "white"}, "group": 1, "id": "061586fa-6c2b-45a7-a0ae-218465b4088e", "label": "Pens\u00e9e cr\u00e9ative", "shape": "dot", "size": 5, "title": "Approche qui valorise l\u0027ouverture d\u0027esprit et l\u0027acceptation des erreurs comme fondements de l\u0027innovation."}, {"font": {"color": "white"}, "group": 1, "id": "2c51d964-96e1-4d42-8ec9-9c26e74d33e9", "label": "D\u00e9fi", "shape": "dot", "size": 5, "title": "T\u00e2che ou situation difficile \u00e0 surmonter, stimulant l\u0027apprentissage et le d\u00e9veloppement des comp\u00e9tences."}, {"font": {"color": "white"}, "group": 1, "id": "3776f00f-6a9f-4c54-82bb-9bf413c6ab1c", "label": "ynov CAMPUS", "shape": "dot", "size": 5, "title": "Ynov Campus est un \u00e9tablissement d\u0027enseignement sup\u00e9rieur fran\u00e7ais et un r\u00e9seau d\u0027\u00e9coles sp\u00e9cialis\u00e9es dans les domaines du digital, design, cr\u00e9ation et num\u00e9rique. Il offre des formations innovantes ax\u00e9es sur les m\u00e9tiers du num\u00e9rique et de l\u0027informatique, formant des \u00e9tudiants aux comp\u00e9tences technologiques modernes demand\u00e9es sur le march\u00e9."}, {"font": {"color": "white"}, "group": 1, "id": "1622b043-0bc0-4650-8d08-21766878aae6", "label": "Projet", "shape": "dot", "size": 5, "title": "Ensemble d\u0027activit\u00e9s coordonn\u00e9es visant \u00e0 atteindre un objectif sp\u00e9cifique dans un d\u00e9lai d\u00e9fini, souvent utilis\u00e9 dans le contexte professionnel."}, {"font": {"color": "white"}, "group": 1, "id": "4ce61c54-593a-41b2-b92f-c06eeea1e42d", "label": "Responsabilit\u00e9 personnelle", "shape": "dot", "size": 5, "title": "Engagement \u00e0 prendre en charge ses choix et actions, d\u00e9terminant ainsi le cours de sa vie."}, {"font": {"color": "white"}, "group": 1, "id": "af1be644-2014-42c4-b301-88b066403b76", "label": "R\u00e9silience", "shape": "dot", "size": 5, "title": "Capacit\u00e9 \u00e0 surmonter les difficult\u00e9s et \u00e0 s\u0027adapter aux changements, essentielle pour mener une vie \u00e9panouissante."}, {"font": {"color": "white"}, "group": 1, "id": "ad47030b-3eff-45d6-8334-c02b73f0cda7", "label": "G\u00e9n\u00e9ration d\u0027id\u00e9es", "shape": "dot", "size": 5, "title": "Processus o\u00f9 chaque participant produit des id\u00e9es individuellement, favorisant la cr\u00e9ativit\u00e9 sans influence ext\u00e9rieure."}, {"font": {"color": "white"}, "group": 1, "id": "f1ab6b4e-ff62-4372-988c-6d4c7f225258", "label": "Collecte et synth\u00e8se", "shape": "dot", "size": 5, "title": "\u00c9tape finale de compilation des id\u00e9es g\u00e9n\u00e9r\u00e9es pour identifier celles qui sont pertinentes pour le processus cr\u00e9atif."}, {"font": {"color": "white"}, "group": 1, "id": "9f541978-2e43-4f46-95cb-bd682ce56c82", "label": "\u00c9change d\u0027id\u00e9es", "shape": "dot", "size": 5, "title": "Phase o\u00f9 les participants partagent et d\u00e9veloppent les id\u00e9es des autres, renfor\u00e7ant la collaboration et l\u0027enrichissement collectif."}, {"font": {"color": "white"}, "group": 5, "id": "4f3dab72539c4b01bebbc220c6015c0b", "label": "true_false", "shape": "dot", "size": 5, "title": "Le brainstorming privil\u00e9gie l\u0027\u00e9change verbal dans un cadre collectif pour g\u00e9n\u00e9rer des id\u00e9es."}, {"font": {"color": "white"}, "group": 5, "id": "d2cd5026832c42809bbeff067fedf7d4", "label": "true_false", "shape": "dot", "size": 5, "title": "Il est possible que des solutions apparaissent gr\u00e2ce \u00e0 la collaboration entre les parties."}, {"font": {"color": "white"}, "group": 5, "id": "afcb1ca3ef18460bbe473a4e1ddcfece", "label": "true_false", "shape": "dot", "size": 5, "title": "\u00catre cr\u00e9atif signifie devenir acteur de sa vie et non rester simple spectateur."}, {"font": {"color": "white"}, "group": 5, "id": "e894460baf4c40dfa5371810bbde512a", "label": "true_false", "shape": "dot", "size": 5, "title": "Dire Oui soutient l\u0027ouverture d\u0027esprit et l\u0027exploration dans les processus cr\u00e9atifs."}, {"font": {"color": "white"}, "group": 5, "id": "29d97633894f4c40adcf7bf0818c4827", "label": "true_false", "shape": "dot", "size": 5, "title": "La curiosit\u00e9 et la cr\u00e9ativit\u00e9 sont indispensables \u00e0 la fois individuellement et collectivement aujourd\u0027hui."}, {"font": {"color": "white"}, "group": 1, "id": "45be5519-0f2c-4e9d-b48c-de0c53e6758f", "label": "Savoir-faire", "shape": "dot", "size": 5, "title": "L\u0027expertise et les comp\u00e9tences sp\u00e9cifiques que l\u0027entreprise offre en plus des services fournis, ajoutant une valeur \u00e0 ses prestations."}, {"font": {"color": "white"}, "group": 1, "id": "c83fda3f-b946-456b-8e65-2181318355e1", "label": "\u00c9tapes principales", "shape": "dot", "size": 5, "title": "Les \u00e9tapes principales sont les jalons cl\u00e9s identifi\u00e9s dans un projet qui permettent de structurer le travail et suivre les progr\u00e8s vers l\u0027objectif final."}, {"font": {"color": "white"}, "group": 1, "id": "ad750065-352f-471a-b1fc-a896a99991b2", "label": "Actionable Insights", "shape": "dot", "size": 5, "title": "Informations d\u00e9riv\u00e9es de donn\u00e9es qui peuvent \u00eatre directement appliqu\u00e9es pour prendre des d\u00e9cisions strat\u00e9giques dans une entreprise."}, {"font": {"color": "white"}, "group": 1, "id": "8cbf2924-e9b0-4e5d-856b-695ecabd214f", "label": "Engagement", "shape": "dot", "size": 5, "title": "L\u0027engagement d\u00e9signe le niveau d\u0027implication personnelle d\u0027un individu dans une t\u00e2che ou un projet, essentiel pour maintenir la motivation face aux d\u00e9fis per\u00e7us. Il englobe \u00e9galement le degr\u00e9 d\u0027implication d\u0027une entreprise envers ses valeurs \u00e9thiques et sociales, renfor\u00e7ant ainsi sa cr\u00e9dibilit\u00e9 aupr\u00e8s des clients. Cet engagement est crucial tant au niveau individuel que collectif pour favoriser la r\u00e9ussite et la confiance."}, {"font": {"color": "white"}, "group": 1, "id": "008d5789-6187-488a-86aa-9faf7453aed1", "label": "Questions Essentielles", "shape": "dot", "size": 5, "title": "Interrogations cl\u00e9s pos\u00e9es au client pour clarifier ses besoins et attentes avant le d\u00e9but d\u0027un projet cr\u00e9atif."}, {"font": {"color": "white"}, "group": 1, "id": "7580a4c0-3338-4374-8b77-c46aec4a9dcc", "label": "Communication professionnelle", "shape": "dot", "size": 5, "title": "\u00c9change d\u0027informations dans un cadre professionnel, impliquant la clart\u00e9, la concision et l\u0027adaptation au public cible."}]);
+                  edges = new vis.DataSet([{"from": "88a0e912-4ade-45dc-9da8-93a3bb83b44e", "to": 13678, "width": 1}, {"from": "88a0e912-4ade-45dc-9da8-93a3bb83b44e", "to": "0fe1e1b3-7bf0-456a-aec3-5f8bb3ebc68f", "width": 1}, {"from": "88a0e912-4ade-45dc-9da8-93a3bb83b44e", "to": "f31ba3a3-cda2-4baa-892b-5832140f79e9", "width": 1}, {"from": "88a0e912-4ade-45dc-9da8-93a3bb83b44e", "to": "25a51e98-82af-43d7-ae07-46db69065aba", "width": 1}, {"from": "88a0e912-4ade-45dc-9da8-93a3bb83b44e", "to": "61cc1ba4-99f3-45b6-b765-a268641aa9ef", "width": 1}, {"from": "88a0e912-4ade-45dc-9da8-93a3bb83b44e", "to": "a6dfa776-3e29-499b-8d83-a25b25a5d3f2", "width": 1}, {"from": "88a0e912-4ade-45dc-9da8-93a3bb83b44e", "to": "6dfdedfa5f3f4a6ba33be9ad06f29dd6", "width": 1}, {"from": "61cc1ba4-99f3-45b6-b765-a268641aa9ef", "to": 13678, "width": 1}, {"from": "61cc1ba4-99f3-45b6-b765-a268641aa9ef", "to": "0fe1e1b3-7bf0-456a-aec3-5f8bb3ebc68f", "width": 1}, {"from": "61cc1ba4-99f3-45b6-b765-a268641aa9ef", "to": "f31ba3a3-cda2-4baa-892b-5832140f79e9", "width": 1}, {"from": "61cc1ba4-99f3-45b6-b765-a268641aa9ef", "to": "25a51e98-82af-43d7-ae07-46db69065aba", "width": 1}, {"from": "61cc1ba4-99f3-45b6-b765-a268641aa9ef", "to": "a6dfa776-3e29-499b-8d83-a25b25a5d3f2", "width": 1}, {"from": "61cc1ba4-99f3-45b6-b765-a268641aa9ef", "to": "6dfdedfa5f3f4a6ba33be9ad06f29dd6", "width": 1}, {"from": "46418a35-4388-41fc-a035-551226221ba5", "to": "a99118f8-3d0e-4517-88a1-b6e4a98947bc", "width": 1}, {"from": "46418a35-4388-41fc-a035-551226221ba5", "to": "c10701e7-7756-40f8-841c-155987f1eacf", "width": 1}, {"from": "46418a35-4388-41fc-a035-551226221ba5", "to": "376d95b1-05d3-4b9f-900a-5d6b1ab40030", "width": 1}, {"from": "46418a35-4388-41fc-a035-551226221ba5", "to": "0e2b76bd-fa95-4a2e-9aa6-621ca5664d4c", "width": 1}, {"from": "46418a35-4388-41fc-a035-551226221ba5", "to": "811f06d84107490db9c0fdfb81dc4224", "width": 1}, {"from": "46418a35-4388-41fc-a035-551226221ba5", "to": "d26ff603d732470c83c52a9b3dec2af2", "width": 1}, {"from": "46418a35-4388-41fc-a035-551226221ba5", "to": "24806f82dc0549589c867864cdf1dead", "width": 1}, {"from": "c756fea1-1076-48dd-b9c6-490fedd179ea", "to": 13678, "width": 1}, {"from": "c756fea1-1076-48dd-b9c6-490fedd179ea", "to": "939a7d0b-ff19-49ed-b689-adaf0c93b54a", "width": 1}, {"from": "c756fea1-1076-48dd-b9c6-490fedd179ea", "to": "061586fa-6c2b-45a7-a0ae-218465b4088e", "width": 1}, {"from": "2c51d964-96e1-4d42-8ec9-9c26e74d33e9", "to": "3776f00f-6a9f-4c54-82bb-9bf413c6ab1c", "width": 1}, {"from": "2c51d964-96e1-4d42-8ec9-9c26e74d33e9", "to": "1622b043-0bc0-4650-8d08-21766878aae6", "width": 1}, {"from": "0e2b76bd-fa95-4a2e-9aa6-621ca5664d4c", "to": "376d95b1-05d3-4b9f-900a-5d6b1ab40030", "width": 1}, {"from": "0e2b76bd-fa95-4a2e-9aa6-621ca5664d4c", "to": "d26ff603d732470c83c52a9b3dec2af2", "width": 1}, {"from": "0e2b76bd-fa95-4a2e-9aa6-621ca5664d4c", "to": "24806f82dc0549589c867864cdf1dead", "width": 1}, {"from": "4ce61c54-593a-41b2-b92f-c06eeea1e42d", "to": 13678, "width": 1}, {"from": "4ce61c54-593a-41b2-b92f-c06eeea1e42d", "to": "af1be644-2014-42c4-b301-88b066403b76", "width": 1}, {"from": "a6dfa776-3e29-499b-8d83-a25b25a5d3f2", "to": 13678, "width": 1}, {"from": "a6dfa776-3e29-499b-8d83-a25b25a5d3f2", "to": "0fe1e1b3-7bf0-456a-aec3-5f8bb3ebc68f", "width": 1}, {"from": "a6dfa776-3e29-499b-8d83-a25b25a5d3f2", "to": "f31ba3a3-cda2-4baa-892b-5832140f79e9", "width": 1}, {"from": "a6dfa776-3e29-499b-8d83-a25b25a5d3f2", "to": "25a51e98-82af-43d7-ae07-46db69065aba", "width": 1}, {"from": "3776f00f-6a9f-4c54-82bb-9bf413c6ab1c", "to": "1622b043-0bc0-4650-8d08-21766878aae6", "width": 1}, {"from": "376d95b1-05d3-4b9f-900a-5d6b1ab40030", "to": "811f06d84107490db9c0fdfb81dc4224", "width": 1}, {"from": "376d95b1-05d3-4b9f-900a-5d6b1ab40030", "to": "24806f82dc0549589c867864cdf1dead", "width": 1}, {"from": "ad47030b-3eff-45d6-8334-c02b73f0cda7", "to": "c10701e7-7756-40f8-841c-155987f1eacf", "width": 1}, {"from": "ad47030b-3eff-45d6-8334-c02b73f0cda7", "to": "f1ab6b4e-ff62-4372-988c-6d4c7f225258", "width": 1}, {"from": "ad47030b-3eff-45d6-8334-c02b73f0cda7", "to": "9f541978-2e43-4f46-95cb-bd682ce56c82", "width": 1}, {"from": "a99118f8-3d0e-4517-88a1-b6e4a98947bc", "to": "c10701e7-7756-40f8-841c-155987f1eacf", "width": 1}, {"from": "a99118f8-3d0e-4517-88a1-b6e4a98947bc", "to": "4f3dab72539c4b01bebbc220c6015c0b", "width": 1}, {"from": "a99118f8-3d0e-4517-88a1-b6e4a98947bc", "to": "d2cd5026832c42809bbeff067fedf7d4", "width": 1}, {"from": "f31ba3a3-cda2-4baa-892b-5832140f79e9", "to": 13678, "width": 1}, {"from": "f31ba3a3-cda2-4baa-892b-5832140f79e9", "to": "0fe1e1b3-7bf0-456a-aec3-5f8bb3ebc68f", "width": 1}, {"from": "f31ba3a3-cda2-4baa-892b-5832140f79e9", "to": "25a51e98-82af-43d7-ae07-46db69065aba", "width": 1}, {"from": "f31ba3a3-cda2-4baa-892b-5832140f79e9", "to": "afcb1ca3ef18460bbe473a4e1ddcfece", "width": 1}, {"from": "939a7d0b-ff19-49ed-b689-adaf0c93b54a", "to": 13678, "width": 1}, {"from": "939a7d0b-ff19-49ed-b689-adaf0c93b54a", "to": "061586fa-6c2b-45a7-a0ae-218465b4088e", "width": 1}, {"from": "061586fa-6c2b-45a7-a0ae-218465b4088e", "to": 13678, "width": 1}, {"from": "061586fa-6c2b-45a7-a0ae-218465b4088e", "to": "e894460baf4c40dfa5371810bbde512a", "width": 1}, {"from": "061586fa-6c2b-45a7-a0ae-218465b4088e", "to": "29d97633894f4c40adcf7bf0818c4827", "width": 1}, {"from": "9f541978-2e43-4f46-95cb-bd682ce56c82", "to": "c10701e7-7756-40f8-841c-155987f1eacf", "width": 1}, {"from": "9f541978-2e43-4f46-95cb-bd682ce56c82", "to": "f1ab6b4e-ff62-4372-988c-6d4c7f225258", "width": 1}, {"from": "af1be644-2014-42c4-b301-88b066403b76", "to": 13678, "width": 1}, {"from": "25a51e98-82af-43d7-ae07-46db69065aba", "to": 13678, "width": 1}, {"from": "25a51e98-82af-43d7-ae07-46db69065aba", "to": "0fe1e1b3-7bf0-456a-aec3-5f8bb3ebc68f", "width": 1}, {"from": "0fe1e1b3-7bf0-456a-aec3-5f8bb3ebc68f", "to": 13678, "width": 1}, {"from": "f1ab6b4e-ff62-4372-988c-6d4c7f225258", "to": "c10701e7-7756-40f8-841c-155987f1eacf", "width": 1}, {"from": "e894460baf4c40dfa5371810bbde512a", "to": 13678, "width": 1}, {"from": "afcb1ca3ef18460bbe473a4e1ddcfece", "to": 13678, "width": 1}, {"from": "6dfdedfa5f3f4a6ba33be9ad06f29dd6", "to": 13678, "width": 1}, {"from": "29d97633894f4c40adcf7bf0818c4827", "to": 13678, "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": true,
+        "filter": [
+            "physics"
+        ]
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "repulsion": {
+            "centralGravity": 0.33,
+            "damping": 0.95,
+            "nodeDistance": 420,
+            "springConstant": 0.1,
+            "springLength": 110
+        },
+        "solver": "repulsion",
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+                  // if this network requires displaying the configure window,
+                  // put it in its div
+                  options.configure["container"] = document.getElementById("config");
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>

@@ -1,0 +1,178 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 800px;
+                 background-color: #222222;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+             #config {
+                 float: left;
+                 width: 400px;
+                 height: 600px;
+             }
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+            <div id="config"></div>
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"font": {"color": "white"}, "group": 1, "id": "71c73ab5-d954-4cb2-a82a-62a39bda387b", "label": "Image de marque", "shape": "dot", "size": 5, "title": "Perception collective d\u0027une entreprise ou produit par le public, influenc\u00e9e par des \u00e9l\u00e9ments tels que les campagnes marketing innovantes et cr\u00e9atives, le design, la communication et l\u0027exp\u00e9rience client."}, {"font": {"color": "white"}, "group": 2, "id": 13609, "label": "Mathilde Vigneron : Designer Produit et Sp\u00e9cialiste en Marketing Mobile", "shape": "dot", "size": 8, "title": "_YNOV CONNECT_Mobil Marketing, user acquisition \u0026 mode\u0300les e\u0301conomique_B3 \u2013Commun Marcom"}, {"font": {"color": "white"}, "group": 1, "id": "d6e87da1-e08c-46b8-8d7f-abb1f2f08cb3", "label": "Segmentation d\u0027audience", "shape": "dot", "size": 5, "title": "Processus de division du march\u00e9 en groupes distincts selon des crit\u00e8res sp\u00e9cifiques afin d\u0027adapter les messages marketing efficacement."}, {"font": {"color": "white"}, "group": 1, "id": "f8f563ff-6ec9-4520-b03e-da9a48ab1773", "label": "Canaux de communication", "shape": "dot", "size": 5, "title": "M\u00e9dias et moyens par lesquels une entreprise atteint son audience cible et transmet des messages marketing, incluant \u00e0 la fois les m\u00e9dias traditionnels (tels que la t\u00e9l\u00e9vision, la radio, et les journaux) et num\u00e9riques (comme les sites web, les emails, et les r\u00e9seaux sociaux)."}, {"font": {"color": "white"}, "group": 1, "id": "72d84fbb-1659-41de-b1be-6b50ca5df05e", "label": "Strat\u00e9gie marketing", "shape": "dot", "size": 5, "title": "La strat\u00e9gie marketing est un plan d\u0027action int\u00e9gr\u00e9 visant \u00e0 promouvoir un produit ou service tout en atteignant des objectifs commerciaux. Elle combine divers \u00e9l\u00e9ments du mix marketing, tels que l\u0027analyse du march\u00e9, la concurrence et les besoins des consommateurs, tout en \u00e9tant adaptable aux changements du march\u00e9. De plus, elle int\u00e8gre des \u00e9l\u00e9ments visuels comme les couleurs pour renforcer l\u0027engagement client."}, {"font": {"color": "white"}, "group": 1, "id": "a2b8f5cf-f178-4fb2-8e06-9894547e7652", "label": "M\u00e9dias en ligne", "shape": "dot", "size": 5, "title": "Plateformes num\u00e9riques comme les r\u00e9seaux sociaux (Facebook, Instagram) permettant une interaction directe avec l\u0027audience."}, {"font": {"color": "white"}, "group": 1, "id": "b7ceafcb-848e-4b47-8fca-c4ed65366c70", "label": "M\u00e9dias traditionnels", "shape": "dot", "size": 5, "title": "Supports de communication classiques tels que la t\u00e9l\u00e9vision, la radio et la presse \u00e9crite, utilis\u00e9s pour atteindre un large public."}, {"font": {"color": "white"}, "group": 1, "id": "b0450210-90e1-47cb-bc4c-a3c296f5b97e", "label": "Message marketing", "shape": "dot", "size": 5, "title": "Communication cibl\u00e9e qui d\u00e9crit un produit ou service, mettant en avant ses b\u00e9n\u00e9fices pratiques, \u00e9conomiques ou \u00e9motionnels pour un persona sp\u00e9cifique."}, {"font": {"color": "white"}, "group": 1, "id": "b3997d9e-6633-4a91-9950-ab034cb6f0d0", "label": "R\u00e9putation de marque", "shape": "dot", "size": 5, "title": "La r\u00e9putation de marque est l\u0027opinion g\u00e9n\u00e9rale que se font les consommateurs sur une entreprise, fa\u00e7onn\u00e9e en partie par son utilisation strat\u00e9gique des couleurs."}, {"font": {"color": "white"}, "group": 1, "id": "9d3bf277-d6b4-4acf-8a4a-ac899ae17903", "label": "Cible de la marque", "shape": "dot", "size": 5, "title": "La cible de la marque, \u00e9galement connue sous le nom de public cible, repr\u00e9sente les groupes sp\u00e9cifiques d\u0027utilisateurs ou de consommateurs que la marque souhaite atteindre avec ses produits ou services. Ce groupe est d\u00e9fini en fonction de caract\u00e9ristiques d\u00e9mographiques, comportementales et psychographiques, influen\u00e7ant ainsi les choix strat\u00e9giques en mati\u00e8re de design, de communication et de marketing. Le public cible d\u00e9termine \u00e9galement les strat\u00e9gies marketing appropri\u00e9es pour une campagne ou un produit."}, {"font": {"color": "white"}, "group": 1, "id": "c231e437-254e-457e-95c6-a99c3ae0c5b2", "label": "Wording", "shape": "dot", "size": 5, "title": "Choix des mots utilis\u00e9s dans un message ou un bouton, crucial pour attirer l\u0027attention et inciter \u00e0 l\u0027action."}, {"font": {"color": "white"}, "group": 1, "id": "a0d67a03-3904-4f22-8ed0-74b5d9781af9", "label": "Premi\u00e8re personne", "shape": "dot", "size": 5, "title": "Utilisation du pronom \u0027je\u0027 ou \u0027nous\u0027 qui augmente l\u0027engagement utilisateur en rendant le message plus personnel."}, {"font": {"color": "white"}, "group": 1, "id": "53e06a2d-caf6-4629-a658-09ac86bdbd5a", "label": "Lisibilit\u00e9", "shape": "dot", "size": 5, "title": "La lisibilit\u00e9, ou lisibilit\u00e9 du contenu, est la facilit\u00e9 avec laquelle un texte peut \u00eatre lu et compris. Elle est essentielle pour une communication efficace sur diff\u00e9rents dispositifs, notamment en design graphique. La lisibilit\u00e9 est influenc\u00e9e par divers facteurs tels que la taille de la police, le contraste des couleurs, l\u0027espacement entre les \u00e9l\u00e9ments graphiques, l\u0027alignement et l\u0027utilisation d\u0027espaces blancs. Elle joue un r\u00f4le cl\u00e9 dans la cr\u00e9ation de documents clairs et attrayants, facilitant ainsi l\u0027engagement du lecteur."}, {"font": {"color": "white"}, "group": 1, "id": "8dc76536-7dd8-4c0a-8c76-3b3a4afa90b8", "label": "Interactivit\u00e9 et Interaction Client", "shape": "dot", "size": 5, "title": "L\u0027interactivit\u00e9 d\u00e9signe la capacit\u00e9 d\u0027un site ou d\u0027une application \u00e0 engager activement les utilisateurs par des r\u00e9ponses dynamiques \u00e0 leurs actions, ce qui augmente l\u0027engagement. Ce processus d\u0027interaction permet aux utilisateurs de naviguer de mani\u00e8re plus engageante, en suscitant des \u00e9motions gr\u00e2ce \u00e0 une interface bien con\u00e7ue. L\u0027interaction client fait r\u00e9f\u00e9rence \u00e0 l\u0027engagement entre une entreprise et ses clients, souvent facilit\u00e9 par le design visuel et \u00e9motionnel de la marque, renfor\u00e7ant ainsi la connexion et l\u0027exp\u00e9rience utilisateur."}, {"font": {"color": "white"}, "group": 1, "id": "039131d1-dccf-49b8-a9b9-0cfbc6bf50bb", "label": "Branding Strategy", "shape": "dot", "size": 5, "title": "La strat\u00e9gie de branding est un processus de planification et de cr\u00e9ation d\u0027une image de marque forte et coh\u00e9rente, qui englobe les \u00e9l\u00e9ments visuels et strat\u00e9giques utilis\u00e9s pour \u00e9tablir une identit\u00e9 unique pour un produit ou une entreprise. Cela inclut l\u0027utilisation r\u00e9fl\u00e9chie des couleurs, du design et de la communication afin d\u0027attirer et fid\u00e9liser les clients."}, {"font": {"color": "white"}, "group": 1, "id": "c125da14-d01f-43b2-a17e-e140031235d3", "label": "Identit\u00e9 Visuelle", "shape": "dot", "size": 6, "title": "L\u0027identit\u00e9 visuelle est l\u0027ensemble des \u00e9l\u00e9ments graphiques, tels que le logo, les couleurs, la typographie et d\u0027autres aspects visuels qui d\u00e9finissent et cr\u00e9ent une image coh\u00e9rente pour une marque ou un produit. Ces \u00e9l\u00e9ments visuels sont essentiels \u00e0 l\u0027identit\u00e9 de la marque, influen\u00e7ant son attrait esth\u00e9tique et fonctionnel ainsi que sa reconnaissance par le public. Ils v\u00e9hiculent les valeurs et l\u0027activit\u00e9 de la marque \u00e0 travers divers supports, contribuant ainsi \u00e0 son image de marque globale."}, {"font": {"color": "white"}, "group": 1, "id": "a21faec3-d32a-4c71-91f4-aefc4c598939", "label": "Communication Visuelle", "shape": "dot", "size": 5, "title": "La communication visuelle englobe l\u0027utilisation coh\u00e9rente de supports graphiques, tels que affiches, brochures et contenus num\u00e9riques, pour transmettre des messages ou informations. Elle joue un r\u00f4le cl\u00e9 dans le marketing et l\u0027identit\u00e9 de marque en influen\u00e7ant les perceptions des consommateurs \u00e0 travers des \u00e9l\u00e9ments graphiques, couleurs et images. De plus, elle inclut la communication avec le client, un processus d\u0027interaction essentiel pour \u00e9tablir une compr\u00e9hension mutuelle entre professionnels et clients, garantissant ainsi la r\u00e9ussite d\u0027un projet."}, {"font": {"color": "white"}, "group": 1, "id": "85c70636-d89f-4686-b3e9-7605299e4588", "label": "Personnalit\u00e9 de marque", "shape": "dot", "size": 5, "title": "Traits distinctifs et humains attribu\u00e9s \u00e0 une marque qui influencent la perception des consommateurs, leur engagement envers celle-ci et \u00e9tablissent une connexion \u00e9motionnelle."}, {"font": {"color": "white"}, "group": 1, "id": "37aa146b-acca-4308-aa6d-7d259963de0e", "label": "Ciblage", "shape": "dot", "size": 5, "title": "Ciblage et Cible marketing d\u00e9signent le processus de s\u00e9lection et de d\u00e9finition d\u0027un segment sp\u00e9cifique du public auquel s\u0027adresse une campagne marketing. Ce processus est essentiel pour adapter le message et maximiser l\u0027efficacit\u00e9 des campagnes, en ciblant des audiences sp\u00e9cifiques qui sont les plus susceptibles d\u0027\u00eatre r\u00e9ceptives aux offres propos\u00e9es."}, {"font": {"color": "white"}, "group": 1, "id": "354f00f5-bf8a-4d2f-9cec-fc43e20d7772", "label": "Bouche-\u00e0-oreille num\u00e9rique", "shape": "dot", "size": 5, "title": "Transmission d\u0027informations et recommandations entre consommateurs via internet, impactant significativement le comportement d\u0027achat."}, {"font": {"color": "white"}, "group": 1, "id": "06a274fb-c8f9-4a58-bb40-297d5d475e29", "label": "Identit\u00e9 de marque", "shape": "dot", "size": 5, "title": "L\u0027identit\u00e9 de marque est la perception collective des valeurs, missions et caract\u00e9ristiques d\u0027une entreprise, ainsi que sa repr\u00e9sentation mentale construite par des \u00e9l\u00e9ments tels que le logo, les valeurs et l\u0027identit\u00e9 visuelle. Elle est essentielle pour \u00e9tablir la confiance avec les consommateurs et influencer leur perception de la marque."}, {"font": {"color": "white"}, "group": 1, "id": "f928926d-db4d-4fa2-bc95-68a3717fd0fd", "label": "Marketing de contenu", "shape": "dot", "size": 5, "title": "Strat\u00e9gie consistant \u00e0 cr\u00e9er et diffuser des contenus pertinents pour attirer, engager et fid\u00e9liser une audience cible, renfor\u00e7ant ainsi la confiance et l\u0027identit\u00e9 de marque."}, {"font": {"color": "white"}, "group": 1, "id": "7157a2ba-5892-43ce-8526-119ad510eb31", "label": "Engagement communautaire", "shape": "dot", "size": 5, "title": "Interaction active entre une marque et ses consommateurs sur les r\u00e9seaux sociaux, favorisant la fid\u00e9lit\u00e9 par le partage d\u0027exp\u00e9riences et d\u0027informations."}, {"font": {"color": "white"}, "group": 1, "id": "338ccd27-cd96-47f9-a433-9d1c2484b141", "label": "R\u00e9seaux sociaux", "shape": "dot", "size": 5, "title": "R\u00e9seaux sociaux sont des plateformes num\u00e9riques en ligne qui permettent aux utilisateurs d\u0027interagir, de partager du contenu et de se connecter entre eux et avec des marques. Ces plateformes jouent un r\u00f4le crucial dans le marketing moderne, favorisant l\u0027engagement des utilisateurs et la fid\u00e9lisation des clients, tout en connaissant une croissance exponentielle d\u0027utilisateurs \u00e0 travers le monde."}, {"font": {"color": "white"}, "group": 1, "id": "d8e2127e-f985-4965-b207-0f723243773f", "label": "CRM (Customer Relationship Management)", "shape": "dot", "size": 5, "title": "Syst\u00e8me et strat\u00e9gie marketing permettant de g\u00e9rer les interactions avec les clients et prospects, facilitant le suivi des ventes, l\u0027automatisation du marketing, ainsi que l\u0027am\u00e9lioration de la fid\u00e9lit\u00e9 et de l\u0027exp\u00e9rience client."}, {"font": {"color": "white"}, "group": 5, "id": "92375dc41d474a3185f395ff04e34ad7", "label": "true_false", "shape": "dot", "size": 5, "title": "Il est conseill\u00e9 \u00e0 une entreprise de cibler TikTok, quelles que soient ses activit\u00e9s."}, {"font": {"color": "white"}, "group": 1, "id": "1133c1c0-e52c-44d5-942c-1c2878d5bbed", "label": "Influenceurs", "shape": "dot", "size": 5, "title": "Les influenceurs sont des individus ayant une forte pr\u00e9sence en ligne qui peuvent influencer les opinions et comportements d\u0027achat de leurs abonn\u00e9s."}, {"font": {"color": "white"}, "group": 1, "id": "9045925b-8299-41e2-ad00-8e12f7e57e5b", "label": "Publicit\u00e9 cibl\u00e9e", "shape": "dot", "size": 5, "title": "La publicit\u00e9 cibl\u00e9e est une technique de marketing qui utilise des donn\u00e9es sur les utilisateurs pour diffuser des annonces sp\u00e9cifiquement con\u00e7ues et pertinentes. Elle vise \u00e0 atteindre un segment pr\u00e9cis du march\u00e9, augmentant ainsi l\u0027engagement et le taux de conversion tout en r\u00e9duisant la perception intrusive de la publicit\u00e9."}, {"font": {"color": "white"}, "group": 1, "id": "7adda1c3-151f-487e-b8e4-5c72c5b16153", "label": "Contenu digital", "shape": "dot", "size": 5, "title": "Informations sous forme \u00e9crite ou visuelle diffus\u00e9es en ligne, jouant un r\u00f4le cl\u00e9 dans l\u0027attraction et l\u0027engagement des clients potentiels."}, {"font": {"color": "white"}, "group": 1, "id": "0c3df624-4b17-4f16-9cc2-dc03570e38e2", "label": "Strat\u00e9gies omnicanales", "shape": "dot", "size": 5, "title": "Approche int\u00e9gr\u00e9e du marketing qui utilise plusieurs canaux (mobile, web, physique) pour offrir une exp\u00e9rience client coh\u00e9rente."}, {"font": {"color": "white"}, "group": 1, "id": "e44741eb-3c1c-48d8-b46e-7d408e88cd58", "label": "Consultation d\u0027actualit\u00e9s en ligne", "shape": "dot", "size": 5, "title": "Pratique croissante o\u00f9 les individus utilisent les r\u00e9seaux sociaux comme principales sources d\u0027information, transformant le paysage m\u00e9diatique traditionnel."}, {"font": {"color": "white"}, "group": 3, "id": "61694f170e634343b1a8bfe679f1cf1f", "label": "mcq", "shape": "dot", "size": 5, "title": "Que se passe-t-il quand les \u00e9l\u00e9ments d\u0027une marque sont mal ordonn\u00e9s et sans vision ?"}, {"font": {"color": "white"}, "group": 3, "id": "8b3728dd11bd494ba78edaebcae7fbd9", "label": "mcq", "shape": "dot", "size": 5, "title": "Qu\u0027est-ce que l\u0027identit\u00e9 de marque correspond dans une entreprise ?"}, {"font": {"color": "white"}, "group": 4, "id": "e4d063fea55b42349dfea85a30a9b23e", "label": "fill_in", "shape": "dot", "size": 5, "title": "L\u0027identit\u00e9 de marque correspond \u00e0 la mani\u00e8re dont une marque souhaite \u00eatre per\u00e7ue tandis que l\u0027image de marque est \u003cblank\u003e."}, {"font": {"color": "white"}, "group": 5, "id": "9a3bef4c94c54b70b668190447bfb78f", "label": "true_false", "shape": "dot", "size": 5, "title": "Une marque bien d\u00e9velopp\u00e9e doit v\u00e9hiculer une image coh\u00e9rente et authentique pour \u00eatre forte."}, {"font": {"color": "white"}, "group": 5, "id": "673767c554b441ffbf385b15cdd93e5d", "label": "true_false", "shape": "dot", "size": 5, "title": "L\u0027identit\u00e9 de marque est identique \u00e0 l\u0027image de marque."}, {"font": {"color": "white"}, "group": 1, "id": "0d5dbf91-18fe-4f05-bd06-a7799a0b0eed", "label": "Strat\u00e9gie Digitale", "shape": "dot", "size": 5, "title": "Plan d\u0027action pour optimiser la pr\u00e9sence en ligne d\u0027une entreprise afin d\u0027am\u00e9liorer l\u0027exp\u00e9rience utilisateur et augmenter les ventes."}, {"font": {"color": "white"}, "group": 1, "id": "7d3a5bc2-9290-401b-8bb9-298ca0fcb4dc", "label": "Empathie", "shape": "dot", "size": 5, "title": "Capacit\u00e9 \u00e0 comprendre et partager les sentiments d\u0027autrui, essentielle pour cr\u00e9er des relations authentiques avec les clients."}, {"font": {"color": "white"}, "group": 1, "id": "59e2811f-e50d-4df4-93dc-3cd7a37dcca6", "label": "Craintes", "shape": "dot", "size": 5, "title": "Inqui\u00e9tudes ou peurs qui freinent le persona dans sa prise de d\u00e9cision, essentielles pour anticiper ses objections lors de l\u0027achat."}, {"font": {"color": "white"}, "group": 1, "id": "c7b020e9-eb7f-4d51-8f4d-3ac2d80a1c02", "label": "Budget publicitaire", "shape": "dot", "size": 5, "title": "Le budget allou\u00e9 \u00e0 une campagne SEA d\u00e9termine la port\u00e9e et l\u0027efficacit\u00e9 des annonces, influen\u00e7ant directement leur positionnement dans les r\u00e9sultats."}, {"font": {"color": "white"}, "group": 1, "id": "2809c031-7d12-4984-9211-55ce163967ce", "label": "Cr\u00e9ation du dossier", "shape": "dot", "size": 5, "title": "Rassemblement organis\u00e9 d\u0027informations ou documents n\u00e9cessaires pour pr\u00e9senter un projet ou une proposition formelle."}, {"font": {"color": "white"}, "group": 5, "id": "7e756058c04e4cd891b34d594bec7d62", "label": "true_false", "shape": "dot", "size": 5, "title": "Les interactions entre la marque et les clients se limitent uniquement aux interactions en ligne."}, {"font": {"color": "white"}, "group": 1, "id": "6aed7834-7355-4425-aefa-2667c144c7e3", "label": "Questions cl\u00e9s", "shape": "dot", "size": 5, "title": "Interrogations fondamentales utilis\u00e9es dans la carte d\u0027empathie pour explorer la perception du client sur son environnement, ses influences et ses \u00e9motions."}, {"font": {"color": "white"}, "group": 1, "id": "13e39a37-8390-4cd0-aa64-34bee678a36c", "label": "Nouveaut\u00e9s", "shape": "dot", "size": 5, "title": "Produits r\u00e9cents lanc\u00e9s par une marque, souvent pr\u00e9sent\u00e9s pour attirer l\u0027attention des consommateurs sur les derni\u00e8res tendances."}, {"font": {"color": "white"}, "group": 1, "id": "7c2b90ae-3824-4686-9d1d-e3b0ede25873", "label": "Conversion", "shape": "dot", "size": 5, "title": "Transformation d\u0027un prospect en client payant, mesur\u00e9e par l\u0027efficacit\u00e9 des strat\u00e9gies marketing d\u00e9ploy\u00e9es."}, {"font": {"color": "white"}, "group": 1, "id": "6da77fb3-f899-469a-89aa-c7093faf21ee", "label": "Facebook", "shape": "dot", "size": 5, "title": "R\u00e9seau social majeur fond\u00e9 en 2004, comptant 540 millions de t\u00e9l\u00e9chargements en 2020."}, {"font": {"color": "white"}, "group": 1, "id": "bed774e3-1891-4383-9aa9-3d3c0cf3621d", "label": "Photographies de personnes", "shape": "dot", "size": 5, "title": "Images montrant des individus r\u00e9els, utilis\u00e9es pour humaniser les t\u00e9moignages et augmenter leur impact \u00e9motionnel sur les visiteurs."}, {"font": {"color": "white"}, "group": 1, "id": "2daa2f19-74c3-4758-aab9-bce59507a459", "label": "R\u00e9seaux sociaux mobiles", "shape": "dot", "size": 5, "title": "Utilisation des plateformes sociales comme Facebook et Instagram pour promouvoir du contenu sp\u00e9cifiquement adapt\u00e9 aux utilisateurs mobiles."}]);
+                  edges = new vis.DataSet([{"from": "71c73ab5-d954-4cb2-a82a-62a39bda387b", "to": 13609, "width": 1}, {"from": "71c73ab5-d954-4cb2-a82a-62a39bda387b", "to": "d6e87da1-e08c-46b8-8d7f-abb1f2f08cb3", "width": 1}, {"from": "f8f563ff-6ec9-4520-b03e-da9a48ab1773", "to": 13609, "width": 1}, {"from": "f8f563ff-6ec9-4520-b03e-da9a48ab1773", "to": "72d84fbb-1659-41de-b1be-6b50ca5df05e", "width": 1}, {"from": "f8f563ff-6ec9-4520-b03e-da9a48ab1773", "to": "a2b8f5cf-f178-4fb2-8e06-9894547e7652", "width": 1}, {"from": "f8f563ff-6ec9-4520-b03e-da9a48ab1773", "to": "b7ceafcb-848e-4b47-8fca-c4ed65366c70", "width": 1}, {"from": "f8f563ff-6ec9-4520-b03e-da9a48ab1773", "to": "b0450210-90e1-47cb-bc4c-a3c296f5b97e", "width": 1}, {"from": "b3997d9e-6633-4a91-9950-ab034cb6f0d0", "to": 13609, "width": 1}, {"from": "b3997d9e-6633-4a91-9950-ab034cb6f0d0", "to": "9d3bf277-d6b4-4acf-8a4a-ac899ae17903", "width": 1}, {"from": "b0450210-90e1-47cb-bc4c-a3c296f5b97e", "to": 13609, "width": 1}, {"from": "b0450210-90e1-47cb-bc4c-a3c296f5b97e", "to": "a2b8f5cf-f178-4fb2-8e06-9894547e7652", "width": 1}, {"from": "b0450210-90e1-47cb-bc4c-a3c296f5b97e", "to": "b7ceafcb-848e-4b47-8fca-c4ed65366c70", "width": 1}, {"from": "c231e437-254e-457e-95c6-a99c3ae0c5b2", "to": 13609, "width": 1}, {"from": "c231e437-254e-457e-95c6-a99c3ae0c5b2", "to": "a0d67a03-3904-4f22-8ed0-74b5d9781af9", "width": 1}, {"from": "c231e437-254e-457e-95c6-a99c3ae0c5b2", "to": "53e06a2d-caf6-4629-a658-09ac86bdbd5a", "width": 1}, {"from": "8dc76536-7dd8-4c0a-8c76-3b3a4afa90b8", "to": 13609, "width": 1}, {"from": "8dc76536-7dd8-4c0a-8c76-3b3a4afa90b8", "to": "039131d1-dccf-49b8-a9b9-0cfbc6bf50bb", "width": 1}, {"from": "c125da14-d01f-43b2-a17e-e140031235d3", "to": 13609, "width": 1}, {"from": "c125da14-d01f-43b2-a17e-e140031235d3", "to": "039131d1-dccf-49b8-a9b9-0cfbc6bf50bb", "width": 1}, {"from": "c125da14-d01f-43b2-a17e-e140031235d3", "to": "a21faec3-d32a-4c71-91f4-aefc4c598939", "width": 1}, {"from": "c125da14-d01f-43b2-a17e-e140031235d3", "to": "72d84fbb-1659-41de-b1be-6b50ca5df05e", "width": 1}, {"from": "c125da14-d01f-43b2-a17e-e140031235d3", "to": "85c70636-d89f-4686-b3e9-7605299e4588", "width": 1}, {"from": "c125da14-d01f-43b2-a17e-e140031235d3", "to": "37aa146b-acca-4308-aa6d-7d259963de0e", "width": 1}, {"from": "c125da14-d01f-43b2-a17e-e140031235d3", "to": "9d3bf277-d6b4-4acf-8a4a-ac899ae17903", "width": 1}, {"from": "354f00f5-bf8a-4d2f-9cec-fc43e20d7772", "to": 13609, "width": 1}, {"from": "354f00f5-bf8a-4d2f-9cec-fc43e20d7772", "to": "06a274fb-c8f9-4a58-bb40-297d5d475e29", "width": 1}, {"from": "354f00f5-bf8a-4d2f-9cec-fc43e20d7772", "to": "f928926d-db4d-4fa2-bc95-68a3717fd0fd", "width": 1}, {"from": "d6e87da1-e08c-46b8-8d7f-abb1f2f08cb3", "to": 13609, "width": 1}, {"from": "f928926d-db4d-4fa2-bc95-68a3717fd0fd", "to": 13609, "width": 1}, {"from": "f928926d-db4d-4fa2-bc95-68a3717fd0fd", "to": "06a274fb-c8f9-4a58-bb40-297d5d475e29", "width": 1}, {"from": "f928926d-db4d-4fa2-bc95-68a3717fd0fd", "to": "7157a2ba-5892-43ce-8526-119ad510eb31", "width": 1}, {"from": "f928926d-db4d-4fa2-bc95-68a3717fd0fd", "to": "338ccd27-cd96-47f9-a433-9d1c2484b141", "width": 1}, {"from": "f928926d-db4d-4fa2-bc95-68a3717fd0fd", "to": "d8e2127e-f985-4965-b207-0f723243773f", "width": 1}, {"from": "f928926d-db4d-4fa2-bc95-68a3717fd0fd", "to": "92375dc41d474a3185f395ff04e34ad7", "width": 1}, {"from": "b7ceafcb-848e-4b47-8fca-c4ed65366c70", "to": 13609, "width": 1}, {"from": "b7ceafcb-848e-4b47-8fca-c4ed65366c70", "to": "a2b8f5cf-f178-4fb2-8e06-9894547e7652", "width": 1}, {"from": "a21faec3-d32a-4c71-91f4-aefc4c598939", "to": 13609, "width": 1}, {"from": "9d3bf277-d6b4-4acf-8a4a-ac899ae17903", "to": 13609, "width": 1}, {"from": "9d3bf277-d6b4-4acf-8a4a-ac899ae17903", "to": "1133c1c0-e52c-44d5-942c-1c2878d5bbed", "width": 1}, {"from": "a2b8f5cf-f178-4fb2-8e06-9894547e7652", "to": 13609, "width": 1}, {"from": "37aa146b-acca-4308-aa6d-7d259963de0e", "to": 13609, "width": 1}, {"from": "37aa146b-acca-4308-aa6d-7d259963de0e", "to": "85c70636-d89f-4686-b3e9-7605299e4588", "width": 1}, {"from": "37aa146b-acca-4308-aa6d-7d259963de0e", "to": "72d84fbb-1659-41de-b1be-6b50ca5df05e", "width": 1}, {"from": "9045925b-8299-41e2-ad00-8e12f7e57e5b", "to": 13609, "width": 1}, {"from": "9045925b-8299-41e2-ad00-8e12f7e57e5b", "to": "7adda1c3-151f-487e-b8e4-5c72c5b16153", "width": 1}, {"from": "9045925b-8299-41e2-ad00-8e12f7e57e5b", "to": "0c3df624-4b17-4f16-9cc2-dc03570e38e2", "width": 1}, {"from": "e44741eb-3c1c-48d8-b46e-7d408e88cd58", "to": 13609, "width": 1}, {"from": "e44741eb-3c1c-48d8-b46e-7d408e88cd58", "to": "338ccd27-cd96-47f9-a433-9d1c2484b141", "width": 1}, {"from": "06a274fb-c8f9-4a58-bb40-297d5d475e29", "to": 13609, "width": 1}, {"from": "06a274fb-c8f9-4a58-bb40-297d5d475e29", "to": "61694f170e634343b1a8bfe679f1cf1f", "width": 1}, {"from": "06a274fb-c8f9-4a58-bb40-297d5d475e29", "to": "8b3728dd11bd494ba78edaebcae7fbd9", "width": 1}, {"from": "06a274fb-c8f9-4a58-bb40-297d5d475e29", "to": "e4d063fea55b42349dfea85a30a9b23e", "width": 1}, {"from": "06a274fb-c8f9-4a58-bb40-297d5d475e29", "to": "9a3bef4c94c54b70b668190447bfb78f", "width": 1}, {"from": "06a274fb-c8f9-4a58-bb40-297d5d475e29", "to": "673767c554b441ffbf385b15cdd93e5d", "width": 1}, {"from": "85c70636-d89f-4686-b3e9-7605299e4588", "to": 13609, "width": 1}, {"from": "85c70636-d89f-4686-b3e9-7605299e4588", "to": "72d84fbb-1659-41de-b1be-6b50ca5df05e", "width": 1}, {"from": "1133c1c0-e52c-44d5-942c-1c2878d5bbed", "to": 13609, "width": 1}, {"from": "d8e2127e-f985-4965-b207-0f723243773f", "to": 13609, "width": 1}, {"from": "d8e2127e-f985-4965-b207-0f723243773f", "to": "0d5dbf91-18fe-4f05-bd06-a7799a0b0eed", "width": 1}, {"from": "d8e2127e-f985-4965-b207-0f723243773f", "to": "7157a2ba-5892-43ce-8526-119ad510eb31", "width": 1}, {"from": "d8e2127e-f985-4965-b207-0f723243773f", "to": "338ccd27-cd96-47f9-a433-9d1c2484b141", "width": 1}, {"from": "7d3a5bc2-9290-401b-8bb9-298ca0fcb4dc", "to": 13609, "width": 1}, {"from": "7d3a5bc2-9290-401b-8bb9-298ca0fcb4dc", "to": "59e2811f-e50d-4df4-93dc-3cd7a37dcca6", "width": 1}, {"from": "c7b020e9-eb7f-4d51-8f4d-3ac2d80a1c02", "to": 13609, "width": 1}, {"from": "338ccd27-cd96-47f9-a433-9d1c2484b141", "to": 13609, "width": 1}, {"from": "338ccd27-cd96-47f9-a433-9d1c2484b141", "to": "7157a2ba-5892-43ce-8526-119ad510eb31", "width": 1}, {"from": "338ccd27-cd96-47f9-a433-9d1c2484b141", "to": "92375dc41d474a3185f395ff04e34ad7", "width": 1}, {"from": "2809c031-7d12-4984-9211-55ce163967ce", "to": 13609, "width": 1}, {"from": "53e06a2d-caf6-4629-a658-09ac86bdbd5a", "to": 13609, "width": 1}, {"from": "53e06a2d-caf6-4629-a658-09ac86bdbd5a", "to": "a0d67a03-3904-4f22-8ed0-74b5d9781af9", "width": 1}, {"from": "7adda1c3-151f-487e-b8e4-5c72c5b16153", "to": 13609, "width": 1}, {"from": "72d84fbb-1659-41de-b1be-6b50ca5df05e", "to": 13609, "width": 1}, {"from": "72d84fbb-1659-41de-b1be-6b50ca5df05e", "to": "7e756058c04e4cd891b34d594bec7d62", "width": 1}, {"from": "6aed7834-7355-4425-aefa-2667c144c7e3", "to": 13609, "width": 1}, {"from": "039131d1-dccf-49b8-a9b9-0cfbc6bf50bb", "to": 13609, "width": 1}, {"from": "7157a2ba-5892-43ce-8526-119ad510eb31", "to": 13609, "width": 1}, {"from": "0d5dbf91-18fe-4f05-bd06-a7799a0b0eed", "to": 13609, "width": 1}, {"from": "a0d67a03-3904-4f22-8ed0-74b5d9781af9", "to": 13609, "width": 1}, {"from": "59e2811f-e50d-4df4-93dc-3cd7a37dcca6", "to": 13609, "width": 1}, {"from": "13e39a37-8390-4cd0-aa64-34bee678a36c", "to": 13609, "width": 1}, {"from": "7c2b90ae-3824-4686-9d1d-e3b0ede25873", "to": 13609, "width": 1}, {"from": "6da77fb3-f899-469a-89aa-c7093faf21ee", "to": 13609, "width": 1}, {"from": "bed774e3-1891-4383-9aa9-3d3c0cf3621d", "to": 13609, "width": 1}, {"from": "92375dc41d474a3185f395ff04e34ad7", "to": 13609, "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": true,
+        "filter": [
+            "physics"
+        ]
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "repulsion": {
+            "centralGravity": 0.33,
+            "damping": 0.95,
+            "nodeDistance": 420,
+            "springConstant": 0.1,
+            "springLength": 110
+        },
+        "solver": "repulsion",
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+                  // if this network requires displaying the configure window,
+                  // put it in its div
+                  options.configure["container"] = document.getElementById("config");
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>

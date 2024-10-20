@@ -1,0 +1,178 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 800px;
+                 background-color: #222222;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+             #config {
+                 float: left;
+                 width: 400px;
+                 height: 600px;
+             }
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+            <div id="config"></div>
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"font": {"color": "white"}, "group": 1, "id": "dfa4d6bf-809a-47df-9cc9-6aa99fb516b2", "label": "Cloud computing", "shape": "dot", "size": 5, "title": "Un service permettant le stockage et l\u0027acc\u00e8s \u00e0 des donn\u00e9es via Internet, facilitant la collaboration et la sauvegarde des fichiers entre \u00e9quipes."}, {"font": {"color": "white"}, "group": 2, "id": 13682, "label": "Gestion de Projet et Calcul du Taux Horaire", "shape": "dot", "size": 8, "title": "Sequence 6_importance gestion de projet"}, {"font": {"color": "white"}, "group": 1, "id": "3549c01f-442e-4906-b0dd-196d669d6543", "label": "R\u00e9troplanning", "shape": "dot", "size": 5, "title": "Le r\u00e9troplanning, ou retroplanning, est une m\u00e9thode de gestion de projet qui consiste \u00e0 planifier les \u00e9tapes cl\u00e9s en travaillant \u00e0 rebours depuis la date d\u0027\u00e9ch\u00e9ance. Cette approche permet non seulement d\u0027organiser efficacement les t\u00e2ches n\u00e9cessaires pour atteindre un objectif ou r\u00e9aliser un projet, mais aussi d\u0027estimer la dur\u00e9e des t\u00e2ches et de g\u00e9rer le temps et les ressources de mani\u00e8re optimale. Elle est particuli\u00e8rement utile pour \u00e9tablir des d\u00e9lais r\u00e9alistes et des tarifs bas\u00e9s sur le taux horaire."}, {"font": {"color": "white"}, "group": 1, "id": "0e2b76bd-fa95-4a2e-9aa6-621ca5664d4c", "label": "\u00c9valuation", "shape": "dot", "size": 5, "title": "Processus d\u0027analyse des id\u00e9es d\u00e9velopp\u00e9es selon des crit\u00e8res sp\u00e9cifiques pour affiner et am\u00e9liorer les propositions."}, {"font": {"color": "white"}, "group": 3, "id": "e272bed138e8447394ad8396b46b85da", "label": "mcq", "shape": "dot", "size": 5, "title": "Quels \u00e9l\u00e9ments sont pris en compte lors de l\u0027\u00e9valuation des id\u00e9es d\u00e9velopp\u00e9es?"}, {"font": {"color": "white"}, "group": 1, "id": "afe08612-370f-46cc-97df-bba29fe4f822", "label": "Transparence", "shape": "dot", "size": 5, "title": "La transparence d\u00e9signe l\u0027obligation d\u0027informer clairement les individus sur l\u0027utilisation de leurs donn\u00e9es personnelles, qu\u0027elles soient financi\u00e8res, contractuelles ou relatives \u00e0 la protection des donn\u00e9es. Elle implique que les organismes doivent garantir aux individus un contr\u00f4le et une compr\u00e9hension totale de l\u0027utilisation de leurs informations afin d\u0027\u00e9viter les malentendus avec le client et de renforcer la confiance des administr\u00e9s d\u00e8s leur collecte."}, {"font": {"color": "white"}, "group": 3, "id": "622d6ad10c1a4d7091512e84a7e71f0f", "label": "mcq", "shape": "dot", "size": 5, "title": "Que doivent faire les administr\u00e9s pour conserver la ma\u00eetrise de leurs donn\u00e9es ?"}, {"font": {"color": "white"}, "group": 3, "id": "078c5a40a6ba4a0d859d037fdac4d6b2", "label": "mcq", "shape": "dot", "size": 5, "title": "Que doivent savoir les individus au moment de la collecte de leurs donn\u00e9es ?"}, {"font": {"color": "white"}, "group": 4, "id": "2dcfde7ae183475aa95a75d0ab9978cd", "label": "fill_in", "shape": "dot", "size": 5, "title": "Les administr\u00e9s doivent conserver la ma\u00eetrise des donn\u00e9es qui les concernent, ce qui implique qu\u0027ils soient clairement inform\u00e9s de l\u0027utilisation de leurs donn\u00e9es d\u00e8s \u003cblank\u003e."}, {"font": {"color": "white"}, "group": 4, "id": "1fec1b9a5fcb4155b162a422b580583b", "label": "fill_in", "shape": "dot", "size": 5, "title": "Les individus doivent \u00eatre inform\u00e9s d\u00e8s la collecte de leurs donn\u00e9es des \u003cblank\u003e et des modalit\u00e9s d\u0027exercice de ces droits."}, {"font": {"color": "white"}, "group": 5, "id": "9eb9e1ede8934c61acb746d3a5f02c16", "label": "true_false", "shape": "dot", "size": 5, "title": "Les administr\u00e9s doivent \u00eatre inform\u00e9s de la collecte de leurs donn\u00e9es uniquement apr\u00e8s que cette collecte ait eu lieu."}, {"font": {"color": "white"}, "group": 5, "id": "0c786fc868744da0ad56677a65c6cd9a", "label": "true_false", "shape": "dot", "size": 5, "title": "Les donn\u00e9es personnelles ne peuvent jamais \u00eatre collect\u00e9es \u00e0 l\u0027insu des individus."}, {"font": {"color": "white"}, "group": 5, "id": "66f992bff64445abb49ef55e79ec26cf", "label": "true_false", "shape": "dot", "size": 5, "title": "Les personnes doivent \u00eatre inform\u00e9es de l\u0027utilisation de leurs donn\u00e9es uniquement apr\u00e8s leur collecte."}, {"font": {"color": "white"}, "group": 1, "id": "ae467590-b74a-463a-8b8f-0d480a17c50a", "label": "Gestion de projet", "shape": "dot", "size": 5, "title": "La gestion de projet est une discipline qui consiste \u00e0 appliquer des connaissances, comp\u00e9tences et techniques pour planifier, ex\u00e9cuter et superviser des projets afin d\u0027atteindre des objectifs sp\u00e9cifiques dans un cadre temporel d\u00e9fini. Elle implique l\u0027organisation et la planification des ressources tout en respectant les contraintes budg\u00e9taires, et elle est particuli\u00e8rement cruciale dans divers domaines, y compris le domaine cr\u00e9atif."}, {"font": {"color": "white"}, "group": 1, "id": "44ac33ba-9d4f-4b84-b241-38468732b7e0", "label": "Suivi et mise \u00e0 jour", "shape": "dot", "size": 5, "title": "Le suivi et la mise \u00e0 jour consistent \u00e0 surveiller r\u00e9guli\u00e8rement l\u0027avancement du projet et ajuster le plan en fonction des impr\u00e9vus."}, {"font": {"color": "white"}, "group": 1, "id": "2414d865-830b-4ca5-a094-d8217f6b09f0", "label": "Human Problems", "shape": "dot", "size": 5, "title": "D\u00e9fis ou besoins rencontr\u00e9s par les individus que les entreprises cherchent \u00e0 r\u00e9soudre gr\u00e2ce \u00e0 des solutions technologiques innovantes."}, {"font": {"color": "white"}, "group": 1, "id": "16384365-b375-49f3-af7d-26f647af9d38", "label": "Real Time Clarity", "shape": "dot", "size": 5, "title": "Capacit\u00e9 \u00e0 obtenir une compr\u00e9hension imm\u00e9diate et pr\u00e9cise des donn\u00e9es ou situations actuelles pour une prise de d\u00e9cision rapide."}, {"font": {"color": "white"}, "group": 1, "id": "ad750065-352f-471a-b1fc-a896a99991b2", "label": "Actionable Insights", "shape": "dot", "size": 5, "title": "Informations d\u00e9riv\u00e9es de donn\u00e9es qui peuvent \u00eatre directement appliqu\u00e9es pour prendre des d\u00e9cisions strat\u00e9giques dans une entreprise."}, {"font": {"color": "white"}, "group": 1, "id": "9d810e58-40a4-40c3-9db4-16ad82dcf8b6", "label": "Business Technology", "shape": "dot", "size": 5, "title": "Technologies utilis\u00e9es pour am\u00e9liorer les op\u00e9rations commerciales, incluant l\u0027automatisation, l\u0027analyse de donn\u00e9es et la gestion des ressources."}, {"font": {"color": "white"}, "group": 1, "id": "3a2fe8a9-978a-4604-92c0-04a0a0bd599a", "label": "Analyse de march\u00e9", "shape": "dot", "size": 5, "title": "\u00c9tude approfondie du march\u00e9, y compris les tendances et la concurrence, essentielle pour \u00e9laborer une strat\u00e9gie marketing efficace."}, {"font": {"color": "white"}, "group": 1, "id": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "label": "Exp\u00e9rience Utilisateur et Client", "shape": "dot", "size": 21, "title": "L\u0027exp\u00e9rience utilisateur (UX) et l\u0027exp\u00e9rience client englobent toutes les \u00e9motions, attitudes et r\u00e9actions d\u0027un utilisateur lors de son interaction avec un produit ou service. L\u0027UX vise \u00e0 optimiser la satisfaction en am\u00e9liorant la perception globale influenc\u00e9e par le design, les fonctionnalit\u00e9s, l\u0027interface, l\u0027utilisabilit\u00e9 et le plaisir d\u0027utilisation. L\u0027interface utilisateur (UI), qui constitue le point de contact visuel et interactif entre l\u0027utilisateur et le syst\u00e8me, joue un r\u00f4le crucial dans la convivialit\u00e9 et l\u0027esth\u00e9tique du produit num\u00e9rique. De plus, l\u0027UX mobile se concentre sur la cr\u00e9ation d\u0027interfaces conviviales pour maximiser l\u0027engagement des utilisateurs sur appareils mobiles. Ensemble, ces concepts visent \u00e0 r\u00e9duire les frictions durant le processus d\u0027achat et \u00e0 influencer la fid\u00e9lit\u00e9 des utilisateurs dans un environnement num\u00e9rique."}, {"font": {"color": "white"}, "group": 1, "id": "287b1dcd-ce37-4d2f-ae56-66d623ae2ceb", "label": "Optimisation des fichiers", "shape": "dot", "size": 5, "title": "Processus d\u0027ajustement des caract\u00e9ristiques des fichiers (taille, r\u00e9solution) selon leur usage pr\u00e9vu, essentiel pour garantir qualit\u00e9 et performance."}, {"font": {"color": "white"}, "group": 3, "id": "a4bf5ac2a00a43fead862ca4ecbd2405", "label": "mcq", "shape": "dot", "size": 5, "title": "Que doit prendre en compte le design pour \u00eatre efficace dans ce contexte ?"}, {"font": {"color": "white"}, "group": 5, "id": "c76032a02e6a4f45976fee77342cf113", "label": "true_false", "shape": "dot", "size": 5, "title": "Le design doit inclure l\u0027exp\u00e9rience utilisateur pour \u00eatre efficace."}, {"font": {"color": "white"}, "group": 5, "id": "237d060ac8a04e529f583f5e1347fc67", "label": "true_false", "shape": "dot", "size": 5, "title": "Le terme \u0027design\u0027 dans ce contexte signifie principalement \u0027cr\u00e9ation visuelle\u0027."}, {"font": {"color": "white"}, "group": 1, "id": "46f98aa1-718b-4130-a429-5e0c698e2f72", "label": "Design Thinking", "shape": "dot", "size": 5, "title": "M\u00e9thodologie centr\u00e9e sur l\u0027utilisateur visant \u00e0 r\u00e9soudre des probl\u00e8mes complexes par l\u0027empathie, la d\u00e9finition, l\u0027id\u00e9ation, le prototypage et le test."}, {"font": {"color": "white"}, "group": 1, "id": "90da4202-90b8-4ca5-8958-1e7d343da9ff", "label": "Veille", "shape": "dot", "size": 5, "title": "Phase d\u0027observation et d\u0027analyse des tendances et facteurs externes influen\u00e7ant un projet, essentielle pour une compr\u00e9hension approfondie du brief."}, {"font": {"color": "white"}, "group": 1, "id": "9c7cbcbd-6820-4fcd-bd00-88a36b11fe80", "label": "Analyse des Besoins du Client", "shape": "dot", "size": 5, "title": "Processus d\u0027\u00e9valuation des exigences explicites et implicites d\u0027un client afin de fournir des solutions adapt\u00e9es \u00e0 ses attentes."}, {"font": {"color": "white"}, "group": 1, "id": "a302f8f3-dc7d-4b23-8b56-c61cddeec63c", "label": "Signe plus (+) rouge", "shape": "dot", "size": 5, "title": "Indicateur visuel signalant que le contenu d\u00e9passe les limites d\u0027un bloc de texte, n\u00e9cessitant une attention pour \u00e9viter des pertes d\u0027information."}]);
+                  edges = new vis.DataSet([{"from": "dfa4d6bf-809a-47df-9cc9-6aa99fb516b2", "to": 13682, "width": 1}, {"from": "dfa4d6bf-809a-47df-9cc9-6aa99fb516b2", "to": "3549c01f-442e-4906-b0dd-196d669d6543", "width": 1}, {"from": "0e2b76bd-fa95-4a2e-9aa6-621ca5664d4c", "to": "e272bed138e8447394ad8396b46b85da", "width": 1}, {"from": "afe08612-370f-46cc-97df-bba29fe4f822", "to": 13682, "width": 1}, {"from": "afe08612-370f-46cc-97df-bba29fe4f822", "to": "3549c01f-442e-4906-b0dd-196d669d6543", "width": 1}, {"from": "afe08612-370f-46cc-97df-bba29fe4f822", "to": "622d6ad10c1a4d7091512e84a7e71f0f", "width": 1}, {"from": "afe08612-370f-46cc-97df-bba29fe4f822", "to": "078c5a40a6ba4a0d859d037fdac4d6b2", "width": 1}, {"from": "afe08612-370f-46cc-97df-bba29fe4f822", "to": "2dcfde7ae183475aa95a75d0ab9978cd", "width": 1}, {"from": "afe08612-370f-46cc-97df-bba29fe4f822", "to": "1fec1b9a5fcb4155b162a422b580583b", "width": 1}, {"from": "afe08612-370f-46cc-97df-bba29fe4f822", "to": "9eb9e1ede8934c61acb746d3a5f02c16", "width": 1}, {"from": "afe08612-370f-46cc-97df-bba29fe4f822", "to": "0c786fc868744da0ad56677a65c6cd9a", "width": 1}, {"from": "afe08612-370f-46cc-97df-bba29fe4f822", "to": "66f992bff64445abb49ef55e79ec26cf", "width": 1}, {"from": "ae467590-b74a-463a-8b8f-0d480a17c50a", "to": 13682, "width": 1}, {"from": "ae467590-b74a-463a-8b8f-0d480a17c50a", "to": "3549c01f-442e-4906-b0dd-196d669d6543", "width": 1}, {"from": "ae467590-b74a-463a-8b8f-0d480a17c50a", "to": "44ac33ba-9d4f-4b84-b241-38468732b7e0", "width": 1}, {"from": "2414d865-830b-4ca5-a094-d8217f6b09f0", "to": "16384365-b375-49f3-af7d-26f647af9d38", "width": 1}, {"from": "2414d865-830b-4ca5-a094-d8217f6b09f0", "to": "ad750065-352f-471a-b1fc-a896a99991b2", "width": 1}, {"from": "2414d865-830b-4ca5-a094-d8217f6b09f0", "to": "9d810e58-40a4-40c3-9db4-16ad82dcf8b6", "width": 1}, {"from": "3a2fe8a9-978a-4604-92c0-04a0a0bd599a", "to": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "width": 1}, {"from": "ad750065-352f-471a-b1fc-a896a99991b2", "to": "16384365-b375-49f3-af7d-26f647af9d38", "width": 1}, {"from": "ad750065-352f-471a-b1fc-a896a99991b2", "to": "9d810e58-40a4-40c3-9db4-16ad82dcf8b6", "width": 1}, {"from": "16384365-b375-49f3-af7d-26f647af9d38", "to": "9d810e58-40a4-40c3-9db4-16ad82dcf8b6", "width": 1}, {"from": "44ac33ba-9d4f-4b84-b241-38468732b7e0", "to": 13682, "width": 1}, {"from": "44ac33ba-9d4f-4b84-b241-38468732b7e0", "to": "3549c01f-442e-4906-b0dd-196d669d6543", "width": 1}, {"from": "287b1dcd-ce37-4d2f-ae56-66d623ae2ceb", "to": 13682, "width": 1}, {"from": "287b1dcd-ce37-4d2f-ae56-66d623ae2ceb", "to": "3549c01f-442e-4906-b0dd-196d669d6543", "width": 1}, {"from": "3549c01f-442e-4906-b0dd-196d669d6543", "to": 13682, "width": 1}, {"from": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "to": "a4bf5ac2a00a43fead862ca4ecbd2405", "width": 1}, {"from": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "to": "c76032a02e6a4f45976fee77342cf113", "width": 1}, {"from": "d4621b87-0170-4bf2-9bec-4e0fb1622a41", "to": "237d060ac8a04e529f583f5e1347fc67", "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": true,
+        "filter": [
+            "physics"
+        ]
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "repulsion": {
+            "centralGravity": 0.33,
+            "damping": 0.95,
+            "nodeDistance": 420,
+            "springConstant": 0.1,
+            "springLength": 110
+        },
+        "solver": "repulsion",
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+                  // if this network requires displaying the configure window,
+                  // put it in its div
+                  options.configure["container"] = document.getElementById("config");
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
