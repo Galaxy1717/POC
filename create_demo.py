@@ -2,7 +2,6 @@ import streamlit as st
 import streamlit.components.v1 as components
 import json
 
-
 embedder = None
 selected_reference = None
 # Sample data
@@ -55,11 +54,6 @@ demo = st.sidebar.radio("Choix de la démo:", ("Résultats par matière", "Capsu
 #         st.session_state.selected_reference = ref
 #     else:
 #         st.error(f"The reference '{ref}' is not available.")
-
-
-# def cross_string(text):
-#     return ''.join(char + '\u0336' for char in text)
-
 
 if demo == "Résultats par matière":
     # Streamlit app
