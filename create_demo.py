@@ -168,7 +168,7 @@ if demo == "Capsules de connaissance des référentiels":
     competences = list(set(competences))
     competences.sort()
 
-    st.title("Ynov: Détail des référentiels")
+    st.title("Ynov: Capsules des compétences")
     selected_competence = st.selectbox("Choix de la compétence:", competences, key="selected_competence")
 
     if selected_competence in mapping_marketing:
